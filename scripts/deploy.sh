@@ -13,4 +13,7 @@ if [ -n "$pid" ]; then
 fi
 
 echo "Starting the Spring server..."
-nohup java -jar "$jar_path"
+nohup java -jar "$jar_path" &
+
+# 백그라운드 프로세스의 종료 대기
+wait
