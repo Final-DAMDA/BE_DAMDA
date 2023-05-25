@@ -60,7 +60,7 @@ jobs:
 
       # Upload to S3
       - name: Upload to S3
-        run: aws s3 cp --region ap-northeast-2 ./coinTalk.zip s3://damda-actions
+        run: aws s3 cp --region ap-northeast-2 ./damda.zip s3://damda-actions
 
       # Deploy
       - name: Deploy
