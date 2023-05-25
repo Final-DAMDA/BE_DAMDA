@@ -70,5 +70,5 @@ jobs:
           --deployment-config-name CodeDeployDefault.AllAtOnce \
           --deployment-group-name damda-application-group \
           --file-exists-behavior OVERWRITE \
-          --s3-location bucket=git-test-s3-custom,bundleType=zip,key=damda.zip \
+          --s3-location bucket=damda-actions,bundleType=zip,key=damda.zip \
           --region ap-northeast-2
