@@ -6,4 +6,4 @@ jar_path="/home/ubuntu/deploy/deploy/back-0.0.1-SNAPSHOT.jar"
 pkill -f "$jar_path"
 
 # 스프링 서버 다시 실행
-nohup java -jar "$jar_path" >> /home/ubuntu/deploy_test.log 2>/home/ubuntu/action/deploy_err_test.log &
+nohup java -jar "$jar_path" &
