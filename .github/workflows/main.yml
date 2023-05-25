@@ -68,7 +68,7 @@ jobs:
           aws deploy create-deployment \
           --application-name damda-action-application \
           --deployment-config-name CodeDeployDefault.AllAtOnce \
-          --deployment-group-name damda-application-group \
+          --deployment-group-name damda-application-group-deploy \
           --file-exists-behavior OVERWRITE \
           --s3-location bucket=damda-actions,bundleType=zip,key=damda.zip \
           --region ap-northeast-2
