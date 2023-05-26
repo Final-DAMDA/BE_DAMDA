@@ -1,4 +1,4 @@
-package com.damda.back.data.response;
+package com.damda.back.data.common;
 
 import com.damda.back.exception.ErrorCode;
 import lombok.AllArgsConstructor;

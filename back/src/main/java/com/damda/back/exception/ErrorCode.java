@@ -7,7 +7,9 @@ import org.springframework.http.HttpStatus;
 
 @AllArgsConstructor
 @Getter
-public class ErrorCode {
+public enum ErrorCode {
+
+    RESERVATION_FORM_SAVE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR,"저장 중 에러 발생");
     private HttpStatus httpStatus;
 
     private String message;
