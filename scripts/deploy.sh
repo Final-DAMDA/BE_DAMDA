@@ -13,5 +13,5 @@ if [ -n "$pid" ]; then
 fi
 
 echo "Starting the Spring server..."
-nohup java -jar "$jar_path" &
+nohup java -jar "$jar_path" > log.out 2>&1 &
 
