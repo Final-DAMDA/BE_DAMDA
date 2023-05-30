@@ -26,6 +26,8 @@ public class ReservationFormRequestDTO {
 
         private String questionTitle;
 
+        private boolean required;
+
         @Builder.Default
         private Map<String,Integer> map = new HashMap<>();
 

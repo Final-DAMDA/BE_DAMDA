@@ -37,6 +37,9 @@ public class Question {
     private QuestionStatus status;
 
 
+    private boolean required;
+
+
     @Builder.Default
     @OneToMany(mappedBy = "question",
             fetch = FetchType.LAZY,
@@ -51,4 +54,16 @@ public class Question {
     }
 
 
+    public void changeIdentify(QuestionIdentify identify){this.questionIdentify = identify;}
+    public void changeQuestionType(QuestionType questionType){this.questionType = questionType;}
+    public void changeQuestionTitle(String questionTitle){this.questionTitle = questionTitle;}
+    public void changeOrder(Integer order){this.order = order;}
+
+    public void changeRequired(boolean required){this.required = required;}
+    public void changeStatus(QuestionStatus status){this.status = status;}
+
+    //TODO: 테스트 지우기
+    public void cleanCategory(){
+        this.categoryList.clear();
+    }
 }

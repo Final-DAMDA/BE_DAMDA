@@ -47,7 +47,7 @@ class ReservationControllerTest {
 
         ReservationFormRequestDTO dto = ReservationFormRequestDTO.builder()
                 .questionTitle("서비스를 원하는 지역이 어디인가요?")
-                .questionIdentify(QuestionIdentify.SERVICELOCATION)
+                .questionIdentify(QuestionIdentify.SERVICEDATE)
                 .questionType(QuestionType.SELECT)
                 .map(map)
                 .build();

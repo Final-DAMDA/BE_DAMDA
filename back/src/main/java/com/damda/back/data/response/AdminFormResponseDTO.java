@@ -1,14 +1,16 @@
 package com.damda.back.data.response;
 
 
+import com.damda.back.data.common.CategoryMapDTO;
+import com.damda.back.data.common.QuestionIdentify;
 import com.damda.back.data.common.QuestionType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -22,8 +24,13 @@ public class AdminFormResponseDTO {
 
     private QuestionType questionType;
 
+    private QuestionIdentify questionIdentify;
+
+
     private boolean isDeleted;
 
-    private Map<String,Integer> category = new HashMap<>();
+    private boolean required;
+
+    private List<CategoryMapDTO> categoryList = new ArrayList<>();
 
 }
