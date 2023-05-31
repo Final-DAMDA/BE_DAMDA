@@ -13,7 +13,7 @@ import java.time.DayOfWeek;
 @Getter
 @Table(name = "manager_tb")
 public class Manager {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -22,15 +22,15 @@ public class Manager {
     @JoinColumn(name = "member_id", referencedColumnName = "id")
     @Column(nullable = false)
     private Member userId;
-    
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private DayOfWeek activityDate;
-    
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Area activityArea;
-    
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private CertificateStatus certificateStatus;
@@ -43,9 +43,33 @@ public class Manager {
 
     @Column(nullable = false)
     private boolean serviceRule;
-    
+
 }
 
 enum Area {}
 
-enum CertificateStatus {}
+/**
+ * 자격증 여부
+ * (Certificate status)
+ */
+enum CertificateStatus {
+    FIRST_RATE_OFF("1급(오프라인)"),
+    SECOND_RATE_OFF("2급(오프라인)"),
+    FIRST_RATE_ON("1급(온라인)"),
+    SECOND_RATE_ON("2급(온라인)"),
+    NONE("없음"),
+    ETC("기타");
+
+    private String value;
+
+    CertificateStatus(String value) {
+        this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        return "CertificateStatus{" +
+                "value='" + value + '\'' +
+                '}';
+    }
+}
