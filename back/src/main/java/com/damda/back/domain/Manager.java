@@ -1,5 +1,6 @@
 package com.damda.back.domain;
 
+import com.damda.back.domain.area.DistrictEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,7 +30,7 @@ public class Manager {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Area activityArea;
+    private DistrictEnum activityArea;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -45,8 +46,6 @@ public class Manager {
     private boolean serviceRule;
 
 }
-
-enum Area {}
 
 /**
  * 자격증 여부
