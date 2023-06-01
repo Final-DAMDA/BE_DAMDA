@@ -112,7 +112,7 @@ public class ReservationServiceImpl implements ReservationService {
                 .build();
 
 
-        dto.getMap().forEach((category, price) -> {
+        dto.getCategory().forEach((category, price) -> {
             Category categoryData = Category.builder()
                     .categoryPrice(price)
                     .questionCategory(category)
