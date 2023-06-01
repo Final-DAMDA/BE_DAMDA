@@ -4,6 +4,7 @@ package com.damda.back.domain;
 import com.damda.back.data.common.QuestionIdentify;
 import com.damda.back.data.common.QuestionType;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ public class Question {
     private boolean required;
 
 
+    @BatchSize(size = 100)
     @Builder.Default
     @OneToMany(mappedBy = "question",
             fetch = FetchType.LAZY,
