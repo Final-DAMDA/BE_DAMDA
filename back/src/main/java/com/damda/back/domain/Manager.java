@@ -25,7 +25,7 @@ public class Manager {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private DayOfWeek activityDate;  // 테이블 따로 빼서 one to many 양방향
+    private DayOfWeek activityDay;  // 테이블 따로 빼서 one to many 양방향
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
