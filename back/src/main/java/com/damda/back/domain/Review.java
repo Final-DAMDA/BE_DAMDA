@@ -15,11 +15,15 @@ public class Review {
 	@Id
 	@GeneratedValue
 	private Long id;
-	private String title;
+
 	private String content;
 
-	@OneToMany(mappedBy = "review" , cascade = CascadeType.ALL)
-	private List<ReviewImage> reviewImage;
+	private boolean best;
+	@OneToOne
+	private ReservationForm reservationForm;
+
+
+
 
 
 
