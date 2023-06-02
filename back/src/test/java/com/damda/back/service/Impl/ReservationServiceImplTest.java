@@ -166,28 +166,7 @@ class ReservationServiceImplTest {
         reservationService.formDataActivation(1L);
     }
 
-    @Test
-    @DisplayName("")
-    void reservation_category_add() {
 
-        //given
-        Question question = Question.builder()
-                .questionNumber(1L)
-                .questionIdentify(QuestionIdentify.SERVICEDATE)
-                .order(2)
-                .status(QuestionStatus.ACTIVATION)
-                .questionTitle("이것이 문항이다.")
-                .questionType(QuestionType.SELECT)
-                .required(true).build();
-
-        // when
-        when(questionRepository.selectQuestionOne(1L)).thenReturn(Optional.of(question));
-
-        // when
-
-        // then
-    }
-    
     @Test
     @DisplayName("카테고리 삭제")
     void reservation_category_remove() {

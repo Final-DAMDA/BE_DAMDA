@@ -13,7 +13,7 @@ public enum QuestionIdentify {
     APPLICANTNAME("신청인 이름"),
     APPLICANTCONACTINFO("선청인 전화번호"),
 
-    LEARNEDROUTE("알게된 경로"),
+    LEARNEDROUTE("알게된 경로"), // --
 
     REQUIREDGUIDELINES("필수 안내사항"),
     OPTIONAL("추가적인 자료");
