@@ -59,12 +59,12 @@ public enum DistrictEnum implements AreaEnumExt {
     ANSEONG_SI("48", CityEnum.GYEONGGI_DO, "안성시"),
     POCHEON_SI("49", CityEnum.GYEONGGI_DO, "포천시"),
     UIWANG_SI("50", CityEnum.GYEONGGI_DO, "의왕시"),
-    YANGPYEONG_SI("51", CityEnum.GYEONGGI_DO, "양평군"),
+    YANGPYEONG_GUN("51", CityEnum.GYEONGGI_DO, "양평군"),
     YEOJU_SI("52", CityEnum.GYEONGGI_DO, "여주시"),
     DONGDUCHEON_SI("53", CityEnum.GYEONGGI_DO, "동두천시"),
-    GAPYEONG_SI("54", CityEnum.GYEONGGI_DO, "가평군"),
+    GAPYEONG_GUN("54", CityEnum.GYEONGGI_DO, "가평군"),
     GWACHEON_SI("55", CityEnum.GYEONGGI_DO, "과천시"),
-    YEONCHEON_SI("56", CityEnum.GYEONGGI_DO, "연천군");
+    YEONCHEON_GUN("56", CityEnum.GYEONGGI_DO, "연천군");
 
 
     private final String code;

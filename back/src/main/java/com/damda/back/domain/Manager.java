@@ -19,22 +19,21 @@ public class Manager {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "member_id", referencedColumnName = "id")
-    @Column(nullable = false)
+    @OneToOne  // 연관관계 어떻게 할지
+    @JoinColumn(name = "member_id")
     private Member userId;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private DayOfWeek activityDate;
+    private DayOfWeek activityDate;  // 테이블 따로 빼서 one to many 양방향
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private DistrictEnum activityArea;
+    private DistrictEnum activityArea;  // 테이블 따로 빼서 one to many 양방향
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private CertificateStatus certificateStatus;
+    private CertificateStatus certificateStatus;  // List로 받아야 함, db에 어떻게 저장? 테이블로 빼기
 
     @Column(nullable = false)
     private boolean vehicle;
@@ -57,7 +56,7 @@ enum CertificateStatus {
     FIRST_RATE_ON("1급(온라인)"),
     SECOND_RATE_ON("2급(온라인)"),
     NONE("없음"),
-    ETC("기타");
+    ETC("기타");  // TODO: 기타 처리
 
     private String value;
 
