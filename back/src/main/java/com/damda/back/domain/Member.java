@@ -39,6 +39,8 @@ public class Member extends BaseEntity {
     @Column(unique = true)
     private String phoneNumber;
 
+    private String profileImage;
+
     @Enumerated(EnumType.STRING)
     private MemberRole role;
 

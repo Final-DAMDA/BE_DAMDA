@@ -7,8 +7,14 @@ import lombok.Data;
 @Data
 public class KaKaoAccessDTO {
     private long id;
+
+
     private String connectedAt;
+
+    private Properties properties;
 
     @JsonProperty("kakao_account")
     private KakaoAccountDTO kakaoAccount;
+
+
 }

@@ -103,6 +103,8 @@ public class SubmitServiceImpl implements SubmitService {
                                         .build());
                             });
                             bulkInsert(answerInsertStmt, answers);
+
+                            //TODO: 알림톡 보내기 매니저들에게 매칭된 매니저들에게
                         } else {
                             throw new SQLException("Creating reservation submit form failed, no ID obtained.");
                         }
@@ -113,9 +115,8 @@ public class SubmitServiceImpl implements SubmitService {
 
                 return true;
             } catch (SQLException e) {
-                e.printStackTrace();
+                throw new CommonException(ErrorCode.SERVER_ERROR);
             }
-            return false;
         }
 
 
