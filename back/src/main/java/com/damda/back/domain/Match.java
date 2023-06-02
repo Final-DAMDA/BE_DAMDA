@@ -18,5 +18,5 @@ public class Match {
 	@GeneratedValue
 	private Long id;
 	@OneToOne
-	private ReservationForm reservationForm;
+	private ReservationSubmitForm reservationForm;
 }

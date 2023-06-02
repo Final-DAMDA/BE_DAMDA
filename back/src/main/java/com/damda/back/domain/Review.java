@@ -20,7 +20,7 @@ public class Review {
 
 	private boolean best;
 	@OneToOne
-	private ReservationForm reservationForm;
+	private ReservationSubmitForm reservationSubmitForm;
 
 
 

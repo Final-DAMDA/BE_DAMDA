@@ -18,7 +18,7 @@ public class ServiceComplete {
 	@GeneratedValue
 	private Long id;
 	@OneToOne
-	private ReservationForm reservation;
+	private ReservationSubmitForm reservation;
 	private Boolean submit;
 
 }
