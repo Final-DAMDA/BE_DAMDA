@@ -1,39 +1,46 @@
-package com.damda.back.domain;
+package com.damda.back.domain.manager;
 
+import com.damda.back.domain.Member;
 import com.damda.back.domain.area.DistrictEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.DayOfWeek;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Getter
-@Table(name = "manager_tb")
+@Table(name = "manager")
 public class Manager {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne  // 연관관계 어떻게 할지
+    @OneToOne
     @JoinColumn(name = "member_id")
+    @Column(nullable = false)
     private Member userId;
 
-    @Enumerated(EnumType.STRING)
+    // @Enumerated(EnumType.STRING)
+    // @Column(nullable = false)
+    // private DayOfWeek activityDay;  // 테이블 따로 빼서 one to many 양방향
+
+    @OneToOne
+    @JoinColumn(name = "activity_day_id")
     @Column(nullable = false)
-    private DayOfWeek activityDay;  // 테이블 따로 빼서 one to many 양방향
+    private ActivityDay activityDay;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private DistrictEnum activityArea;  // 테이블 따로 빼서 one to many 양방향
-
-    @Enumerated(EnumType.STRING)
+    
+    @OneToOne
+    @JoinColumn(name = "certificate_status_id")
     @Column(nullable = false)
-    private CertificateStatus certificateStatus;  // List로 받아야 함, db에 어떻게 저장? 테이블로 빼기
+    private CertificateStatus certificateStatus;
 
     @Column(nullable = false)
     private boolean vehicle;
@@ -50,17 +57,16 @@ public class Manager {
  * 자격증 여부
  * (Certificate status)
  */
-enum CertificateStatus {
+enum CertificateStatusEnum {
     FIRST_RATE_OFF("1급(오프라인)"),
     SECOND_RATE_OFF("2급(오프라인)"),
     FIRST_RATE_ON("1급(온라인)"),
     SECOND_RATE_ON("2급(온라인)"),
-    NONE("없음"),
-    ETC("기타");  // TODO: 기타 처리
+    NONE("없음");
 
     private String value;
 
-    CertificateStatus(String value) {
+    CertificateStatusEnum(String value) {
         this.value = value;
     }
 
