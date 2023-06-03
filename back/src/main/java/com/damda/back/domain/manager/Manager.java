@@ -35,12 +35,14 @@ public class Manager {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private DistrictEnum activityArea;  // 테이블 따로 빼서 one to many 양방향
+    private DistrictEnum activityArea;
     
     @OneToOne
     @JoinColumn(name = "certificate_status_id")
     @Column(nullable = false)
     private CertificateStatus certificateStatus;
+    
+    private Integer level;
 
     @Column(nullable = false)
     private boolean vehicle;
@@ -51,6 +53,7 @@ public class Manager {
     @Column(nullable = false)
     private boolean serviceRule;
 
+    private String memo;
 }
 
 /**
