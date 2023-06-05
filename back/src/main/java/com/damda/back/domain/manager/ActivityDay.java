@@ -1,6 +1,7 @@
 package com.damda.back.domain.manager;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "activity_day")
+@Builder
 public class ActivityDay {
     
     @Id
@@ -34,5 +36,9 @@ public class ActivityDay {
     private boolean isOkSaturday;
 
     private boolean isOkSunday;
+
+    public void addManager(Manager manager){
+        this.manager = manager;
+    }
     
 }

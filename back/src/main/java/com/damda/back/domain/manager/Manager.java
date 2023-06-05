@@ -23,7 +23,7 @@ public class Manager {
 
     @OneToOne
     @JoinColumn(name = "member_id")
-    private Member userId;
+    private Member member;
 
     @OneToOne
     @JoinColumn(name = "activity_day_id")
@@ -48,4 +48,8 @@ public class Manager {
     private String mainJobStatusEtc;
 
     private String memo;
+
+    public void addActivityDay(ActivityDay activityDay){
+        this.activityDay=activityDay;
+    }
 }

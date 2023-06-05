@@ -1,5 +1,7 @@
 package com.damda.back.data.request;
 
+import com.damda.back.domain.Member;
+import com.damda.back.domain.manager.ActivityDay;
 import com.damda.back.domain.manager.Manager;
 import lombok.*;
 
@@ -13,9 +15,13 @@ import java.util.List;
 @Setter
 public class ManagerApplicationDTO {
 
+
+
     private List<String> activityDay;
 
-    private List<String> activityArea;
+    private List<String> activityCity;
+
+    private List<String> activityDistrict;
 
     private String certificateStatus;
 
@@ -29,10 +35,19 @@ public class ManagerApplicationDTO {
 
     private String mainJobStatusEtc;
 
-    public Manager toEntity() {
+    public Manager toManagerEntity(Member manager) {
         return Manager.builder()
                 .certificateStatusEtc(certificateStatusEtc)
+                .vehicle(vehicle)
+                .fieldExperience(fieldExperience)
+                .mainJobStatus(mainJobStatus)
+                .member(manager)
                 .build();
     }
+
+//    public ActivityDay toActivityDayEntity(Manager manager){
+//        return ActivityDay.builder().isOkMonday(monday).build();
+//    }
+
 
 }

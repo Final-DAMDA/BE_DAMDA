@@ -24,10 +24,13 @@ public class Area {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Enumerated(value = EnumType.STRING)
-    private CityEnum city;
+//    @Enumerated(value = EnumType.STRING)
+//    private CityEnum city;
+//
+//    @Enumerated(value = EnumType.STRING)
+//    private DistrictEnum district;
 
-    @Enumerated(value = EnumType.STRING)
-    private DistrictEnum district;
+    private String city;
+    private String district;
     
 }

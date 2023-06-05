@@ -2,6 +2,7 @@ package com.damda.back.domain.manager;
 
 import com.damda.back.domain.area.Area;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "area_manager")
+@Builder
 public class AreaManager {
     
     @EmbeddedId
