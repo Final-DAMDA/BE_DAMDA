@@ -20,7 +20,7 @@ public class Image {
 	@JoinColumn(name = "service_complete_id", nullable = false)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private ServiceComplete serviceComplete;
-	private String imgType; //enum으로 바꿀예정
+	private String imgType; //TODO: enum으로 바꿀예정
 	private String imgName;
 	private String imgUrl;
 }

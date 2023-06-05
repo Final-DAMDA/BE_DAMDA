@@ -11,20 +11,17 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class Review {
+public class Review extends BaseEntity{
 	@Id
 	@GeneratedValue
 	private Long id;
 
 	private String content;
 
-	private boolean best;
+	private Boolean best;
 	@OneToOne
-	private ReservationSubmitForm reservationSubmitForm;
-
-
-
-
+	@JoinColumn(name = "service_complete_id") // 외래 키
+	private ServiceComplete serviceComplete;
 
 
 }
