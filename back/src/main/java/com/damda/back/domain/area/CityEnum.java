@@ -3,6 +3,8 @@ package com.damda.back.domain.area;
 import lombok.AllArgsConstructor;
 import lombok.ToString;
 
+import java.util.List;
+
 @ToString
 @AllArgsConstructor
 public enum CityEnum implements AreaEnum {
@@ -27,4 +29,5 @@ public enum CityEnum implements AreaEnum {
     public String getValue() {
         return value;
     }
+    
 }
