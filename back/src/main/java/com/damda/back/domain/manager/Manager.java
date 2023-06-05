@@ -21,7 +21,7 @@ public class Manager {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)  // Member - id : mappedBy = "member"
     @JoinColumn(name = "member_id")
     private Member member;
 

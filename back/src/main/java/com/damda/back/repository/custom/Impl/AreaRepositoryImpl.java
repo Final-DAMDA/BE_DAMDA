@@ -1,6 +1,10 @@
 package com.damda.back.repository.custom.Impl;
 
+import com.damda.back.domain.Member;
+import com.damda.back.domain.QMember;
 import com.damda.back.domain.area.Area;
+import com.damda.back.domain.area.CityEnum;
+import com.damda.back.domain.area.DistrictEnum;
 import com.damda.back.domain.area.QArea;
 import com.damda.back.repository.custom.AreaCustomRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -15,10 +19,11 @@ import java.util.Optional;
 public class AreaRepositoryImpl implements AreaCustomRepository {
 
 	private final JPAQueryFactory queryFactory;
+	
 	@Override
 	public Optional<Area> searchArea(String city, String district) {
 		QArea area = QArea.area;
-		BooleanExpression predicate = area.city.eq(city).and(area.district.eq(district));
+		BooleanExpression predicate = area.city.eq(CityEnum.valueOf(city)).and(area.district.eq(DistrictEnum.valueOf(district)));
 
 		Area result = queryFactory.selectFrom(area)
 				.where(predicate)
@@ -26,6 +31,5 @@ public class AreaRepositoryImpl implements AreaCustomRepository {
 
 		return Optional.ofNullable(result);
 	}
-
 
 }
