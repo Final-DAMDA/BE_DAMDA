@@ -3,6 +3,7 @@ package com.damda.back.domain.manager;
 import com.damda.back.domain.Member;
 import com.damda.back.domain.area.DistrictEnum;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 @Getter
 @Table(name = "manager")
 public class Manager {
@@ -21,7 +23,6 @@ public class Manager {
 
     @OneToOne
     @JoinColumn(name = "member_id")
-    @Column(nullable = false)
     private Member userId;
 
     // @Enumerated(EnumType.STRING)
@@ -30,27 +31,21 @@ public class Manager {
 
     @OneToOne
     @JoinColumn(name = "activity_day_id")
-    @Column(nullable = false)
     private ActivityDay activityDay;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private DistrictEnum activityArea;
     
     @OneToOne
     @JoinColumn(name = "certificate_status_id")
-    @Column(nullable = false)
     private CertificateStatus certificateStatus;
     
     private Integer level;
 
-    @Column(nullable = false)
     private boolean vehicle;
 
-    @Column(nullable = false)
     private boolean fieldExperience;
 
-    @Column(nullable = false)
     private boolean serviceRule;
 
     private String memo;

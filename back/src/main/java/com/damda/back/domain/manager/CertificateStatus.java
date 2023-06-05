@@ -19,7 +19,6 @@ public class CertificateStatus {
 
     @OneToOne
     @JoinColumn(name = "manager_id")
-    @Column(nullable = false)
     private Manager manager;
 
     @Column

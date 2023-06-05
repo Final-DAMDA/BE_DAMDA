@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ public class ReservationSubmitForm extends BaseEntity{
     private PayMentStatus payMentStatus;
 
     @Builder.Default
+    @BatchSize(size = 100)
     @OneToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             orphanRemoval = true,
@@ -45,6 +47,10 @@ public class ReservationSubmitForm extends BaseEntity{
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @Builder.Default
+    @BatchSize(size = 100)
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Match> matches = new ArrayList<>();
     public void addAnswer(ReservationAnswer answer){
         answer.changeForm(this);
         this.reservationAnswerList.add(answer);

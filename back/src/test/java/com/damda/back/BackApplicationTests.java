@@ -1,6 +1,8 @@
 package com.damda.back;
 
 import com.damda.back.domain.area.DistrictEnum;
+import com.damda.back.domain.manager.Manager;
+import com.damda.back.service.SubmitService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -17,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -36,6 +39,7 @@ class BackApplicationTests {
 	@Autowired
 	private QuestionRepository questionRepository;
 
+
 	@PersistenceContext
 	EntityManager entityManager;
 
@@ -45,16 +49,16 @@ class BackApplicationTests {
 	@Autowired
 	private ReservationFormRepository reservationFormRepository;
 
+	@Autowired
+	private SubmitService submitService;
+
 
 	@Test
+	@Transactional
 	void contextLoads() {
-//		memberRepository.save(Member.builder()
-//						.username("user")
-//						.password(encoder.encode("1234"))
-//						.role(MemberRole.USER)
-//						.status(MemberStatus.ACTIVATION)
-//						.address("경기도 하남시 하남대로 133 101동 2802호")
-//				.build());
+		submitService.submitTotalResponse(1);
+
+
 	}
 
 	@Test

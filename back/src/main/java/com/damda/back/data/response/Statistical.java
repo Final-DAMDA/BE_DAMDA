@@ -3,9 +3,10 @@ package com.damda.back.data.response;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@Builder
+@NoArgsConstructor
 public class Statistical {
     private Long matching; // 유저의 예약을 ㅎ수락한 매니저들이 1명 이상 존재하는 상태
     private Long wating; // 예약하고 알림톡을 매니저들에게 보낸 상태

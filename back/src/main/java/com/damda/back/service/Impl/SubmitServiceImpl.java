@@ -6,8 +6,10 @@ import com.damda.back.data.common.QuestionIdentify;
 import com.damda.back.data.common.ReservationStatus;
 import com.damda.back.data.common.SubmitSlice;
 import com.damda.back.data.request.SubmitRequestDTO;
+import com.damda.back.data.response.FormSliceDTO;
 import com.damda.back.data.response.Statistical;
 import com.damda.back.data.response.SubmitTotalResponse;
+import com.damda.back.domain.Match;
 import com.damda.back.domain.Member;
 import com.damda.back.domain.ReservationAnswer;
 import com.damda.back.domain.ReservationSubmitForm;
@@ -17,6 +19,10 @@ import com.damda.back.repository.MemberRepository;
 import com.damda.back.repository.ReservationFormRepository;
 import com.damda.back.service.SubmitService;
 import lombok.RequiredArgsConstructor;
+import nonapi.io.github.classgraph.fileslice.FileSlice;
+import org.springframework.beans.factory.support.ManagedList;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -187,7 +193,7 @@ public class SubmitServiceImpl implements SubmitService {
             //TODO: 통계함수랑 매니저 조인해서 가져온 데이터 짬뽕해서 DTO 반환예쩡 통계함수 완성함
 
             Map<ReservationStatus,Long> map = reservationFormRepository.statistical();
-
+            List<FormSliceDTO> dtos = new ArrayList<>();
 
             Statistical statistical = new Statistical();
             for(Map.Entry<ReservationStatus, Long> entry : map.entrySet()){
@@ -201,10 +207,47 @@ public class SubmitServiceImpl implements SubmitService {
                     case RESERVATION_CANCELLATION -> statistical.setCancellation(count);
                 }
             }
-            //TODO: 통계함수랑 페이징 결과를 함께 리턴한다.
 
+
+            Page<ReservationSubmitForm> submitFormPage =
+                    reservationFormRepository.formPaging(PageRequest.of(page,10));
+           //TODO: 통계함수랑 페이징 결과를 합치는 DTO를 만들어서 위에 선언된 필요한 데이터를 걸러서 끼워넣고 응답해야함.
+
+           for (ReservationSubmitForm submitForm : submitFormPage) {
+                    dtos.add(asDTO(submitForm));
+           }
             return null;
        }
+
+        public FormSliceDTO asDTO(ReservationSubmitForm submitForm){
+            FormSliceDTO dto = new FormSliceDTO();
+            List<Match> matcheData = new ArrayList<>();
+
+            Member member = submitForm.getMember();
+            List<ReservationAnswer> answers =  submitForm.getReservationAnswerList();
+            Map<QuestionIdentify, String> answerMap
+                    = answers.stream().collect(Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
+
+            dto.setAddress(answerMap.get(QuestionIdentify.ADDRESS));
+            dto.setManageAmount(answerMap.get(QuestionIdentify.AFEWSERVINGS));
+            dto.setName(member.getUsername());
+            dto.setCreatedAt(submitForm.getCreatedAt());
+            dto.setTotalPrice(submitForm.getTotalPrice());
+            dto.setEstimate(answerMap.get(QuestionIdentify.SERVICEDURATION));
+            dto.setPhoneNumber(answerMap.get(QuestionIdentify.APPLICANTCONACTINFO));
+            dto.setReservationStatus(submitForm.getStatus());
+            dto.setPayMentStatus(submitForm.getPayMentStatus());
+
+            List<Long> ids = reservationFormRepository.ids(submitForm.getId());
+
+            List<Member> matches = reservationFormRepository.matches(ids);
+
+            List<String> names = matches.stream().map(Member::getUsername).toList();
+
+            dto.setManagerNames(names);
+
+            return dto;
+        }
 
 
 

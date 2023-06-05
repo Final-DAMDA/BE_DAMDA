@@ -17,7 +17,6 @@ public class ActivityDay {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     
-    @Column
     @OneToOne
     @JoinColumn(name = "manager_id")
     private Manager manager;
