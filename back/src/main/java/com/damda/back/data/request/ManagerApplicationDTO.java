@@ -1,6 +1,7 @@
 package com.damda.back.data.request;
 
 import com.damda.back.domain.Member;
+import com.damda.back.domain.area.Area;
 import com.damda.back.domain.manager.ActivityDay;
 import com.damda.back.domain.manager.Manager;
 import lombok.*;
@@ -48,6 +49,15 @@ public class ManagerApplicationDTO {
 //    public ActivityDay toActivityDayEntity(Manager manager){
 //        return ActivityDay.builder().isOkMonday(monday).build();
 //    }
+    
+    public Area toAreaEntity(Manager manager) {
+        for (String s : activityDistrict) {
+            return Area.builder()
+                    .city()
+                    .district(activityDistrict)
+                    .build();
+        }
+    }
 
 
 }

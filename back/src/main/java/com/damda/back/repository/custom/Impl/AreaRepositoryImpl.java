@@ -25,8 +25,8 @@ public class AreaRepositoryImpl implements AreaCustomRepository {
 
         QArea area = QArea.area;
 
-        BooleanExpression predicate = area.city.eq(city)
-                .and(area.district.eq(district));
+        BooleanExpression predicate = area.city.eq(CityEnum.valueOf(city).name())  // SEOUL
+                .and(area.district.eq(DistrictEnum.valueOf(district).name()));
 
         Area result = queryFactory.select(area)
                 .from(area)
