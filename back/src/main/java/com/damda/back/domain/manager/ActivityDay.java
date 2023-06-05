@@ -19,8 +19,7 @@ public class ActivityDay {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @OneToOne
-    @JoinColumn(name = "manager_id")
+    @OneToOne(mappedBy = "activityDay")
     private Manager manager;
     
     private boolean isOkMonday;
