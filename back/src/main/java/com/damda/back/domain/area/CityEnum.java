@@ -27,4 +27,5 @@ public enum CityEnum implements AreaEnum {
     public String getValue() {
         return value;
     }
+    
 }
