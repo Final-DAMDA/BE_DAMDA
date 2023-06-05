@@ -30,7 +30,7 @@ public class CertificateStatus {
     private boolean secondGradeOnline;
 
     // TODO: none 넣어야할지, 넣을거면 setter 별도로 구현필요
-    // @Column
     // private boolean none;
 
+    private String etc;
 }
