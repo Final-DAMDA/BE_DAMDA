@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -213,7 +212,7 @@ class BackApplicationTests {
 
 	    TypedQuery<Object[]> JPQLQuery = entityManager.createQuery(query,Object[].class);
 
-		JPQLQuery.setParameter("statuses", Set.of(ReservationStatus.MANAGER_MATCHING_COMPLETED,ReservationStatus.PAYMENT_COMPLETED,ReservationStatus.WAITING_FOR_MANAGER_REQUEST));
+		JPQLQuery.setParameter("statuses", Set.of(ReservationStatus.MANAGER_MATCHING_COMPLETED,ReservationStatus.SERVICE_COMPLETED,ReservationStatus.WAITING_FOR_MANAGER_REQUEST));
 
 		List<Object[]> results = JPQLQuery.getResultList();
 		Map<ReservationStatus, Long> countByStatusMap = new HashMap<>();

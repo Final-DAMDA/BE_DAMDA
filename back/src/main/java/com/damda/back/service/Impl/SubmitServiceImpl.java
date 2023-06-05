@@ -19,11 +19,9 @@ import com.damda.back.service.SubmitService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -196,7 +194,7 @@ public class SubmitServiceImpl implements SubmitService {
                 Long count = entry.getValue();
 
                 switch (entry.getKey()){
-                    case PAYMENT_COMPLETED -> statistical.setCompleted(count);
+                    case SERVICE_COMPLETED -> statistical.setCompleted(count);
                     case MANAGER_MATCHING_COMPLETED -> statistical.setConfirmation(count);
                     case WAITING_FOR_ACCEPT_MATCHING -> statistical.setMatching(count);
                     case WAITING_FOR_MANAGER_REQUEST -> statistical.setWating(count);
