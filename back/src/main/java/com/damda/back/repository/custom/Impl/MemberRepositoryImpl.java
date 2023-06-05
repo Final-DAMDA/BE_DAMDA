@@ -1,5 +1,6 @@
 package com.damda.back.repository.custom.Impl;
 
+import com.damda.back.data.common.MemberStatus;
 import com.damda.back.domain.Member;
 import com.damda.back.domain.QMember;
 import com.damda.back.repository.MemberRepository;
@@ -25,6 +26,20 @@ public class MemberRepositoryImpl implements MemberCustomRepository {
         Member memberEntity = queryFactory.select(member)
                 .from(member)
                 .where(member.phoneNumber.eq(phoneNumber))
+                .fetchOne();
+
+        if(memberEntity != null) return Optional.of(memberEntity);
+        else return Optional.empty();
+    }
+
+    @Override
+    public Optional<Member> findByIdWhereActive(Integer id) {
+        QMember member = QMember.member;
+
+        Member memberEntity = queryFactory.select(member)
+                .from(member)
+                .where(member.id.eq(id))
+                .where(member.status.eq(MemberStatus.ACTIVATION))
                 .fetchOne();
 
         if(memberEntity != null) return Optional.of(memberEntity);

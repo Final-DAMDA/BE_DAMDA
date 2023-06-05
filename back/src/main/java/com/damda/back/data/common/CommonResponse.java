@@ -1,6 +1,7 @@
 package com.damda.back.data.common;
 
 import com.damda.back.exception.ErrorCode;
+import com.damda.back.exception.TokenException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,11 +25,11 @@ public class CommonResponse<T> {
     }
 
 
-//    public CommonResponse<?> tokenError(TokenException.TOKEN_ERROR tokenError){
-//        setStatus(tokenError.getStatus());
-//        setMessage(tokenError.getMsg());
-//        return this;
-//    }
+    public CommonResponse<?> tokenError(TokenException.TOKEN_ERROR tokenError){
+        setStatus(tokenError.getStatus());
+        setMessage(tokenError.getMsg());
+        return this;
+    }
 
     public CommonResponse<?> data(T data){
         this.data = data;
