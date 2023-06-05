@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "activity_day")
+@Table(name = "activity_day_tb")
 public class ActivityDay {
     
     @Id

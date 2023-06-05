@@ -5,6 +5,8 @@ import lombok.Data;
 
 @Data
 public class KakaoAccountDTO {
+
+
     private boolean nameNeedsAgreement;
     private String name;
     private boolean hasPhoneNumber;

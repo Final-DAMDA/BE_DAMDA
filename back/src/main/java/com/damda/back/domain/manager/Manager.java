@@ -25,9 +25,9 @@ public class Manager {
     @JoinColumn(name = "member_id")
     private Member userId;
 
-    @OneToOne
-    @JoinColumn(name = "activity_day_id")
+    @OneToOne(mappedBy = "manager")
     private ActivityDay activityDay;
+
 
     @Enumerated(EnumType.STRING)
     private DistrictEnum activityArea;
