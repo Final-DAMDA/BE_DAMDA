@@ -6,6 +6,8 @@ import com.damda.back.data.common.QuestionIdentify;
 import com.damda.back.data.common.ReservationStatus;
 import com.damda.back.data.common.SubmitSlice;
 import com.damda.back.data.request.SubmitRequestDTO;
+import com.damda.back.data.response.Statistical;
+import com.damda.back.data.response.SubmitTotalResponse;
 import com.damda.back.domain.Member;
 import com.damda.back.domain.ReservationAnswer;
 import com.damda.back.domain.ReservationSubmitForm;
@@ -28,6 +30,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -172,7 +175,38 @@ public class SubmitServiceImpl implements SubmitService {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }
+       }
+
+
+       /**
+        * @apiNote 어드민 메인에서 보여질 데이터 통계함수와 페이징한 예약건수들을 보여준다.
+        * 페이징이 필요한 데이터에서는
+        * 순번(이건프론트), 신청일자, 사용자 이름, 연락처, 주소, 예약일자, 가격 ,소요시간, 매니저 인원
+        *  ,매니저 매칭(누가지원했는지), 서비스 상태(ReservationStatus),  결제상태
+        * */
+       @Transactional(isolation = Isolation.REPEATABLE_READ)
+       public SubmitTotalResponse submitTotalResponse(int page){
+            //TODO: 통계함수랑 매니저 조인해서 가져온 데이터 짬뽕해서 DTO 반환예쩡 통계함수 완성함
+
+            Map<ReservationStatus,Long> map = reservationFormRepository.statistical();
+
+
+            Statistical statistical = new Statistical();
+            for(Map.Entry<ReservationStatus, Long> entry : map.entrySet()){
+                Long count = entry.getValue();
+
+                switch (entry.getKey()){
+                    case PAYMENT_COMPLETED -> statistical.setCompleted(count);
+                    case MANAGER_MATCHING_COMPLETED -> statistical.setConfirmation(count);
+                    case WAITING_FOR_ACCEPT_MATCHING -> statistical.setMatching(count);
+                    case WAITING_FOR_MANAGER_REQUEST -> statistical.setWating(count);
+                    case RESERVATION_CANCELLATION -> statistical.setCancellation(count);
+                }
+            }
+            //TODO: 통계함수랑 페이징 결과를 함께 리턴한다.
+
+            return null;
+       }
 
 
 

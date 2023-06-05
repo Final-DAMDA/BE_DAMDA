@@ -5,6 +5,7 @@ import com.damda.back.data.common.*;
 import com.damda.back.domain.*;
 import com.damda.back.repository.MemberRepository;
 import com.damda.back.repository.QuestionRepository;
+import com.damda.back.repository.ReservationFormRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,10 @@ class BackApplicationTests {
 
 	@Autowired
 	private PasswordEncoder encoder;
+
+	@Autowired
+	private ReservationFormRepository reservationFormRepository;
+
 
 	@Test
 	void contextLoads() {
@@ -222,6 +227,16 @@ class BackApplicationTests {
 		countByStatusMap.forEach((reservationStatus, aLong) -> {
 			System.out.println(reservationStatus+" : "+aLong);
 		});
+	    // then
+	}
+
+	@Test
+	@DisplayName("")
+	void statis_query_test() {
+	    // given
+		System.out.println(reservationFormRepository.statistical());;
+	    // when
+
 	    // then
 	}
 

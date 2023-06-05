@@ -35,13 +35,16 @@ public class KaKaoMemberServiceImpl implements KaKaoService {
 
     @Override
     public String loginProcessing(String code){
-       AccessTokenResponse accessTokenResponse =  tokenResponse(code);
-       KaKaoAccessDTO kaKaoAccessDTO = infoResponse(accessTokenResponse.getAccessToken());
-       KakaoAccountDTO accountDTO = kaKaoAccessDTO.getKakaoAccount();
+        try{
+            AccessTokenResponse accessTokenResponse =  tokenResponse(code);
+            KaKaoAccessDTO kaKaoAccessDTO = infoResponse(accessTokenResponse.getAccessToken());
+            KakaoAccountDTO accountDTO = kaKaoAccessDTO.getKakaoAccount();
 
-       String profileImage = kaKaoAccessDTO.getProperties().getThumbnailImage() != null ? kaKaoAccessDTO.getProperties().getThumbnailImage() : "404.jpg" ;
-       return jwtManager.jwtToken(accountDTO.getName(),accountDTO.getGender(),accountDTO.getPhoneNumber(),profileImage);
-
+            String profileImage = kaKaoAccessDTO.getProperties().getThumbnailImage() != null ? kaKaoAccessDTO.getProperties().getThumbnailImage() : "404.jpg" ;
+            return jwtManager.jwtToken(accountDTO.getName(),accountDTO.getGender(),accountDTO.getPhoneNumber(),profileImage);
+        }catch (Exception e){
+            throw new CommonException(ErrorCode.KAKAO_LOGIN_FALIE);
+        }
     }
 
 

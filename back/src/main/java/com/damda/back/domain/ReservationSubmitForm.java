@@ -1,6 +1,7 @@
 package com.damda.back.domain;
 
 
+import com.damda.back.data.common.PayMentStatus;
 import com.damda.back.data.common.ReservationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,6 +31,9 @@ public class ReservationSubmitForm extends BaseEntity{
     private Integer totalPrice;
 
     private boolean deleted;
+
+    private PayMentStatus payMentStatus;
+
     @Builder.Default
     @OneToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
