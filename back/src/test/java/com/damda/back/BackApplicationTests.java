@@ -1,5 +1,9 @@
 package com.damda.back;
 
+import com.damda.back.domain.area.DistrictEnum;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.damda.back.config.SecurityConfig;
 import com.damda.back.data.common.*;
 import com.damda.back.domain.*;
@@ -7,6 +11,7 @@ import com.damda.back.repository.MemberRepository;
 import com.damda.back.repository.QuestionRepository;
 import com.damda.back.repository.ReservationFormRepository;
 import org.junit.jupiter.api.DisplayName;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -238,5 +243,5 @@ class BackApplicationTests {
 
 	    // then
 	}
-
+	
 }
