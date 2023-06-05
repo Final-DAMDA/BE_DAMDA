@@ -30,6 +30,7 @@ public class FormModifyDTO {
 
     private boolean required;
 
+    @Builder.Default
     private List<CategoryMapDTO> categoryList = new ArrayList<>();
 
 }
