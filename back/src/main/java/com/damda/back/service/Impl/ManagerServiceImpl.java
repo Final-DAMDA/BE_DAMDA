@@ -17,8 +17,6 @@ public class ManagerServiceImpl implements ManagerService {
     private final ManagerRepository managerRepository;
     
     // TODO:
-    // - area repository
-    // - regionManager repository
     // - activityDay repository
     
     @Override
