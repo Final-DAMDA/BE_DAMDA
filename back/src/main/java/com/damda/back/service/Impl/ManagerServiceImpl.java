@@ -34,6 +34,7 @@ public class ManagerServiceImpl implements ManagerService {
     public boolean managerCreate(ManagerApplicationDTO dto, Integer memberId) {
 
         Optional<Member> member = memberRepository.findById(memberId);
+        
         if(member.isEmpty()) {
             throw new CommonException(ErrorCode.BAD_REQUEST, "유저를 찾을 수 없습니다.");
         }

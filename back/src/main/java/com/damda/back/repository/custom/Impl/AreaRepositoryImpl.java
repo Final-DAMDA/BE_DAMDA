@@ -18,18 +18,22 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AreaRepositoryImpl implements AreaCustomRepository {
 
-	private final JPAQueryFactory queryFactory;
-	
-	@Override
-	public Optional<Area> searchArea(String city, String district) {
-		QArea area = QArea.area;
-		BooleanExpression predicate = area.city.eq(CityEnum.valueOf(city)).and(area.district.eq(DistrictEnum.valueOf(district)));
+    private final JPAQueryFactory queryFactory;
 
-		Area result = queryFactory.selectFrom(area)
-				.where(predicate)
-				.fetchOne();
+    @Override
+    public Optional<Area> searchArea(String city, String district) {
 
-		return Optional.ofNullable(result);
-	}
+        QArea area = QArea.area;
+
+        BooleanExpression predicate = area.city.eq(city)
+                .and(area.district.eq(district));
+
+        Area result = queryFactory.select(area)
+                .from(area)
+                .where(predicate)
+                .fetchOne();
+
+        return Optional.ofNullable(result);
+    }
 
 }
