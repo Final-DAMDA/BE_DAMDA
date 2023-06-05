@@ -30,17 +30,19 @@ public class Manager {
     @Enumerated(EnumType.STRING)
     private DistrictEnum activityArea;
     
-    @OneToOne
-    @JoinColumn(name = "certificate_status_id")
-    private CertificateStatus certificateStatus;
+    private CertificateStatusEnum certificateStatus;
+    
+    private String certificateStatusEtc;
     
     private Integer level;
 
-    private boolean vehicle;
+    private Boolean vehicle;
 
-    private boolean fieldExperience;
-
-    private boolean serviceRule;
+    private String fieldExperience;
+    
+    private Boolean mainJobStatus;
+    
+    private String mainJobStatusEtc;
 
     private String memo;
 }
