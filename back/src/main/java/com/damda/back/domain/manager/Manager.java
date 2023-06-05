@@ -3,11 +3,13 @@ package com.damda.back.domain.manager;
 import com.damda.back.domain.Member;
 import com.damda.back.domain.area.DistrictEnum;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -30,6 +32,7 @@ public class Manager {
     @Enumerated(EnumType.STRING)
     private DistrictEnum activityArea;
     
+    @Enumerated(EnumType.STRING)
     private CertificateStatusEnum certificateStatus;
     
     private String certificateStatusEtc;

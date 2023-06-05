@@ -1,14 +1,8 @@
 package com.damda.back.data.request;
 
-import com.damda.back.domain.area.DistrictEnum;
-import com.damda.back.domain.manager.ActivityDay;
-import com.damda.back.domain.manager.CertificateStatusEnum;
+import com.damda.back.domain.manager.Manager;
 import lombok.*;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import java.util.List;
 
 @Data
@@ -20,7 +14,7 @@ import java.util.List;
 public class ManagerApplicationDTO {
 
     private List<String> activityDay;
-    
+
     private List<String> activityArea;
 
     private String certificateStatus;
@@ -34,5 +28,11 @@ public class ManagerApplicationDTO {
     private Boolean mainJobStatus;
 
     private String mainJobStatusEtc;
-    
+
+    public Manager toEntity() {
+        return Manager.builder()
+                .certificateStatusEtc(certificateStatusEtc)
+                .build();
+    }
+
 }

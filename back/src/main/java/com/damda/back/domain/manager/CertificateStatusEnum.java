@@ -1,9 +1,14 @@
 package com.damda.back.domain.manager;
 
+import lombok.AllArgsConstructor;
+import lombok.ToString;
+
 /**
  * 자격증 여부
  * (Certificate status)
  */
+@ToString
+@AllArgsConstructor
 public enum CertificateStatusEnum {
     FIRST_RATE_OFF("1급(오프라인)"),
     SECOND_RATE_OFF("2급(오프라인)"),
@@ -14,15 +19,5 @@ public enum CertificateStatusEnum {
     ETC("기타");
 
     private String value;
-
-    CertificateStatusEnum(String value) {
-        this.value = value;
-    }
-
-    @Override
-    public String toString() {
-        return "CertificateStatus{" +
-                "value='" + value + '\'' +
-                '}';
-    }
+    
 }
