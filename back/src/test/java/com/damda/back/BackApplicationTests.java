@@ -1,7 +1,9 @@
 package com.damda.back;
 
 import com.damda.back.domain.area.DistrictEnum;
+import com.damda.back.domain.manager.CertificateStatusEnum;
 import com.damda.back.domain.manager.Manager;
+import com.damda.back.repository.*;
 import com.damda.back.service.SubmitService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,9 +11,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.damda.back.config.SecurityConfig;
 import com.damda.back.data.common.*;
 import com.damda.back.domain.*;
-import com.damda.back.repository.MemberRepository;
-import com.damda.back.repository.QuestionRepository;
-import com.damda.back.repository.ReservationFormRepository;
 import org.junit.jupiter.api.DisplayName;
 
 import org.junit.jupiter.api.Test;
@@ -28,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.IntStream;
 
 @SpringBootTest
 @Import(SecurityConfig.class)
@@ -52,11 +52,16 @@ class BackApplicationTests {
 	@Autowired
 	private SubmitService submitService;
 
+	@Autowired
+	private ManagerRepository managerRepository;
+
+	@Autowired
+	private MatchRepository matchRepository;
+
 
 	@Test
-	@Transactional
 	void contextLoads() {
-		submitService.submitTotalResponse(1);
+		submitService.submitTotalResponse(0);
 
 
 	}

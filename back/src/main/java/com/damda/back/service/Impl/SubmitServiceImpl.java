@@ -211,7 +211,6 @@ public class SubmitServiceImpl implements SubmitService {
 
             Page<ReservationSubmitForm> submitFormPage =
                     reservationFormRepository.formPaging(PageRequest.of(page,10));
-           //TODO: 통계함수랑 페이징 결과를 합치는 DTO를 만들어서 위에 선언된 필요한 데이터를 걸러서 끼워넣고 응답해야함.
 
            for (ReservationSubmitForm submitForm : submitFormPage) {
                     dtos.add(asDTO(submitForm));
@@ -237,14 +236,6 @@ public class SubmitServiceImpl implements SubmitService {
             dto.setPhoneNumber(answerMap.get(QuestionIdentify.APPLICANTCONACTINFO));
             dto.setReservationStatus(submitForm.getStatus());
             dto.setPayMentStatus(submitForm.getPayMentStatus());
-
-            List<Long> ids = reservationFormRepository.ids(submitForm.getId());
-
-            List<Member> matches = reservationFormRepository.matches(ids);
-
-            List<String> names = matches.stream().map(Member::getUsername).toList();
-
-            dto.setManagerNames(names);
 
             return dto;
         }

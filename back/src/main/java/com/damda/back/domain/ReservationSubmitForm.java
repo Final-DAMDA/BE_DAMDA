@@ -36,7 +36,7 @@ public class ReservationSubmitForm extends BaseEntity{
     private PayMentStatus payMentStatus;
 
     @Builder.Default
-    @BatchSize(size = 100)
+    @BatchSize(size = 200)
     @OneToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             orphanRemoval = true,
@@ -49,7 +49,7 @@ public class ReservationSubmitForm extends BaseEntity{
 
     @Builder.Default
     @BatchSize(size = 100)
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "reservationForm")
     private List<Match> matches = new ArrayList<>();
     public void addAnswer(ReservationAnswer answer){
         answer.changeForm(this);

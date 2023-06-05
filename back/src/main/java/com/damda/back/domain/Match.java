@@ -2,11 +2,14 @@ package com.damda.back.domain;
 
 import com.damda.back.domain.manager.Manager;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
