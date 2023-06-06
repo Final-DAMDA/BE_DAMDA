@@ -111,6 +111,24 @@ public class ReservationFormRepositoryImpl implements ReservationFormCustomRepos
                 return ids;
         }
 
+        @Override
+        public List<ReservationSubmitForm> formList(Timestamp startDate, Timestamp endDate) {
+                QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
+                QMember member = QMember.member;
+                QReservationAnswer answer = QReservationAnswer.reservationAnswer;
+
+
+                JPAQuery<ReservationSubmitForm> query =
+                        queryFactory.selectDistinct(submitForm)
+                                .from(submitForm)
+                                .innerJoin(submitForm.reservationAnswerList,answer).fetchJoin()
+                                .innerJoin(submitForm.member, member).fetchJoin()
+                                .where(createdAtBetween(startDate,endDate,submitForm));
+
+                List<ReservationSubmitForm> list = query.fetch();
+                return list;
+        }
+
 
         private BooleanExpression createdAtBetween(Timestamp startDate, Timestamp endDate, QReservationSubmitForm form) {
                 if (startDate != null && endDate != null) {

@@ -251,6 +251,7 @@ public class SubmitServiceImpl implements SubmitService {
             dto.setPhoneNumber(answerMap.get(QuestionIdentify.APPLICANTCONACTINFO));
             dto.setReservationStatus(submitForm.getStatus());
             dto.setPayMentStatus(submitForm.getPayMentStatus());
+            dto.setReservationDate(answerMap.get(QuestionIdentify.SERVICEDATE));
             dto.setManagerNames(managerNames);
             dto.setManageAmount(managerNames.size());
             return dto;

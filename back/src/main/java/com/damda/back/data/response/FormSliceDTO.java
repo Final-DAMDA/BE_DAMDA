@@ -42,6 +42,12 @@ public class FormSliceDTO {
 
     private Integer manageAmount;
 
+    public void setReservationDate(String reservationDate) {
+        this.reservationDate = reservationDate;
+    }
+
+    private String reservationDate;
+
     private List<String> managerNames;
 
     private ReservationStatus reservationStatus;
