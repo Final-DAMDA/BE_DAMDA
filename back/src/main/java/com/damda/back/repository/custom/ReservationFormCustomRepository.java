@@ -8,6 +8,7 @@ import com.damda.back.domain.ReservationSubmitForm;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -18,9 +19,9 @@ public interface ReservationFormCustomRepository {
      * */
     public Map<ReservationStatus, Long> statistical();
 
-    public Page<ReservationSubmitForm> formPaging(Pageable pageable);
+    public Page<ReservationSubmitForm> formPaging(Pageable pageable, Timestamp startDate, Timestamp endDate);
 
-    public List<Member> matches(List<Long> ids);
+    public List<String> matches(List<Long> ids);
 
     public List<Long> ids(Long id);
 }

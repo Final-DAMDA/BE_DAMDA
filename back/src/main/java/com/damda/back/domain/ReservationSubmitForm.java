@@ -33,6 +33,7 @@ public class ReservationSubmitForm extends BaseEntity{
 
     private boolean deleted;
 
+    @Enumerated(EnumType.STRING)
     private PayMentStatus payMentStatus;
 
     @Builder.Default

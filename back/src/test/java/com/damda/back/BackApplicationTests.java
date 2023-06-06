@@ -61,7 +61,24 @@ class BackApplicationTests {
 
 	@Test
 	void contextLoads() {
-		submitService.submitTotalResponse(0);
+		Member member = memberRepository.findById(1).get();
+
+		ReservationSubmitForm submitForm = reservationFormRepository.findById(10L).get();
+
+		IntStream.rangeClosed(1,3).forEach(value -> {
+			Manager manager = managerRepository.save(Manager.builder()
+					.memo("메모")
+					.userId(member)
+					.build());
+
+			Match match = Match.builder()
+					.matching(false)
+					.reservationForm(submitForm)
+					.manager(manager)
+					.managerName("테스트 매니저.."+value)
+					.build();
+			matchRepository.save(match);
+		});
 
 
 	}
