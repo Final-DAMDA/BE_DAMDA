@@ -2,6 +2,7 @@ package com.damda.back.service.Impl;
 
 import com.damda.back.config.annotation.TimeChecking;
 import com.damda.back.data.common.ImageType;
+import com.damda.back.data.common.ReservationStatus;
 import com.damda.back.data.request.ServiceCompleteRequestDTO;
 import com.damda.back.domain.Image;
 import com.damda.back.domain.ReservationSubmitForm;
@@ -38,8 +39,12 @@ public class ReviewServiceImpl implements ReviewService {
 	@Override
 	public boolean uploadServiceComplete(Long reservationId, ServiceCompleteRequestDTO serviceCompleteRequestDTO){
 
-		Review serviceComplete = serviceCompleteRequestDTO.toEntity(checkServiceComplete(reservationId));
+		ReservationSubmitForm reservationSubmitForm = checkServiceComplete(reservationId);
+		reservationSubmitForm.setStatus(ReservationStatus.SERVICE_COMPLETED); //서비스 완료
+
+		Review serviceComplete = serviceCompleteRequestDTO.toEntity(reservationSubmitForm);
 		try{
+			reservationFormRepository.save(reservationSubmitForm);
 			reviewRepository.save(serviceComplete);
 		}catch(Exception e){
 			throw new CommonException(ErrorCode.ERROR_SERVICE_COMPLETE);
