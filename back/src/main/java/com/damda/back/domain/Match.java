@@ -22,6 +22,8 @@ public class Match {
 
 	private boolean matching;
 
+	private String managerName;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "form_id")
 	private ReservationSubmitForm reservationForm;

@@ -5,6 +5,7 @@ import com.damda.back.domain.*;
 import com.damda.back.domain.manager.QManager;
 import com.damda.back.repository.custom.ReservationFormCustomRepository;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -53,7 +55,7 @@ public class ReservationFormRepositoryImpl implements ReservationFormCustomRepos
                 return countByStatusMap;
         }
 
-        public Page<ReservationSubmitForm> formPaging(Pageable pageable){
+        public Page<ReservationSubmitForm> formPaging(Pageable pageable, Timestamp startDate,Timestamp endDate){
                 QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
                 QMember member = QMember.member;
                 QReservationAnswer answer = QReservationAnswer.reservationAnswer;
@@ -62,6 +64,7 @@ public class ReservationFormRepositoryImpl implements ReservationFormCustomRepos
                         queryFactory.selectDistinct(submitForm)
                         .from(submitForm)
                         .innerJoin(submitForm.member, member).fetchJoin()
+                        .where(createdAtBetween(startDate,endDate,submitForm))
                         .offset(pageable.getOffset())
                         .limit(pageable.getPageSize());
 
@@ -71,24 +74,28 @@ public class ReservationFormRepositoryImpl implements ReservationFormCustomRepos
                         queryFactory
                                 .selectDistinct(Wildcard.count)
                                 .from(submitForm)
-                                .fetch().get(0)
+                                .fetch()
+                                .get(0)
                 );
         }
 
-        public List<Member> matches(List<Long> ids){
-                QMatch match= QMatch.match;
+        public List<String> matches(List<Long> ids){
+                QReservationSubmitForm reservationSubmitForm = QReservationSubmitForm.reservationSubmitForm;
+                QMatch match = QMatch.match;
                 QManager manager = QManager.manager;
                 QMember member = QMember.member;
 
-                List<Member> members =
-                        queryFactory.selectDistinct(member)
-                                .from(match)
-                                .join(match.manager,manager)
-                                .join(manager.userId,member)
-                                .where(match.id.in(ids))
-                                .fetch();
+                List<String> usernames = queryFactory
+                        .select(member.username)
+                        .from(reservationSubmitForm)
+                        .join(reservationSubmitForm.matches, match)
+                        .join(match.manager, manager)
+                        .join(manager.userId, member)
+                        .where(reservationSubmitForm.id.in(ids))
+                        .fetch();
 
-              return members;
+                return usernames;
+
         }
 
         @Override
@@ -102,6 +109,36 @@ public class ReservationFormRepositoryImpl implements ReservationFormCustomRepos
                         .fetch();
 
                 return ids;
+        }
+
+        @Override
+        public List<ReservationSubmitForm> formList(Timestamp startDate, Timestamp endDate) {
+                QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
+                QMember member = QMember.member;
+                QReservationAnswer answer = QReservationAnswer.reservationAnswer;
+
+
+                JPAQuery<ReservationSubmitForm> query =
+                        queryFactory.selectDistinct(submitForm)
+                                .from(submitForm)
+                                .innerJoin(submitForm.reservationAnswerList,answer).fetchJoin()
+                                .innerJoin(submitForm.member, member).fetchJoin()
+                                .where(createdAtBetween(startDate,endDate,submitForm));
+
+                List<ReservationSubmitForm> list = query.fetch();
+                return list;
+        }
+
+
+        private BooleanExpression createdAtBetween(Timestamp startDate, Timestamp endDate, QReservationSubmitForm form) {
+                if (startDate != null && endDate != null) {
+                        return form.createdAt.between(startDate, endDate);
+                } else if (startDate != null) {
+                        return form.createdAt.goe(startDate);
+                } else if (endDate != null) {
+                        return form.createdAt.loe(endDate);
+                }
+                return null;
         }
 
 

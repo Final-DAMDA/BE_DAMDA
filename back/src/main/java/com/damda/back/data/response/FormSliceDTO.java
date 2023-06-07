@@ -7,19 +7,19 @@ import com.damda.back.data.common.ReservationStatus;
 import com.damda.back.domain.Member;
 import com.damda.back.domain.ReservationAnswer;
 import com.damda.back.domain.ReservationSubmitForm;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import nonapi.io.github.classgraph.fileslice.FileSlice;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Data
+@Getter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -40,7 +40,13 @@ public class FormSliceDTO {
 
     private String estimate;
 
-    private String manageAmount;
+    private Integer manageAmount;
+
+    public void setReservationDate(String reservationDate) {
+        this.reservationDate = reservationDate;
+    }
+
+    private String reservationDate;
 
     private List<String> managerNames;
 
@@ -49,5 +55,44 @@ public class FormSliceDTO {
     private PayMentStatus payMentStatus;
 
 
+    public void setCreatedAt(String entitiyCreatedAt) {
 
+        this.createdAt = entitiyCreatedAt;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setTotalPrice(Integer totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public void setEstimate(String estimate) {
+        this.estimate = estimate;
+    }
+
+    public void setManageAmount(Integer manageAmount) {
+        this.manageAmount = manageAmount;
+    }
+
+    public void setManagerNames(List<String> managerNames) {
+        this.managerNames = managerNames;
+    }
+
+    public void setReservationStatus(ReservationStatus reservationStatus) {
+        this.reservationStatus = reservationStatus;
+    }
+
+    public void setPayMentStatus(PayMentStatus payMentStatus) {
+        this.payMentStatus = payMentStatus;
+    }
 }
