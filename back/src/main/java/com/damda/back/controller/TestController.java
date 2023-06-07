@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 
@@ -56,6 +57,24 @@ public class TestController {
                 .status(commonResponse.getStatus())
                 .headers(headers)
                 .body(commonResponse);
+    }
+
+    @GetMapping("/api/v1/logout")
+    public void logout(HttpServletRequest request,HttpServletResponse response){
+        Cookie[] cookies = request.getCookies();
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("access_token")) {
+
+                    cookie.setMaxAge(0);
+                    cookie.setPath("/");
+                    response.addCookie(cookie);
+
+                }
+            }
+        }
+
     }
 
 

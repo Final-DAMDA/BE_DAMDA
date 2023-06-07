@@ -2,6 +2,7 @@ package com.damda.back.service.Impl;
 
 
 import com.damda.back.data.common.CategoryMapDTO;
+import com.damda.back.data.common.QuestionIdentify;
 import com.damda.back.data.request.AddCategoryRequestDTO;
 import com.damda.back.data.request.FormModifyDTO;
 import com.damda.back.data.request.RearrangeRequestDTO;
@@ -13,6 +14,7 @@ import com.damda.back.domain.Question;
 import com.damda.back.domain.QuestionStatus;
 import com.damda.back.exception.CommonException;
 import com.damda.back.exception.ErrorCode;
+import com.damda.back.repository.ManagerRepository;
 import com.damda.back.repository.QuestionRepository;
 import com.damda.back.service.ReservationService;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,8 @@ public class ReservationServiceImpl implements ReservationService {
 
     private final QuestionRepository questionRepository;
 
+    private final ManagerRepository managerRepository;
+
     @Transactional(isolation = Isolation.REPEATABLE_READ,readOnly = true)
     public List<ReservationResponseDTO> reservationResponseDTOList(){
 
@@ -38,6 +42,10 @@ public class ReservationServiceImpl implements ReservationService {
 
         questionRepository.questionList().forEach(question -> {
             List<CategoryMapDTO> list = new ArrayList<>();
+
+            if(question.getQuestionIdentify().equals(QuestionIdentify.ADDRESS)){
+                    //메서드 실행해서 DistrictEnum 리스트 가져온다.
+            }
 
             ReservationResponseDTO dto =  ReservationResponseDTO.builder()
                     .questionNumber(question.getQuestionNumber())
@@ -102,11 +110,14 @@ public class ReservationServiceImpl implements ReservationService {
     public void reservationForm(ReservationFormRequestDTO dto){
         List<Category> categoryList = new ArrayList<>();
 
+        Integer order = questionRepository.selectMax()+1;
+        order = dto.getQuestionIdentify().equals(QuestionIdentify.TITILE) ? 0 : order;
+
         Question question = Question.builder()
                 .questionType(dto.getQuestionType())
                 .questionTitle(dto.getQuestionTitle())
                 .questionIdentify(dto.getQuestionIdentify())
-                .order(questionRepository.selectMax()+1)
+                .order(order)
                 .status(QuestionStatus.ACTIVATION)
                 .required(dto.isRequired())
                 .build();

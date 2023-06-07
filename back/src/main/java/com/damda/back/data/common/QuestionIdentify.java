@@ -17,7 +17,8 @@ public enum QuestionIdentify {
     LEARNEDROUTE("알게된 경로"), // --
 
     REQUIREDGUIDELINES("필수 안내사항"),
-    OPTIONAL("추가적인 자료");
+    OPTIONAL("추가적인 자료"),
+    RECOMENDEDCODE("추천 코드");
 
     private String data;
 
