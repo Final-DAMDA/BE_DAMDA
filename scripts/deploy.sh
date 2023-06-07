@@ -13,5 +13,5 @@ if [ -n "$pid" ]; then
 fi
 
 echo "Starting the Spring server..."
-nohup java -jar "$jar_path" > log.out 2>&1 &
+nohup java -jar -DAWS_ACCESS_KEY=${AWS_ACCESS_KEY} -DAWS_SECRET_KEY=${AWS_SECRET_KEY} -DAWS_S3_BUCKET=${AWS_S3_BUCKET} -DCLIENTID=${CLIENTID} -DREDIRECTURL=${REDIRECTURL}  "$jar_path" > log.out 2>&1
 
