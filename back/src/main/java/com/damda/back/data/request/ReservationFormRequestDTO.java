@@ -29,7 +29,7 @@ public class ReservationFormRequestDTO {
         private boolean required;
 
         @Builder.Default
-        private Map<String,Integer> map = new HashMap<>();
+        private Map<String,Integer> category = new HashMap<>();
 
 
 }

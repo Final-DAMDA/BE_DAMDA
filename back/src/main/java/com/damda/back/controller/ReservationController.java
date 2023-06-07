@@ -61,10 +61,9 @@ public class ReservationController {
                     .body(commonResponse);
         }
 
-
-        /**
-         * @apiNote 어드민이 예약폼 데이터를 저장한다.
-         * */
+    /**
+     * @apiNote 어드민이 예약폼 데이터를 저장한다.
+     * */
         @PostMapping("/api/v1/admin/form/save")
         public ResponseEntity<CommonResponse<?>> reservationFormSave(
                 @RequestBody ReservationFormRequestDTO dto){
@@ -82,6 +81,7 @@ public class ReservationController {
                     .body(commonResponse);
 
         }
+
         @PutMapping("/api/v1/admin/form/order")
         public ResponseEntity<CommonResponse<?>> reArrange(@RequestBody List<RearrangeRequestDTO> data){
             reservationService.reArrangeQuestion(data);
