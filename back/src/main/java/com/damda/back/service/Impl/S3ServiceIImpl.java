@@ -70,10 +70,11 @@ public class S3ServiceIImpl implements S3Service {
 	 */
 
 	@Override
-	public List<String> uploadFileUrl(List<String> fileNameList){
+	public List<String> uploadFileUrl(List<String> fileNameList, String folderName){
+		String bucketFolder = bucket+"/"+folderName;
 		List<String> fileUrlList = new ArrayList<>();
 		fileNameList.forEach(fileName ->{
-			String fileUri = URLDecoder.decode(amazonS3Client.getUrl(bucket, fileName).toString(), StandardCharsets.UTF_8);
+			String fileUri = URLDecoder.decode(amazonS3Client.getUrl(bucketFolder, fileName).toString(), StandardCharsets.UTF_8);
 			fileUrlList.add(fileUri);
 		});
 		return fileUrlList;

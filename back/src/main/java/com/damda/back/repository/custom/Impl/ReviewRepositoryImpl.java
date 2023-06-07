@@ -15,12 +15,11 @@ public class ReviewRepositoryImpl implements ReviewCustomRepository {
 	private final JPAQueryFactory queryFactory;
 	@Override
 	public boolean existReservation(Long reservationId){
-//		QReview qReview = QReview.review;
-//		return queryFactory
-//				.from(qReview)
-//				.where(qReview.r.id.eq(reservationId))
-//				.select(qReview.reservationSubmitForm.id)
-//				.fetchFirst()!=null;
-		return true;
+		QReview qReview = QReview.review;
+		return queryFactory
+				.from(qReview)
+				.where(qReview.reservationSubmitForm.id.eq(reservationId))
+				.select(qReview.reservationSubmitForm.id)
+				.fetchFirst()!=null;
 	}
 }

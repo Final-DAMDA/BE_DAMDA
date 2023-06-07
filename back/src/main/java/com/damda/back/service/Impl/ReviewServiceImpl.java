@@ -56,9 +56,9 @@ public class ReviewServiceImpl implements ReviewService {
 	@Override
 	public void saveImage(Review serviceComplete, List<MultipartFile> before, List<MultipartFile> after) {
 		List<String> beforeNameList = s3Service.uploadFile(before, ImageType.BEFORE.toString());
-		List<String> beforeUrlList = s3Service.uploadFileUrl(beforeNameList);
+		List<String> beforeUrlList = s3Service.uploadFileUrl(beforeNameList, ImageType.BEFORE.toString());
 		List<String> afterNameList = s3Service.uploadFile(after, ImageType.AFTER.toString());
-		List<String> afterUrlList = s3Service.uploadFileUrl(afterNameList);
+		List<String> afterUrlList = s3Service.uploadFileUrl(afterNameList, ImageType.AFTER.toString());
 
 		List<Image> beforeImages = IntStream.range(0, beforeNameList.size())
 				.mapToObj(i -> {
