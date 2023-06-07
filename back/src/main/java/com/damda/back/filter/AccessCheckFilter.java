@@ -48,7 +48,7 @@ public class AccessCheckFilter extends OncePerRequestFilter {
           }
 
           String id = claimMap.get("id").toString();
-          log.info(id);
+          log.info("로그인한 번호 {}",id);
           request.setAttribute("id",id);
 
           filterChain.doFilter(request,response);

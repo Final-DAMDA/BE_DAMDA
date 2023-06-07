@@ -20,6 +20,7 @@ public enum ErrorCode {
     SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"DB 커넥션 에러"),
     ERROR_WHILE_SUBMITTING_USER_FORM(HttpStatus.INTERNAL_SERVER_ERROR,"유저 폼 제출 중에 에러가 발생"),
     BAD_REQUEST(HttpStatus.BAD_REQUEST,"알 수 없는 데이터가 넘어왔습니다.");
+
     private HttpStatus httpStatus;
 
     private String message;

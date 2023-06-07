@@ -64,23 +64,23 @@ public class ReservationController {
     /**
      * @apiNote 어드민이 예약폼 데이터를 저장한다.
      * */
-    @PostMapping("/api/v1/admin/form/save")
-    public ResponseEntity<CommonResponse<?>> reservationFormSave(
-            @RequestBody ReservationFormRequestDTO dto){
+        @PostMapping("/api/v1/admin/form/save")
+        public ResponseEntity<CommonResponse<?>> reservationFormSave(
+                @RequestBody ReservationFormRequestDTO dto){
 
-        reservationService.reservationForm(dto);
+            reservationService.reservationForm(dto);
 
-        CommonResponse<?> commonResponse = CommonResponse
-                .builder()
-                .codeEnum(CodeEnum.SUCCESS)
-                .data(true)
-                .build();
+            CommonResponse<?> commonResponse = CommonResponse
+                    .builder()
+                    .codeEnum(CodeEnum.SUCCESS)
+                    .data(true)
+                    .build();
 
-        return ResponseEntity
-                .status(commonResponse.getStatus())
-                .body(commonResponse);
+            return ResponseEntity
+                    .status(commonResponse.getStatus())
+                    .body(commonResponse);
 
-    }
+        }
 
         @PutMapping("/api/v1/admin/form/order")
         public ResponseEntity<CommonResponse<?>> reArrange(@RequestBody List<RearrangeRequestDTO> data){
