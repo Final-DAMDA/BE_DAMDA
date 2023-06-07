@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -49,6 +50,7 @@ public class ReservationSubmitForm extends BaseEntity{
     private Member member;
 
     @Builder.Default
+    @Where(clause = "matching = true")
     @BatchSize(size = 100)
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "reservationForm")
     private List<Match> matches = new ArrayList<>();
