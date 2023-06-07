@@ -236,7 +236,16 @@ public class SubmitServiceImpl implements SubmitService {
 
         public FormSliceDTO asDTO(ReservationSubmitForm submitForm){
             FormSliceDTO dto = new FormSliceDTO();
-            List<String> managerNames = submitForm.getMatches().stream().map(Match::getManagerName).toList();
+
+            List<String> managerNames = new ArrayList<>();
+
+            if(submitForm.getStatus().equals(ReservationStatus.MANAGER_MATCHING_COMPLETED)){
+                managerNames = submitForm.getMatches().stream()
+                        .filter(match -> match.isMatching()).map(Match::getManagerName).collect(Collectors.toList());
+            }else{
+                managerNames = submitForm.getMatches().stream().map(Match::getManagerName).toList();
+
+            }
 
             Member member = submitForm.getMember();
             List<ReservationAnswer> answers =  submitForm.getReservationAnswerList();
