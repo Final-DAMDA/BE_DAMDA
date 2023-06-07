@@ -38,6 +38,11 @@ public class AccessCheckFilter extends OncePerRequestFilter {
             return;
         }
 
+        if(path.startsWith("/h2-console")){
+            log.info("TOKEN PASS");
+            filterChain.doFilter(request,response);
+            return;
+        }
 
         try{
           Map<String,Claim> claimMap = validateAccessToken(request);
