@@ -21,7 +21,7 @@ public class ReviewController {
 
 
 	@GetMapping("/service/complete/{id}") //id는 예약 id
-	public ResponseEntity<CommonResponse<?>> serviceCompleteRead(@PathVariable Long id){
+	public ResponseEntity<CommonResponse<?>> serviceCompleteCheck(@PathVariable Long id){
 
 		CommonResponse<?> commonResponse = CommonResponse
 				.builder()
