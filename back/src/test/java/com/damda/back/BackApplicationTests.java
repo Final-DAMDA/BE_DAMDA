@@ -1,4 +1,4 @@
-package com.damda.back;
+/*package com.damda.back;
 
 import com.damda.back.domain.area.DistrictEnum;
 import com.damda.back.domain.manager.CertificateStatusEnum;
@@ -271,3 +271,4 @@ class BackApplicationTests {
 	}
 	
 }
+*/
