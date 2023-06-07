@@ -37,18 +37,29 @@ public class ReviewServiceImpl implements ReviewService {
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	@Override
 	public boolean uploadServiceComplete(Long reservationId, ServiceCompleteRequestDTO serviceCompleteRequestDTO){
-		Optional<ReservationSubmitForm> reservation = reservationFormRepository.findById(reservationId);
-		if(reservation.isEmpty()){
-			throw new CommonException(ErrorCode.BAD_REQUEST,"해당 예약이 없습니다.");
+
+		Review serviceComplete = serviceCompleteRequestDTO.toEntity(checkServiceComplete(reservationId));
+		try{
+			reviewRepository.save(serviceComplete);
+		}catch(Exception e){
+			throw new CommonException(ErrorCode.ERROR_SERVICE_COMPLETE);
 		}
-		if(reviewRepository.existReservation(reservationId)){
-			throw new CommonException(ErrorCode.BAD_REQUEST,"이미 제출된 서비스 입니다.");
-		}
-		Review serviceComplete = serviceCompleteRequestDTO.toEntity(reservation.get());
-		reviewRepository.save(serviceComplete);
+
 		saveImage(serviceComplete,serviceCompleteRequestDTO.getBefore(),serviceCompleteRequestDTO.getAfter());
 
 		return true;
+	}
+
+	@Override
+	public ReservationSubmitForm checkServiceComplete(Long reservationId){
+		Optional<ReservationSubmitForm> reservation = reservationFormRepository.findById(reservationId);
+		if(reservation.isEmpty()){
+			throw new CommonException(ErrorCode.NOT_FOUND_QUESTION);
+		}
+		if(reviewRepository.existReservation(reservationId)){
+			throw new CommonException(ErrorCode.SUBMITTED_SERVICE_COMPLETE);
+		}
+		return reservation.get();
 	}
 
 
@@ -88,8 +99,13 @@ public class ReviewServiceImpl implements ReviewService {
 				})
 				.collect(Collectors.toList());
 
-		imageRepository.saveAll(beforeImages);
-		imageRepository.saveAll(afterImages);
+		try{
+			imageRepository.saveAll(beforeImages);
+			imageRepository.saveAll(afterImages);
+		} catch(Exception e){
+			throw new CommonException(ErrorCode.ERROR_IMAGE_COMPLETE);
+		}
+
 	}
 
 
