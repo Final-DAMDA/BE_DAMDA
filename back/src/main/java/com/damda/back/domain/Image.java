@@ -1,6 +1,8 @@
 package com.damda.back.domain;
 
+import com.damda.back.data.common.ImageType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
@@ -12,15 +14,16 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Entity
 @Getter
+@Builder
 public class Image {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "service_complete_id", nullable = false)
+	@JoinColumn(name = "review_id", nullable = false)
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	private ServiceComplete serviceComplete;
-	private String imgType; //TODO: enum으로 바꿀예정
+	private Review review;
+	private ImageType imgType;
 	private String imgName;
 	private String imgUrl;
 }

@@ -13,15 +13,18 @@ import java.util.List;
 @ToString
 public class Review extends BaseEntity{
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	private String content;
 
 	private Boolean best;
+	private boolean submit;
 	@OneToOne
-	@JoinColumn(name = "service_complete_id") // 외래 키
-	private ServiceComplete serviceComplete;
+	@JoinColumn(name = "reservation_submit_form_id") // 외래 키
+	private ReservationSubmitForm reservationSubmitForm;
+	@OneToMany(mappedBy = "review" , cascade = CascadeType.ALL)
+	private List<Image> reviewImage;
 
 
 }
