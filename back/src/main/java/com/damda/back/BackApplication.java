@@ -17,7 +17,7 @@ import java.util.List;
 @SpringBootApplication
 public class BackApplication {
 
-	@Profile("prod11")
+	@Profile("prod")
 	@Bean
 	CommandLineRunner initData(
 			QuestionRepository questionRepository
