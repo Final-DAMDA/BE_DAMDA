@@ -15,9 +15,8 @@ public class Review extends BaseEntity{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
+	private String title;
 	private String content;
-
 	private Boolean best;
 	private boolean submit;
 	@OneToOne

@@ -5,6 +5,7 @@ import com.damda.back.data.common.ImageType;
 import com.damda.back.data.common.QuestionIdentify;
 import com.damda.back.data.common.ReservationStatus;
 import com.damda.back.data.request.ServiceCompleteRequestDTO;
+import com.damda.back.data.response.ReviewAutoResponseDTO;
 import com.damda.back.data.response.ServiceCompleteInfoDTO;
 import com.damda.back.domain.*;
 import com.damda.back.exception.CommonException;
@@ -94,6 +95,25 @@ public class ReviewServiceImpl implements ReviewService {
 			dtoList.add(dto);
 		}
 		return dtoList;
+	}
+
+	@Override
+	public ReviewAutoResponseDTO selectReviewData(Long reservationId) {
+		Optional<ReservationSubmitForm> reservation = reservationFormRepository.serviceComplete(reservationId);
+		if(reservation.isEmpty()){
+			throw new CommonException(ErrorCode.NOT_FOUND_QUESTION);
+		}
+		List<ReservationAnswer> answers =  reservation.get().getReservationAnswerList();
+		Map<QuestionIdentify, String> answerMap
+				= answers.stream().collect(Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
+
+		ReviewAutoResponseDTO responseDTO = ReviewAutoResponseDTO.builder()
+											.reservationId(reservation.get().getId())
+											.name(reservation.get().getMember().getUsername())
+											.address(answerMap.get(QuestionIdentify.ADDRESS))
+											.reservationDate(answerMap.get(QuestionIdentify.SERVICEDATE))
+											.build();
+		return responseDTO;
 	}
 
 

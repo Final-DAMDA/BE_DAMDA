@@ -73,7 +73,18 @@ public class ReviewController {
 				.body(commonResponse);
 	}
 
+	@GetMapping("/review/auto/{id}")
+	public ResponseEntity<CommonResponse<?>> reviewUpload(@PathVariable Long id){
+		CommonResponse<?> commonResponse = CommonResponse
+				.builder()
+				.codeEnum(CodeEnum.SUCCESS)
+				.data(reviewService.selectReviewData(id))
+				.build();
 
+		return ResponseEntity
+				.status(commonResponse.getStatus())
+				.body(commonResponse);
+	}
 
 
 }

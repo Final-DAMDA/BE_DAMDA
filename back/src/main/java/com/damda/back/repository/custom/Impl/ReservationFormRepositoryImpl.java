@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -156,6 +157,22 @@ public class ReservationFormRepositoryImpl implements ReservationFormCustomRepos
 
                 List<ReservationSubmitForm> list = query.fetch();
                 return list;
+        }
+        @Override
+        public Optional<ReservationSubmitForm> serviceComplete(Long reservationId){
+                QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
+                QMember member = QMember.member;
+                QReservationAnswer answer = QReservationAnswer.reservationAnswer;
+
+                ReservationSubmitForm reservationSubmitForm =
+                        queryFactory.selectDistinct(submitForm)
+                                .from(submitForm)
+                                .innerJoin(submitForm.reservationAnswerList,answer).fetchJoin()
+                                .innerJoin(submitForm.member, member).fetchJoin()
+                                .where(submitForm.status.eq(ReservationStatus.SERVICE_COMPLETED),submitForm.id.eq(reservationId))
+                                .fetchOne();
+
+                return Optional.ofNullable(reservationSubmitForm);
         }
 
 
