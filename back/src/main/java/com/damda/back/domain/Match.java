@@ -31,7 +31,4 @@ public class Match {
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "manager_id")
 	private Manager manager;
-
-
-
 }

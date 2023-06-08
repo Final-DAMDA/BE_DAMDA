@@ -17,7 +17,7 @@ import java.util.List;
 @SpringBootApplication
 public class BackApplication {
 
-	@Profile("dev1")
+	@Profile("prod11")
 	@Bean
 	CommandLineRunner initData(
 			QuestionRepository questionRepository
@@ -33,53 +33,59 @@ public class BackApplication {
 							.required(false)
 							.build()
 			);
+			Question questionTest = Question.builder()
+					.questionIdentify(QuestionIdentify.AFEWSERVINGS)
+					.questionTitle("정리가 필요한 옷들이 몇 인 분량인가요?")
+					.order(1)
+					.status(QuestionStatus.ACTIVATION)
+					.questionType(QuestionType.SELECT)
+					.required(true)
+					.build();
+
+			questionTest.addCategory(Category.builder()
+					.questionCategory("1 인분")
+					.categoryPrice(40000)
+					.build());
+
+			questionTest.addCategory(Category.builder()
+					.questionCategory("2 인분")
+					.categoryPrice(80000)
+					.build());
+			questionTest.addCategory(Category.builder()
+					.questionCategory("3 인분")
+					.categoryPrice(120000)
+					.build());
 			questionRepository.save(
-					Question.builder()
-							.questionIdentify(QuestionIdentify.AFEWSERVINGS)
-							.questionTitle("정리가 필요한 옷들이 몇 인 분량인가요?")
-							.order(1)
-							.status(QuestionStatus.ACTIVATION)
-							.questionType(QuestionType.SELECT)
-							.required(true)
-							.categoryList(List.of(
-									Category.builder()
-											.questionCategory("1 인분")
-											.categoryPrice(40000)
-											.build(),
-									Category.builder()
-											.questionCategory("2 인분")
-											.categoryPrice(80000)
-											.build(),
-									Category.builder()
-											.questionCategory("3 인분")
-											.categoryPrice(120000)
-											.build()
-							))
-							.build()
+					questionTest
 			);
+
+			Question questionTest2 = Question.builder()
+					.questionIdentify(QuestionIdentify.SERVICEDURATION)
+					.questionTitle("필요한 서비스 시간을 선택해주세요")
+					.order(2)
+					.questionType(QuestionType.RADIO)
+					.status(QuestionStatus.ACTIVATION)
+					.required(true)
+					.build();
+
+			questionTest2.addCategory(Category.builder()
+					.questionCategory("3시간")
+					.categoryPrice(20000)
+					.build());
+
+			questionTest2.addCategory(Category.builder()
+					.questionCategory("4시간")
+					.categoryPrice(30000)
+					.build());
+
+			questionTest2.addCategory(Category.builder()
+					.questionCategory("5시간")
+					.categoryPrice(50000)
+					.build());
+
+
 			questionRepository.save(
-					Question.builder()
-							.questionIdentify(QuestionIdentify.SERVICEDURATION)
-							.questionTitle("필요한 서비스 시간을 선택해주세요")
-							.order(2)
-							.questionType(QuestionType.RADIO)
-							.status(QuestionStatus.ACTIVATION)
-							.required(true)
-							.categoryList(List.of(
-									Category.builder()
-											.questionCategory("3시간")
-											.categoryPrice(20000)
-											.build(),
-									Category.builder()
-											.questionCategory("4시간")
-											.categoryPrice(30000)
-											.build(),
-									Category.builder()
-											.questionCategory("5시간")
-											.categoryPrice(50000)
-											.build()
-							))
-							.build()
+					questionTest2
 			);
 			questionRepository.save(
 					Question.builder()
