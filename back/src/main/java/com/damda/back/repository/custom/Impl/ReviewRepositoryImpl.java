@@ -25,7 +25,7 @@ public class ReviewRepositoryImpl implements ReviewCustomRepository {
 				.fetchFirst()!=null;
 	}
 
-	public Optional<Review> getReviewWithImages(Long reservationId) {
+	public Optional<Review> serviceCompleteWithImages(Long reservationId) {
 		QReview qReview = QReview.review;
 		QImage qReviewImage = QImage.image;
 

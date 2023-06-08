@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
@@ -16,6 +17,6 @@ public class ReviewAutoResponseDTO {
 	private String name;
 	private String address;
 	private String reservationDate;
-	private List<String> before;
-	private List<String> after;
+	private Map<Long, String> before;
+	private Map<Long, String> after;
 }

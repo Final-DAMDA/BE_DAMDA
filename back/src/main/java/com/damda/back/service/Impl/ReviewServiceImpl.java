@@ -17,15 +17,13 @@ import com.damda.back.repository.ServiceCompleteRepository;
 import com.damda.back.service.ReviewService;
 import com.damda.back.service.S3Service;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -61,9 +59,7 @@ public class ReviewServiceImpl implements ReviewService {
 	@Override
 	public ReservationSubmitForm checkServiceComplete(Long reservationId){
 		Optional<ReservationSubmitForm> reservation = reservationFormRepository.findById(reservationId);
-		if(reservation.isEmpty()){
-			throw new CommonException(ErrorCode.NOT_FOUND_QUESTION);
-		}
+		nullCheck(reservation);
 		if(reviewRepository.existReservation(reservationId)){
 			throw new CommonException(ErrorCode.SUBMITTED_SERVICE_COMPLETE);
 		}
@@ -100,20 +96,44 @@ public class ReviewServiceImpl implements ReviewService {
 	@Override
 	public ReviewAutoResponseDTO selectReviewData(Long reservationId) {
 		Optional<ReservationSubmitForm> reservation = reservationFormRepository.serviceComplete(reservationId);
-		if(reservation.isEmpty()){
-			throw new CommonException(ErrorCode.NOT_FOUND_QUESTION);
-		}
+		nullCheck(reservation);
+
 		List<ReservationAnswer> answers =  reservation.get().getReservationAnswerList();
 		Map<QuestionIdentify, String> answerMap
 				= answers.stream().collect(Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
 
+		Optional<Review> review = reviewRepository.serviceCompleteWithImages(reservationId);
+		nullCheck(review);
+		List<Image> images = review.get().getReviewImage();
+		Map<Long, String> before = new HashMap<>();
+		Map<Long, String> after = new HashMap<>();
+		for(Image image : images){
+			if(image.getImgType().equals(ImageType.BEFORE)){
+				before.put(image.getId(),image.getImgUrl());
+			}else{
+				after.put(image.getId(),image.getImgUrl());
+			}
+		}
 		ReviewAutoResponseDTO responseDTO = ReviewAutoResponseDTO.builder()
-											.reservationId(reservation.get().getId())
-											.name(reservation.get().getMember().getUsername())
-											.address(answerMap.get(QuestionIdentify.ADDRESS))
-											.reservationDate(answerMap.get(QuestionIdentify.SERVICEDATE))
-											.build();
+				.reservationId(reservation.get().getId())
+				.name(reservation.get().getMember().getUsername())
+				.address(answerMap.get(QuestionIdentify.ADDRESS))
+				.reservationDate(answerMap.get(QuestionIdentify.SERVICEDATE))
+				.before(before)
+				.after(after)
+				.build();
+
 		return responseDTO;
+	}
+
+	/**
+	 * @apiNote: null 체크
+	 * @param data
+	 */
+	private void nullCheck(Optional<?> data){
+		if(data.isEmpty()){
+			throw new CommonException(ErrorCode.NOT_FOUND_QUESTION);
+		}
 	}
 
 
