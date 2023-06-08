@@ -31,6 +31,9 @@ public class Area {
 //    private DistrictEnum district;
 
     private String city;
+    
     private String district;
+    
+    private Integer managerCount;
     
 }
