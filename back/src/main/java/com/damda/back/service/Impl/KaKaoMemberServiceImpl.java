@@ -1,9 +1,6 @@
 package com.damda.back.service.Impl;
 
-import com.damda.back.data.response.AccessTokenResponse;
-import com.damda.back.data.response.KaKaoAccessDTO;
-import com.damda.back.data.response.KakaoAccountDTO;
-import com.damda.back.data.response.MemberResponseDTO;
+import com.damda.back.data.response.*;
 import com.damda.back.exception.CommonException;
 import com.damda.back.exception.ErrorCode;
 import com.damda.back.service.KaKaoService;
@@ -34,14 +31,20 @@ public class KaKaoMemberServiceImpl implements KaKaoService {
     }
 
     @Override
-    public String loginProcessing(String code){
+    public TokenWithImageDTO loginProcessing(String code){
        // try{
             AccessTokenResponse accessTokenResponse =  tokenResponse(code);
             KaKaoAccessDTO kaKaoAccessDTO = infoResponse(accessTokenResponse.getAccessToken());
             KakaoAccountDTO accountDTO = kaKaoAccessDTO.getKakaoAccount();
 
             String profileImage = kaKaoAccessDTO.getProperties().getThumbnailImage() != null ? kaKaoAccessDTO.getProperties().getThumbnailImage() : "404.jpg" ;
-            return jwtManager.jwtToken(accountDTO.getName(),accountDTO.getGender(),accountDTO.getPhoneNumber(),profileImage);
+            String token = jwtManager.jwtToken(accountDTO.getName(),accountDTO.getGender(),accountDTO.getPhoneNumber(),profileImage);
+
+            TokenWithImageDTO dto = TokenWithImageDTO.builder()
+                    .token(token)
+                    .profileImage(profileImage)
+                    .build();
+            return dto;
 //        }catch (Exception e){
 //            throw new CommonException(ErrorCode.KAKAO_LOGIN_FALIE);
 //        }

@@ -4,6 +4,7 @@ package com.damda.back.data.response;
 import com.damda.back.data.common.CategoryMapDTO;
 import com.damda.back.data.common.QuestionIdentify;
 import com.damda.back.data.common.QuestionType;
+import com.damda.back.domain.area.DistrictEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,6 +29,10 @@ public class ReservationResponseDTO {
     private QuestionIdentify questionIdentify;
 
     private boolean required;
+
+    @Builder.Default
+    private List<DistrictEnum> locations=  new ArrayList<>();
+
 
 
     @Builder.Default
