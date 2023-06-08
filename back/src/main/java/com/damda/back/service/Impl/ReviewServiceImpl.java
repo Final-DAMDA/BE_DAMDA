@@ -2,13 +2,11 @@ package com.damda.back.service.Impl;
 
 import com.damda.back.config.annotation.TimeChecking;
 import com.damda.back.data.common.ImageType;
+import com.damda.back.data.common.QuestionIdentify;
 import com.damda.back.data.common.ReservationStatus;
 import com.damda.back.data.request.ServiceCompleteRequestDTO;
 import com.damda.back.data.response.ServiceCompleteInfoDTO;
-import com.damda.back.domain.Image;
-import com.damda.back.domain.ReservationSubmitForm;
-import com.damda.back.domain.Review;
-import com.damda.back.domain.ServiceComplete;
+import com.damda.back.domain.*;
 import com.damda.back.exception.CommonException;
 import com.damda.back.exception.ErrorCode;
 import com.damda.back.repository.ImageRepository;
@@ -23,7 +21,9 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -35,6 +35,7 @@ public class ReviewServiceImpl implements ReviewService {
 	private final S3Service s3Service;
 	private final ReservationFormRepository reservationFormRepository;
 	private final ReviewRepository reviewRepository;
+
 
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	@Override
@@ -70,7 +71,29 @@ public class ReviewServiceImpl implements ReviewService {
 
 	@Override
 	public List<ServiceCompleteInfoDTO> listServiceComplete() {
-		return null;
+		List<ReservationSubmitForm> completeList = reservationFormRepository.serviceCompleteList();
+		List<ServiceCompleteInfoDTO> dtoList = new ArrayList<>();
+		for(ReservationSubmitForm submitForm : completeList){
+
+			Member member = submitForm.getMember();
+			List<ReservationAnswer> answers =  submitForm.getReservationAnswerList();
+
+			Map<QuestionIdentify, String> answerMap
+					= answers.stream().collect(Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
+			ServiceCompleteInfoDTO dto =new ServiceCompleteInfoDTO();
+			dto.setAddress(answerMap.get(QuestionIdentify.ADDRESS));
+			dto.setName(member.getUsername());
+			dto.setCreatedAt(submitForm.getCreatedAt().toString());
+			dto.setTotalPrice(submitForm.getTotalPrice());
+			dto.setEstimate(answerMap.get(QuestionIdentify.SERVICEDURATION));
+			dto.setPhoneNumber(answerMap.get(QuestionIdentify.APPLICANTCONACTINFO));
+			dto.setReservationStatus(submitForm.getStatus());
+			dto.setPayMentStatus(submitForm.getPayMentStatus());
+			dto.setReservationDate(answerMap.get(QuestionIdentify.SERVICEDATE));
+			dto.setReservationId(submitForm.getId());
+			dtoList.add(dto);
+		}
+		return dtoList;
 	}
 
 

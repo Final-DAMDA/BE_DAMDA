@@ -65,7 +65,7 @@ public class ReviewController {
 		CommonResponse<?> commonResponse = CommonResponse
 				.builder()
 				.codeEnum(CodeEnum.SUCCESS)
-				.data("")
+				.data(reviewService.listServiceComplete())
 				.build();
 
 		return ResponseEntity

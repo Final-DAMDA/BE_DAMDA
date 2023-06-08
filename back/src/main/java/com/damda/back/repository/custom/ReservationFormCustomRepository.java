@@ -26,5 +26,6 @@ public interface ReservationFormCustomRepository {
     public List<Long> ids(Long id);
 
     public List<ReservationSubmitForm> formList(Timestamp startDate,Timestamp endDate);
+    List<ReservationSubmitForm> serviceCompleteList();
 
 }

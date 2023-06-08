@@ -141,5 +141,22 @@ public class ReservationFormRepositoryImpl implements ReservationFormCustomRepos
                 return null;
         }
 
+        @Override
+        public List<ReservationSubmitForm> serviceCompleteList(){
+                QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
+                QMember member = QMember.member;
+                QReservationAnswer answer = QReservationAnswer.reservationAnswer;
+
+                JPAQuery<ReservationSubmitForm> query =
+                        queryFactory.selectDistinct(submitForm)
+                                .from(submitForm)
+                                .innerJoin(submitForm.reservationAnswerList,answer).fetchJoin()
+                                .innerJoin(submitForm.member, member).fetchJoin()
+                                .where(submitForm.status.eq(ReservationStatus.SERVICE_COMPLETED));
+
+                List<ReservationSubmitForm> list = query.fetch();
+                return list;
+        }
+
 
 }
