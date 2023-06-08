@@ -5,6 +5,7 @@ import com.damda.back.data.common.CodeEnum;
 import com.damda.back.data.common.CommonResponse;
 import com.damda.back.data.response.AccessTokenResponse;
 import com.damda.back.data.response.MemberResponseDTO;
+import com.damda.back.data.response.TokenWithImageDTO;
 import com.damda.back.service.KaKaoService;
 import com.damda.back.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -30,12 +31,12 @@ public class MemberController {
             @RequestParam(required = false) String code,
             HttpServletResponse response){
 
-        String token = kaKaoService.loginProcessing(code);
+        TokenWithImageDTO tokenWithImageDTO = kaKaoService.loginProcessing(code);
 
-        Cookie cookie = new Cookie("access_token",token);
+        Cookie cookie = new Cookie("access_token",tokenWithImageDTO.getToken());
         cookie.setMaxAge(86400);
         cookie.setPath("/");
-        cookie.setHttpOnly(true);
+      //  cookie.setHttpOnly(true);
         response.addCookie(cookie);
 
         HttpHeaders headers = new HttpHeaders();
@@ -44,7 +45,7 @@ public class MemberController {
         CommonResponse<?> commonResponse = CommonResponse
                 .builder()
                 .codeEnum(CodeEnum.SUCCESS)
-                .data(true)
+                .data(tokenWithImageDTO.getProfileImage())
                 .build();
 
         return ResponseEntity

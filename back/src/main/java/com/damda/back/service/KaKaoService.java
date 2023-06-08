@@ -1,8 +1,9 @@
 package com.damda.back.service;
 
 import com.damda.back.data.response.MemberResponseDTO;
+import com.damda.back.data.response.TokenWithImageDTO;
 
 public interface KaKaoService {
-    public String loginProcessing(String code);
+    public TokenWithImageDTO loginProcessing(String code);
 
 }
