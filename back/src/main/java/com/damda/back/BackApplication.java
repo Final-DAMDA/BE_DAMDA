@@ -9,7 +9,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class BackApplication implements CommandLineRunner {
+public class BackApplication  {
 
 
 
@@ -20,22 +20,22 @@ public class BackApplication implements CommandLineRunner {
 		SpringApplication.run(BackApplication.class, args);
 	}
 
-	@Override
-	public void run(String... args) throws Exception {
-		// 더미 데이터 생성
-		createDummyData();
-	}
-	private void createDummyData() {
-		Member member = Member.builder()
-							.gender("여")
-							.address("경기도 시흥시")
-							.profileImage("image.png")
-							.role(MemberRole.USER)
-							.password("aaa")
-							.username("hi")
-							.phoneNumber("010-1234-4321")
-							.build();
-		memberRepository.save(member);
-
-	}
+//	@Override
+//	public void run(String... args) throws Exception {
+//		// 더미 데이터 생성
+//		createDummyData();
+//	}
+//	private void createDummyData() {
+//		Member member = Member.builder()
+//							.gender("여")
+//							.address("경기도 시흥시")
+//							.profileImage("image.png")
+//							.role(MemberRole.USER)
+//							.password("aaa")
+//							.username("hi")
+//							.phoneNumber("010-1234-4321")
+//							.build();
+//		memberRepository.save(member);
+//
+//	}
 }
