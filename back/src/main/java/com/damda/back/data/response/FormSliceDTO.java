@@ -12,6 +12,7 @@ import nonapi.io.github.classgraph.fileslice.FileSlice;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +49,8 @@ public class FormSliceDTO {
 
     private String reservationDate;
 
-    private List<String> managerNames;
+    @Builder.Default
+    private List<String> managerNames = new ArrayList<>();
 
     private ReservationStatus reservationStatus;
 
