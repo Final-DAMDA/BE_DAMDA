@@ -1,7 +1,5 @@
 package com.damda.back.repository.custom.Impl;
 
-import com.damda.back.domain.Member;
-import com.damda.back.domain.QMember;
 import com.damda.back.domain.area.Area;
 import com.damda.back.domain.area.CityEnum;
 import com.damda.back.domain.area.DistrictEnum;
@@ -25,7 +23,7 @@ public class AreaRepositoryImpl implements AreaCustomRepository {
 
         QArea area = QArea.area;
 
-        BooleanExpression predicate = area.city.eq(CityEnum.valueOf(city).name())  // SEOUL
+        BooleanExpression predicate = area.city.eq(CityEnum.valueOf(city).name())
                 .and(area.district.eq(DistrictEnum.valueOf(district).name()));
 
         Area result = queryFactory.select(area)
