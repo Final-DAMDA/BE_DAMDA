@@ -7,5 +7,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum QuestionType {
 
-    DATE,STRING,RADIO,SELECT,ADDRESS;
+    DATE,STRING,RADIO,SELECT,ADDRESS,TITLE;
 }

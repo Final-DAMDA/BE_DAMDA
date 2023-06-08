@@ -21,11 +21,13 @@ public class Manager {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)  // Member - id : mappedBy = "member"
     @JoinColumn(name = "member_id")
-    private Member userId;
+    private Member member;
 
-    @OneToOne(mappedBy = "manager")
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "activity_day_id")
     private ActivityDay activityDay;
 
 
@@ -48,4 +50,10 @@ public class Manager {
     private String mainJobStatusEtc;
 
     private String memo;
+    
+    private String managerStatus;
+
+    public void addActivityDay(ActivityDay activityDay){
+        this.activityDay=activityDay;
+    }
 }
