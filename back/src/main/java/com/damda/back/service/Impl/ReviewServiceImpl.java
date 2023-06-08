@@ -4,6 +4,7 @@ import com.damda.back.config.annotation.TimeChecking;
 import com.damda.back.data.common.ImageType;
 import com.damda.back.data.common.ReservationStatus;
 import com.damda.back.data.request.ServiceCompleteRequestDTO;
+import com.damda.back.data.response.ServiceCompleteInfoDTO;
 import com.damda.back.domain.Image;
 import com.damda.back.domain.ReservationSubmitForm;
 import com.damda.back.domain.Review;
@@ -65,6 +66,11 @@ public class ReviewServiceImpl implements ReviewService {
 			throw new CommonException(ErrorCode.SUBMITTED_SERVICE_COMPLETE);
 		}
 		return reservation.get();
+	}
+
+	@Override
+	public List<ServiceCompleteInfoDTO> listServiceComplete() {
+		return null;
 	}
 
 

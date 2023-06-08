@@ -90,7 +90,7 @@ public class ReservationFormRepositoryImpl implements ReservationFormCustomRepos
                         .from(reservationSubmitForm)
                         .join(reservationSubmitForm.matches, match)
                         .join(match.manager, manager)
-                        .join(manager.userId, member)
+                        .join(manager.member, member)
                         .where(reservationSubmitForm.id.in(ids))
                         .fetch();
 

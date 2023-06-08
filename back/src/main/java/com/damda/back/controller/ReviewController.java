@@ -19,7 +19,9 @@ import java.util.List;
 public class ReviewController {
 	private final ReviewService reviewService;
 
-
+	/**
+	 * @apiNote: GET 서비스 완료 폼 제출여부 판단
+	 */
 	@GetMapping("/service/complete/{id}") //id는 예약 id
 	public ResponseEntity<CommonResponse<?>> serviceCompleteCheck(@PathVariable Long id){
 
@@ -34,6 +36,10 @@ public class ReviewController {
 				.body(commonResponse);
 
 	}
+
+	/***
+	 * @apiNote: 서비스 완료 폼 제출
+	 */
 	@PostMapping("/service/complete/{id}") //id는 예약 id
 	public ResponseEntity<CommonResponse<?>> serviceCompleteSave(@PathVariable Long id, @RequestParam(value = "before") List<MultipartFile> before, @RequestParam(value = "after")List<MultipartFile> after){
 		ServiceCompleteRequestDTO serviceCompleteRequestDTO=new ServiceCompleteRequestDTO();
@@ -50,6 +56,23 @@ public class ReviewController {
 				.status(commonResponse.getStatus())
 				.body(commonResponse);
 	}
+
+	/**
+	 * @apiNote: 서비스 완료 폼 제출된 고객 리스트 조회 (리뷰 작성 안 되어 있는)
+	 */
+	@GetMapping("/service/complete/list")
+	public ResponseEntity<CommonResponse<?>> serviceCompleteList(){
+		CommonResponse<?> commonResponse = CommonResponse
+				.builder()
+				.codeEnum(CodeEnum.SUCCESS)
+				.data("")
+				.build();
+
+		return ResponseEntity
+				.status(commonResponse.getStatus())
+				.body(commonResponse);
+	}
+
 
 
 
