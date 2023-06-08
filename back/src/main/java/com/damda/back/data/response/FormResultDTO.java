@@ -19,6 +19,7 @@ public class FormResultDTO {
 
     private Statistical statistical;
 
+    @Builder.Default
     private List<FormSliceDTO> content = new ArrayList<>();
 
     private boolean first;
