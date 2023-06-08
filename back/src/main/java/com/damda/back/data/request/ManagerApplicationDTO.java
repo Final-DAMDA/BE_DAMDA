@@ -50,14 +50,14 @@ public class ManagerApplicationDTO {
 //        return ActivityDay.builder().isOkMonday(monday).build();
 //    }
     
-    public Area toAreaEntity(Manager manager) {
-        for (String s : activityDistrict) {
-            return Area.builder()
-                    .city()
-                    .district(activityDistrict)
-                    .build();
-        }
-    }
+//    public Area toAreaEntity(Manager manager) {
+//        for (String s : activityDistrict) {
+//            return Area.builder()
+//                    .city()
+//                    .district(activityDistrict)
+//                    .build();
+//        }
+//    }
 
 
 }
