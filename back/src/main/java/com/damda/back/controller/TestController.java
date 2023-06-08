@@ -41,7 +41,7 @@ public class TestController {
         Cookie cookie = new Cookie("access_token",token);
         cookie.setMaxAge(86400);
         cookie.setPath("/");
-        cookie.setHttpOnly(true);
+      //  cookie.setHttpOnly(true);
         response.addCookie(cookie);
 
         HttpHeaders headers = new HttpHeaders();
