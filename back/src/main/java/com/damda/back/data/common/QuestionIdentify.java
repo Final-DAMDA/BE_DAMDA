@@ -5,6 +5,7 @@ import lombok.Getter;
 @Getter
 public enum QuestionIdentify {
 
+    TITILE("대제목"),
     AFEWSERVINGS("몇인분"),
     SERVICEDURATION("서비스 사용시간"),
     ADDRESS("서비스 주소"),
@@ -16,7 +17,8 @@ public enum QuestionIdentify {
     LEARNEDROUTE("알게된 경로"), // --
 
     REQUIREDGUIDELINES("필수 안내사항"),
-    OPTIONAL("추가적인 자료");
+    OPTIONAL("추가적인 자료"),
+    RECOMENDEDCODE("추천 코드");
 
     private String data;
 

@@ -15,6 +15,8 @@ public class SubmitRequestDTO {
 
     private List<SubmitSlice> submit;
 
+
+    private String addressFront;
     private Integer totalPrice;
 
 }

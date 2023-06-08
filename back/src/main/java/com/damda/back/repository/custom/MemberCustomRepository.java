@@ -6,4 +6,6 @@ import java.util.Optional;
 
 public interface MemberCustomRepository {
     public Optional<Member> findByPhoneNumber(String phoneNumber);
+
+    public Optional<Member> findByIdWhereActive(Integer id);
 }

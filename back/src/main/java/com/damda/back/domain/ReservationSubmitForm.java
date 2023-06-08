@@ -1,11 +1,14 @@
 package com.damda.back.domain;
 
 
+import com.damda.back.data.common.PayMentStatus;
 import com.damda.back.data.common.ReservationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -30,7 +33,12 @@ public class ReservationSubmitForm extends BaseEntity{
     private Integer totalPrice;
 
     private boolean deleted;
+
+    @Enumerated(EnumType.STRING)
+    private PayMentStatus payMentStatus;
+
     @Builder.Default
+    @BatchSize(size = 200)
     @OneToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             orphanRemoval = true,
@@ -41,6 +49,11 @@ public class ReservationSubmitForm extends BaseEntity{
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @Builder.Default
+    @Where(clause = "matching = true")
+    @BatchSize(size = 100)
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "reservationForm")
+    private List<Match> matches = new ArrayList<>();
     public void addAnswer(ReservationAnswer answer){
         answer.changeForm(this);
         this.reservationAnswerList.add(answer);

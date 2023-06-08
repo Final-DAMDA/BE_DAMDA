@@ -25,7 +25,7 @@ public class Manager {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
-
+    
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "activity_day_id")
     private ActivityDay activityDay;
