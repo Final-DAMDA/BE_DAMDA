@@ -25,9 +25,11 @@ public class Manager {
     @JoinColumn(name = "member_id")
     private Member member;
 
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "activity_day_id")
     private ActivityDay activityDay;
+
 
     @Enumerated(EnumType.STRING)
     private DistrictEnum activityArea;

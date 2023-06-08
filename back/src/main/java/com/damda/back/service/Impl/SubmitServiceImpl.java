@@ -2,10 +2,16 @@ package com.damda.back.service.Impl;
 
 
 import com.damda.back.config.annotation.TimeChecking;
+import com.damda.back.data.common.PayMentStatus;
 import com.damda.back.data.common.QuestionIdentify;
 import com.damda.back.data.common.ReservationStatus;
 import com.damda.back.data.common.SubmitSlice;
 import com.damda.back.data.request.SubmitRequestDTO;
+import com.damda.back.data.response.FormResultDTO;
+import com.damda.back.data.response.FormSliceDTO;
+import com.damda.back.data.response.Statistical;
+import com.damda.back.data.response.SubmitTotalResponse;
+import com.damda.back.domain.Match;
 import com.damda.back.domain.Member;
 import com.damda.back.domain.ReservationAnswer;
 import com.damda.back.domain.ReservationSubmitForm;
@@ -15,19 +21,22 @@ import com.damda.back.repository.MemberRepository;
 import com.damda.back.repository.ReservationFormRepository;
 import com.damda.back.service.SubmitService;
 import lombok.RequiredArgsConstructor;
+import nonapi.io.github.classgraph.fileslice.FileSlice;
+import org.springframework.beans.factory.support.ManagedList;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -60,12 +69,13 @@ public class SubmitServiceImpl implements SubmitService {
         @TimeChecking
         @Transactional(isolation = Isolation.REPEATABLE_READ)
         public boolean saverFormSubmit(SubmitRequestDTO dto,Integer memberId){
-            String formInsertSql = "INSERT INTO reservation_submit_form (status, total_price, deleted, member_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)";
+
+            String formInsertSql = "INSERT INTO reservation_submit_form (status, total_price, deleted, member_id, pay_ment_status ,created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
             String answerInsertSql = "INSERT INTO reservation_answer (answer, question_identify, form_id) VALUES (?, ?, ?)";
 
             LocalDateTime now = LocalDateTime.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss");
-            String formattedDateTime = now.format(formatter);
+            Timestamp timestamp = Timestamp.valueOf(now);
+
 
             try (Connection conn = dataSource.getConnection();
                  PreparedStatement formInsertStmt = conn.prepareStatement(formInsertSql, Statement.RETURN_GENERATED_KEYS);
@@ -82,8 +92,9 @@ public class SubmitServiceImpl implements SubmitService {
                     formInsertStmt.setInt(2, dto.getTotalPrice());
                     formInsertStmt.setBoolean(3, false);
                     formInsertStmt.setLong(4, memberId);
-                    formInsertStmt.setString(5, formattedDateTime);
-                    formInsertStmt.setString(6, formattedDateTime);
+                    formInsertStmt.setString(5, PayMentStatus.NOT_PAID_FOR_ANYTHING.name());
+                    formInsertStmt.setTimestamp(6, timestamp);
+                    formInsertStmt.setTimestamp(7, timestamp);
 
                     int affectedRows = formInsertStmt.executeUpdate();
 
@@ -103,6 +114,8 @@ public class SubmitServiceImpl implements SubmitService {
                                         .build());
                             });
                             bulkInsert(answerInsertStmt, answers);
+
+                            //TODO: 알림톡 보내기 매니저들에게 매칭된 매니저들에게
                         } else {
                             throw new SQLException("Creating reservation submit form failed, no ID obtained.");
                         }
@@ -113,9 +126,9 @@ public class SubmitServiceImpl implements SubmitService {
 
                 return true;
             } catch (SQLException e) {
-                e.printStackTrace();
+                System.out.println(e);
+                throw new CommonException(ErrorCode.SERVER_ERROR);
             }
-            return false;
         }
 
 
@@ -171,6 +184,86 @@ public class SubmitServiceImpl implements SubmitService {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+       }
+
+
+       /**
+        * @apiNote 어드민 메인에서 보여질 데이터 통계함수와 페이징한 예약건수들을 보여준다.
+        * 페이징이 필요한 데이터에서는
+        * 순번(이건프론트), 신청일자, 사용자 이름, 연락처, 주소, 예약일자, 가격 ,소요시간, 매니저 인원
+        *  ,매니저 매칭(누가지원했는지), 서비스 상태(ReservationStatus),  결제상태
+        * */
+       @Transactional(isolation = Isolation.REPEATABLE_READ)
+       public FormResultDTO submitTotalResponse(int page,String startDate,String endDate){
+            //TODO: 통계함수랑 매니저 조인해서 가져온 데이터 짬뽕해서 DTO 반환예쩡 통계함수 완성함
+
+           Timestamp startDateTimeStamp = startDate != null ? Timestamp.valueOf(startDate + " 00:00:00") : null;
+           Timestamp endDateTimeStamp = endDate != null ? Timestamp.valueOf(endDate + " 23:59:59") : null;
+
+            Map<ReservationStatus,Long> map = reservationFormRepository.statistical();
+            List<FormSliceDTO> dtos = new ArrayList<>();
+
+            Statistical statistical = new Statistical();
+            for(Map.Entry<ReservationStatus, Long> entry : map.entrySet()){
+                Long count = entry.getValue() == null ? 0 : entry.getValue();
+
+                switch (entry.getKey()){
+                    case SERVICE_COMPLETED -> statistical.setCompleted(count);
+                    case MANAGER_MATCHING_COMPLETED -> statistical.setConfirmation(count);
+                    case WAITING_FOR_ACCEPT_MATCHING -> statistical.setMatching(count);
+                    case WAITING_FOR_MANAGER_REQUEST -> statistical.setWating(count);
+                    case RESERVATION_CANCELLATION -> statistical.setCancellation(count);
+                }
+            }
+            statistical.nullInit();
+
+            Page<ReservationSubmitForm> submitFormPage =
+                    reservationFormRepository.formPaging(PageRequest.of(page,10),startDateTimeStamp,endDateTimeStamp);
+
+           for (ReservationSubmitForm submitForm : submitFormPage) {
+                    dtos.add(asDTO(submitForm));
+           }
+           FormResultDTO resultDTO = FormResultDTO.builder()
+                   .total(submitFormPage.getTotalElements())
+                   .content(dtos)
+                   .first(submitFormPage.isFirst())
+                   .last(submitFormPage.isLast())
+                   .statistical(statistical)
+                   .build();
+
+            return resultDTO;
+       }
+
+        public FormSliceDTO asDTO(ReservationSubmitForm submitForm){
+            FormSliceDTO dto = new FormSliceDTO();
+
+            List<String> managerNames = new ArrayList<>();
+
+            if(submitForm.getStatus().equals(ReservationStatus.MANAGER_MATCHING_COMPLETED)){
+                managerNames = submitForm.getMatches().stream()
+                        .filter(match -> match.isMatching()).map(Match::getManagerName).collect(Collectors.toList());
+            }else{
+                managerNames = submitForm.getMatches().stream().map(Match::getManagerName).toList();
+
+            }
+
+            Member member = submitForm.getMember();
+            List<ReservationAnswer> answers =  submitForm.getReservationAnswerList();
+            Map<QuestionIdentify, String> answerMap
+                    = answers.stream().collect(Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
+
+            dto.setAddress(answerMap.get(QuestionIdentify.ADDRESS));
+            dto.setName(member.getUsername());
+            dto.setCreatedAt(submitForm.getCreatedAt().toString());
+            dto.setTotalPrice(submitForm.getTotalPrice());
+            dto.setEstimate(answerMap.get(QuestionIdentify.SERVICEDURATION));
+            dto.setPhoneNumber(answerMap.get(QuestionIdentify.APPLICANTCONACTINFO));
+            dto.setReservationStatus(submitForm.getStatus());
+            dto.setPayMentStatus(submitForm.getPayMentStatus());
+            dto.setReservationDate(answerMap.get(QuestionIdentify.SERVICEDATE));
+            dto.setManagerNames(managerNames);
+            dto.setManageAmount(managerNames.size());
+            return dto;
         }
 
 
