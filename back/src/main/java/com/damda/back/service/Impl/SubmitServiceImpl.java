@@ -21,17 +21,24 @@ import com.damda.back.repository.MemberRepository;
 import com.damda.back.repository.ReservationFormRepository;
 import com.damda.back.service.SubmitService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import nonapi.io.github.classgraph.fileslice.FileSlice;
 import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -40,6 +47,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class SubmitServiceImpl implements SubmitService {
 
@@ -49,7 +57,7 @@ public class SubmitServiceImpl implements SubmitService {
 
         private final ArrayList<QuestionIdentify> identifies = new ArrayList<>();
 
-        private final DataSource dataSource;
+        private final JdbcTemplate jdbcTemplate;
 
 
 
@@ -67,8 +75,8 @@ public class SubmitServiceImpl implements SubmitService {
 
 
         @TimeChecking
-        @Transactional(isolation = Isolation.REPEATABLE_READ)
-        public boolean saverFormSubmit(SubmitRequestDTO dto,Integer memberId){
+        @Transactional(isolation = Isolation.REPEATABLE_READ,rollbackFor = CommonException.class)
+        public void saverFormSubmit(SubmitRequestDTO dto,Integer memberId){
 
             String formInsertSql = "INSERT INTO reservation_submit_form (status, total_price, deleted, member_id, pay_ment_status ,created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
             String answerInsertSql = "INSERT INTO reservation_answer (answer, question_identify, form_id) VALUES (?, ?, ?)";
@@ -76,18 +84,24 @@ public class SubmitServiceImpl implements SubmitService {
             LocalDateTime now = LocalDateTime.now();
             Timestamp timestamp = Timestamp.valueOf(now);
 
+            boolean isValid = dto.getSubmit().stream()
+                    .map(SubmitSlice::getQuestionIdentify)
+                    .collect(Collectors.toSet())
+                    .containsAll(identifies);
 
-            try (Connection conn = dataSource.getConnection();
-                 PreparedStatement formInsertStmt = conn.prepareStatement(formInsertSql, Statement.RETURN_GENERATED_KEYS);
-                 PreparedStatement answerInsertStmt = conn.prepareStatement(answerInsertSql)) {
+            String dateAnswer = dto.getSubmit().stream()
+                    .filter(submitSlice -> submitSlice.getQuestionIdentify().equals(QuestionIdentify.SERVICEDATE))
+                    .findFirst().orElseThrow(() -> new CommonException(ErrorCode.DATE_FORMAT_EXCEPTION)).getAnswer();
 
-                boolean isValid = dto.getSubmit().stream()
-                        .map(SubmitSlice::getQuestionIdentify)
-                        .collect(Collectors.toSet())
-                        .containsAll(identifies);
+            validDateFormat(dateAnswer);
 
-                if (isValid) {
+            try {
+                jdbcTemplate.getDataSource().getConnection().setAutoCommit(false);
 
+                KeyHolder keyHolder = new GeneratedKeyHolder();
+
+                int affectedRows = jdbcTemplate.update(con -> {
+                    PreparedStatement formInsertStmt = con.prepareStatement(formInsertSql, Statement.RETURN_GENERATED_KEYS);
                     formInsertStmt.setString(1, ReservationStatus.WAITING_FOR_MANAGER_REQUEST.name());
                     formInsertStmt.setInt(2, dto.getTotalPrice());
                     formInsertStmt.setBoolean(3, false);
@@ -95,39 +109,46 @@ public class SubmitServiceImpl implements SubmitService {
                     formInsertStmt.setString(5, PayMentStatus.NOT_PAID_FOR_ANYTHING.name());
                     formInsertStmt.setTimestamp(6, timestamp);
                     formInsertStmt.setTimestamp(7, timestamp);
+                    return formInsertStmt;
+                }, keyHolder);
 
-                    int affectedRows = formInsertStmt.executeUpdate();
-
-                    if (affectedRows == 0) {
-                        throw new SQLException("Creating reservation submit form failed, no rows affected.");
-                    }
-
-                    try (ResultSet generatedKeys = formInsertStmt.getGeneratedKeys()) {
-                        if (generatedKeys.next()) {
-                            Long formId = generatedKeys.getLong(1);
-                            List<ReservationAnswer> answers = new ArrayList<>();
-                            dto.getSubmit().forEach(submitSlice -> {
-                                answers.add(ReservationAnswer.builder()
-                                        .formId(formId)
-                                        .questionIdentify(submitSlice.getQuestionIdentify())
-                                        .answer(submitSlice.getAnswer())
-                                        .build());
-                            });
-                            bulkInsert(answerInsertStmt, answers);
-
-                            //TODO: 알림톡 보내기 매니저들에게 매칭된 매니저들에게
-                        } else {
-                            throw new SQLException("Creating reservation submit form failed, no ID obtained.");
-                        }
-                    }
-                } else {
-                    throw new CommonException(ErrorCode.NO_REQUIRED_VALUE);
+                if (affectedRows == 0) {
+                    throw new SQLException("Creating reservation submit form failed, no rows affected.");
                 }
 
-                return true;
+                Long formId = keyHolder.getKey().longValue();
+                List<Object[]> batchArgs = new ArrayList<>();
+
+                dto.getSubmit().forEach(submitSlice -> {
+                    Object[] values = { submitSlice.getAnswer(), submitSlice.getQuestionIdentify(), formId };
+                    batchArgs.add(values);
+                });
+
+                int[] result = jdbcTemplate.batchUpdate(answerInsertSql, batchArgs, new int[] {Types.VARCHAR, Types.VARCHAR, Types.BIGINT});
+                boolean success = true;
+                for (int i : result) {
+                    if (i == 0) {
+                        success = false;
+                        break;
+                    }
+                }
+                if (success) {
+                    log.info("예약 데이터 저장완료 key {}",formId);
+                    // TODO: 알림톡 보내기 매니저들에게 매칭된 매니저들에게
+                    jdbcTemplate.getDataSource().getConnection().commit();
+                } else {
+                    jdbcTemplate.getDataSource().getConnection().rollback();
+                    throw new SQLException("예약 Insert 하다가 실패하여 rollback함");
+                }
             } catch (SQLException e) {
-                System.out.println(e);
                 throw new CommonException(ErrorCode.SERVER_ERROR);
+            } catch (CommonException c) {
+                throw new CommonException(ErrorCode.SERVER_ERROR);
+            } finally {
+                try {
+                    jdbcTemplate.getDataSource().getConnection().setAutoCommit(true); //커밋모드 다시 되돌림
+                } catch (SQLException e) {
+                }
             }
         }
 
@@ -155,6 +176,7 @@ public class SubmitServiceImpl implements SubmitService {
                 try{
                     ReservationSubmitForm form = reservationFormRepository.save(reservationSubmitForm);
                     dto.getSubmit().forEach(submitSlice -> {
+
                         answers.add( ReservationAnswer.builder()
                                 .formId(form.getId())
                                 .questionIdentify(submitSlice.getQuestionIdentify())
@@ -170,20 +192,16 @@ public class SubmitServiceImpl implements SubmitService {
                 throw new CommonException(ErrorCode.NO_REQUIRED_VALUE);
             }
         }
-       // @Transactional(propagation = Propagation.REQUIRED)
-       public void bulkInsert(PreparedStatement pstmt, List<ReservationAnswer> reservationAnswers) {
-            try {
-                pstmt.clearBatch();
-                for (ReservationAnswer answer : reservationAnswers) {
-                    pstmt.setString(1, answer.getAnswer());
-                    pstmt.setString(2, answer.getQuestionIdentify().name());
-                    pstmt.setLong(3, answer.getFormId());
-                    pstmt.addBatch();
-                }
-                pstmt.executeBatch();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+
+
+       public void validDateFormat(String answer){
+           String expectedFormat = "yyyy-MM-dd HH:mm:ss";
+           SimpleDateFormat dateFormat = new SimpleDateFormat(expectedFormat);
+           try {
+               dateFormat.parse(answer);
+           } catch (ParseException e) {
+               throw new CommonException(ErrorCode.DATE_FORMAT_EXCEPTION);
+           }
        }
 
 

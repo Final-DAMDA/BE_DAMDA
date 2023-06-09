@@ -12,6 +12,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -78,9 +79,10 @@ public class FormController {
 
     @PostMapping("/api/v1/user/form/submit")
     public ResponseEntity<CommonResponse<?>> reservationFormSave(
-            @RequestBody SubmitRequestDTO dto){
-
-        submitService.saverFormSubmit(dto,1);
+            @RequestBody SubmitRequestDTO dto,
+            HttpServletRequest request){
+        Integer id = Integer.parseInt(request.getAttribute("id").toString());
+        submitService.saverFormSubmit(dto,id);
 
         CommonResponse<?> commonResponse = CommonResponse
                 .builder()

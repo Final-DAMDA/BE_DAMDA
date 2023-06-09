@@ -31,7 +31,6 @@ public class AccessCheckFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String path = request.getRequestURI();
-
         if(path.startsWith("/api/v1/member/code") || path.startsWith("/api/v1/test/login") || path.startsWith("/h2-console")){
             log.info("TOKEN PASS");
             filterChain.doFilter(request,response);

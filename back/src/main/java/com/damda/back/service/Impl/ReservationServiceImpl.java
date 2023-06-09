@@ -14,6 +14,7 @@ import com.damda.back.domain.Question;
 import com.damda.back.domain.QuestionStatus;
 import com.damda.back.exception.CommonException;
 import com.damda.back.exception.ErrorCode;
+import com.damda.back.repository.AreaRepository;
 import com.damda.back.repository.ManagerRepository;
 import com.damda.back.repository.QuestionRepository;
 import com.damda.back.service.ReservationService;
@@ -34,6 +35,9 @@ public class ReservationServiceImpl implements ReservationService {
     private final QuestionRepository questionRepository;
 
     private final ManagerRepository managerRepository;
+
+    private final AreaRepository areaRepository;
+
 
     @Transactional(isolation = Isolation.REPEATABLE_READ,readOnly = true)
     public List<ReservationResponseDTO> reservationResponseDTOList(){
@@ -261,6 +265,22 @@ public class ReservationServiceImpl implements ReservationService {
             }else{
                 throw new CommonException(ErrorCode.NOT_FOUND_CATEGORY);
             }
+    }
+
+    public Map<String,List<String>> activityArea() {
+
+        Map<String, List<String>> locaitonMap = new HashMap<>();
+
+        locaitonMap.put("서울특별시", new ArrayList<>());
+        locaitonMap.put("경기도", new ArrayList());
+
+        areaRepository.searchActivityArea().forEach(area -> {
+            if (locaitonMap.containsKey(area.getCity())) {
+                locaitonMap.get(area.getCity()).add(area.getDistrict());
+            }
+        });
+
+        return locaitonMap;
     }
 
 

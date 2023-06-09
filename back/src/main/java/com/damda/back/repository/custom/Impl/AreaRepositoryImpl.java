@@ -10,6 +10,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -32,6 +33,20 @@ public class AreaRepositoryImpl implements AreaCustomRepository {
                 .fetchOne();
 
         return Optional.ofNullable(result);
+    }
+
+
+    public List<Area> searchActivityArea(){
+        QArea area = QArea.area;
+
+        List<Area> strings =
+               queryFactory
+                       .selectDistinct(area)
+                       .from(area)
+                       .where(area.managerCount.ne(0))
+                       .fetch();
+
+        return strings;
     }
 
 }
