@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Builder
@@ -30,8 +31,8 @@ public class Manager {
     @JoinColumn(name = "activity_day_id")
     private ActivityDay activityDay;
 
-    @OneToMany(mappedBy = "area")
-    private List<AreaManager> activityArea;
+    @OneToMany(mappedBy = "managerId.manager", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AreaManager> areaManagers = new ArrayList<>();
     
     @Enumerated(EnumType.STRING)
     private CertificateStatusEnum certificateStatus;
