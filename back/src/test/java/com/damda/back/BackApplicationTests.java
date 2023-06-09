@@ -1,4 +1,4 @@
-/*package com.damda.back;
+package com.damda.back;
 
 import com.damda.back.domain.area.DistrictEnum;
 import com.damda.back.domain.manager.CertificateStatusEnum;
@@ -61,24 +61,22 @@ class BackApplicationTests {
 
 	@Test
 	void contextLoads() {
-		Member member = memberRepository.findById(1).get();
+	   IntStream.rangeClosed(1,10)
+               .forEach(value -> {
+                   Manager manager = Manager.builder()
+                           .certificateStatus(CertificateStatusEnum.FIRST_RATE_ON)
+                           .memo("테스트 매니저..."+value)
+                           .level(1)
+                           .vehicle(true)
+                           .fieldExperience("테스트 매니저..."+value)
+						   .mainJobStatus(false)
+						   .certificateStatusEtc("테스트 매니저..."+value)
+						   .managerStatus("테스트 매니저..."+value)
+                           .build();
 
-		ReservationSubmitForm submitForm = reservationFormRepository.findById(10L).get();
+               });
 
-		IntStream.rangeClosed(1,3).forEach(value -> {
-			Manager manager = managerRepository.save(Manager.builder()
-					.memo("메모")
-					.userId(member)
-					.build());
 
-			Match match = Match.builder()
-					.matching(false)
-					.reservationForm(submitForm)
-					.manager(manager)
-					.managerName("테스트 매니저.."+value)
-					.build();
-			matchRepository.save(match);
-		});
 
 
 	}
@@ -271,4 +269,4 @@ class BackApplicationTests {
 	}
 	
 }
-*/
+

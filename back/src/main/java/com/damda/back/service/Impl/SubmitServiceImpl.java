@@ -20,6 +20,7 @@ import com.damda.back.exception.ErrorCode;
 import com.damda.back.repository.MemberRepository;
 import com.damda.back.repository.ReservationFormRepository;
 import com.damda.back.service.SubmitService;
+import com.damda.back.utils.SolapiUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nonapi.io.github.classgraph.fileslice.FileSlice;
@@ -74,9 +75,10 @@ public class SubmitServiceImpl implements SubmitService {
         }
 
 
+
         @TimeChecking
         @Transactional(isolation = Isolation.REPEATABLE_READ,rollbackFor = CommonException.class)
-        public void saverFormSubmit(SubmitRequestDTO dto,Integer memberId){
+        public Long saverFormSubmit(SubmitRequestDTO dto,Integer memberId){
 
             String formInsertSql = "INSERT INTO reservation_submit_form (status, total_price, deleted, member_id, pay_ment_status ,created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
             String answerInsertSql = "INSERT INTO reservation_answer (answer, question_identify, form_id) VALUES (?, ?, ?)";
@@ -134,8 +136,8 @@ public class SubmitServiceImpl implements SubmitService {
                 }
                 if (success) {
                     log.info("예약 데이터 저장완료 key {}",formId);
-                    // TODO: 알림톡 보내기 매니저들에게 매칭된 매니저들에게
                     jdbcTemplate.getDataSource().getConnection().commit();
+                    return formId;
                 } else {
                     jdbcTemplate.getDataSource().getConnection().rollback();
                     throw new SQLException("예약 Insert 하다가 실패하여 rollback함");

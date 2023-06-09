@@ -5,7 +5,8 @@ import com.damda.back.data.response.FormResultDTO;
 import com.damda.back.data.response.SubmitTotalResponse;
 
 public interface SubmitService {
-    public void saverFormSubmit(SubmitRequestDTO dto, Integer memberId);
+    public Long saverFormSubmit(SubmitRequestDTO dto, Integer memberId);
 
     public FormResultDTO submitTotalResponse(int page,String startDate,String endDate);
+
 }

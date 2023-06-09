@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface ReservationFormCustomRepository {
 
@@ -26,5 +27,9 @@ public interface ReservationFormCustomRepository {
     public List<Long> ids(Long id);
 
     public List<ReservationSubmitForm> formList(Timestamp startDate,Timestamp endDate);
+
+
+    public Optional<ReservationSubmitForm> submitFormWithAnswer(Long formId);
+
 
 }

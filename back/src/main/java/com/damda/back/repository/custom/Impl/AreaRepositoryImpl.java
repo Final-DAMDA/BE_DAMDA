@@ -4,6 +4,8 @@ import com.damda.back.domain.area.Area;
 import com.damda.back.domain.area.CityEnum;
 import com.damda.back.domain.area.DistrictEnum;
 import com.damda.back.domain.area.QArea;
+import com.damda.back.domain.manager.AreaManager;
+import com.damda.back.domain.manager.Manager;
 import com.damda.back.repository.custom.AreaCustomRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -48,5 +50,6 @@ public class AreaRepositoryImpl implements AreaCustomRepository {
 
         return strings;
     }
+
 
 }
