@@ -51,7 +51,9 @@ public class Manager {
 
     private String memo;
     
-    private String managerStatus;
+    private String prevManagerStatus;
+    
+    private String currManagerStatus;
 
     public void addActivityDay(ActivityDay activityDay){
         this.activityDay=activityDay;
