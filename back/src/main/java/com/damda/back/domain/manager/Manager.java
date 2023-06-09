@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @NoArgsConstructor
@@ -21,18 +23,16 @@ public class Manager {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)  // Member - id : mappedBy = "member"
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
-
-
-    @OneToOne(fetch = FetchType.LAZY)
+    
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "activity_day_id")
     private ActivityDay activityDay;
 
-
-    @Enumerated(EnumType.STRING)
-    private DistrictEnum activityArea;
+    @OneToMany(mappedBy = "managerId.manager", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AreaManager> areaManagers = new ArrayList<>();
     
     @Enumerated(EnumType.STRING)
     private CertificateStatusEnum certificateStatus;
