@@ -31,8 +31,7 @@ public class ReviewRepositoryImpl implements ReviewCustomRepository {
 
 		Review review = queryFactory.selectDistinct(qReview)
 				.from(qReview)
-				.leftJoin(qReview.reviewImage, qReviewImage)
-				.fetchJoin()
+				.innerJoin(qReview.reviewImage, qReviewImage).fetchJoin()
 				.where(qReview.reservationSubmitForm.id.eq(reservationId))
 				.fetchOne();
 
@@ -40,7 +39,7 @@ public class ReviewRepositoryImpl implements ReviewCustomRepository {
 	}
 
 	@Override
-	public List<Review> serviceCompleteList(){
+	public List<Review> reviewList(){
 		QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
 		QMember member = QMember.member;
 		QReservationAnswer answer = QReservationAnswer.reservationAnswer;
@@ -51,7 +50,7 @@ public class ReviewRepositoryImpl implements ReviewCustomRepository {
 				queryFactory.selectDistinct(review)
 						.from(review)
 						.innerJoin(review.reservationSubmitForm,submitForm).fetchJoin()
-						.innerJoin(review.reviewImage,image).fetchJoin().fetchJoin()
+						.innerJoin(review.reviewImage,image).fetchJoin()
 						.leftJoin(submitForm.reservationAnswerList,answer)
 						.leftJoin(submitForm.member,member)
 						.where(submitForm.status.eq(ReservationStatus.SERVICE_COMPLETED),review.status.eq(true));
@@ -59,4 +58,16 @@ public class ReviewRepositoryImpl implements ReviewCustomRepository {
 		List<Review> list = query1.fetch();
 		return list;
 	}
+
+	public Optional<Review> findByReservationId(Long reservationId) {
+		QReview qReview = QReview.review;
+
+		Review review = queryFactory.selectDistinct(qReview)
+				.from(qReview)
+				.where(qReview.reservationSubmitForm.id.eq(reservationId))
+				.fetchOne();
+
+		return Optional.ofNullable(review);
+	}
+
 }

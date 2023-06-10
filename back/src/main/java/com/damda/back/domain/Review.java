@@ -1,5 +1,6 @@
 package com.damda.back.domain;
 
+import com.damda.back.data.request.ReviewRequestDTO;
 import lombok.*;
 
 import javax.persistence.*;
@@ -25,5 +26,11 @@ public class Review extends BaseEntity{
 	@OneToMany(mappedBy = "review" , cascade = CascadeType.ALL)
 	private List<Image> reviewImage;
 
+	public void reviewUpload(ReviewRequestDTO reviewRequestDTO){
+		this.content=reviewRequestDTO.getContent();
+		this.title=reviewRequestDTO.getTitle();
+		this.status=true;
+		this.best=false;
+	}
 
 }

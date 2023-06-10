@@ -1,5 +1,6 @@
 package com.damda.back.service;
 
+import com.damda.back.data.request.ReviewRequestDTO;
 import com.damda.back.data.request.ServiceCompleteRequestDTO;
 import com.damda.back.data.response.ReviewAutoResponseDTO;
 import com.damda.back.data.response.ServiceCompleteInfoDTO;
@@ -16,6 +17,6 @@ public interface ReviewService {
 	ReservationSubmitForm checkServiceComplete(Long reservationId);
 	List<ServiceCompleteInfoDTO> listServiceComplete();
 	ReviewAutoResponseDTO selectReviewData(Long reservationId);
-
+	void uploadReview(Long reservationId, ReviewRequestDTO reviewRequestDTO);
 
 }

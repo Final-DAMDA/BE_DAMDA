@@ -4,6 +4,7 @@ package com.damda.back.controller;
 import com.damda.back.data.common.CodeEnum;
 import com.damda.back.data.common.CommonResponse;
 import com.damda.back.data.common.ImageType;
+import com.damda.back.data.request.ReviewRequestDTO;
 import com.damda.back.data.request.ServiceCompleteRequestDTO;
 import com.damda.back.repository.ReviewRepository;
 import com.damda.back.service.ReviewService;
@@ -93,12 +94,18 @@ public class ReviewController {
 				.body(commonResponse);
 	}
 
+	/**
+	 * @apiNote: 리뷰 업로드
+	 * @param id
+	 * @return
+	 */
 	@PostMapping("/review/auto/{id}")
-	public ResponseEntity<CommonResponse<?>> reviewUpload(@PathVariable Long id){
+	public ResponseEntity<CommonResponse<?>> reviewUpload(@PathVariable Long id, @RequestBody ReviewRequestDTO reviewRequestDTO){
+		reviewService.uploadReview(id,reviewRequestDTO);
 		CommonResponse<?> commonResponse = CommonResponse
 				.builder()
 				.codeEnum(CodeEnum.SUCCESS)
-				.data(reviewService.selectReviewData(id))
+				.data(true)
 				.build();
 
 		return ResponseEntity

@@ -13,8 +13,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 public class ServiceCompleteRequestDTO {
 	private List<MultipartFile> before;
 	private List<MultipartFile> after;

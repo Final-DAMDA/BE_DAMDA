@@ -4,6 +4,7 @@ import com.damda.back.config.annotation.TimeChecking;
 import com.damda.back.data.common.ImageType;
 import com.damda.back.data.common.QuestionIdentify;
 import com.damda.back.data.common.ReservationStatus;
+import com.damda.back.data.request.ReviewRequestDTO;
 import com.damda.back.data.request.ServiceCompleteRequestDTO;
 import com.damda.back.data.response.ReviewAutoResponseDTO;
 import com.damda.back.data.response.ServiceCompleteInfoDTO;
@@ -124,6 +125,26 @@ public class ReviewServiceImpl implements ReviewService {
 				.build();
 
 		return responseDTO;
+	}
+
+	/***
+	 * @apiNote : 리뷰 업로드
+	 * @param reservationId
+	 * @param reviewRequestDTO
+	 */
+	@Transactional(isolation = Isolation.REPEATABLE_READ)
+	@Override
+	public void uploadReview(Long reservationId, ReviewRequestDTO reviewRequestDTO) {
+		Optional<Review> review = reviewRepository.findByReservationId(reservationId);
+		nullCheck(review);
+
+		Review uploadReview = review.get();
+		uploadReview.reviewUpload(reviewRequestDTO);
+		try {
+			reviewRepository.save(uploadReview);
+		}catch (Exception e){
+			throw new CommonException(ErrorCode.ERROR_REVIEW_COMPLETE);
+		}
 	}
 
 	/**
