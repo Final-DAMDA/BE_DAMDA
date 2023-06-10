@@ -1,12 +1,12 @@
 package com.damda.back.service.Impl;
 
-import com.damda.back.config.annotation.TimeChecking;
 import com.damda.back.data.common.ImageType;
 import com.damda.back.data.common.QuestionIdentify;
 import com.damda.back.data.common.ReservationStatus;
 import com.damda.back.data.request.ReviewRequestDTO;
 import com.damda.back.data.request.ServiceCompleteRequestDTO;
 import com.damda.back.data.response.ReviewAutoResponseDTO;
+import com.damda.back.data.response.ReviewListAdminDTO;
 import com.damda.back.data.response.ReviewListUserDTO;
 import com.damda.back.data.response.ServiceCompleteInfoDTO;
 import com.damda.back.domain.*;
@@ -15,11 +15,9 @@ import com.damda.back.exception.ErrorCode;
 import com.damda.back.repository.ImageRepository;
 import com.damda.back.repository.ReservationFormRepository;
 import com.damda.back.repository.ReviewRepository;
-import com.damda.back.repository.ServiceCompleteRepository;
 import com.damda.back.service.ReviewService;
 import com.damda.back.service.S3Service;
 import lombok.RequiredArgsConstructor;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,10 +36,12 @@ public class ReviewServiceImpl implements ReviewService {
 	private final ReviewRepository reviewRepository;
 
 
+	/**
+	 * @apiNote: 서비스 완료 폼 업로드
+	 */
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	@Override
 	public boolean uploadServiceComplete(Long reservationId, ServiceCompleteRequestDTO serviceCompleteRequestDTO){
-
 		ReservationSubmitForm reservationSubmitForm = checkServiceComplete(reservationId);
 		reservationSubmitForm.setStatus(ReservationStatus.SERVICE_COMPLETED); //서비스 완료
 
@@ -59,6 +59,9 @@ public class ReviewServiceImpl implements ReviewService {
 		return true;
 	}
 
+	/**
+	 * @apiNote: 서비스 완료 폼 제출 체크
+	 */
 	@Override
 	public ReservationSubmitForm checkServiceComplete(Long reservationId){
 		Optional<ReservationSubmitForm> reservation = reservationFormRepository.findById(reservationId);
@@ -69,6 +72,9 @@ public class ReviewServiceImpl implements ReviewService {
 		return reservation.get();
 	}
 
+	/**
+	 * @apiNote: 서비스 완료 폼 리스트 조회
+	 */
 	@Override
 	public List<ServiceCompleteInfoDTO> listServiceComplete() {
 		List<ReservationSubmitForm> completeList = reservationFormRepository.serviceCompleteList();
@@ -96,6 +102,9 @@ public class ReviewServiceImpl implements ReviewService {
 		return dtoList;
 	}
 
+	/**
+	 * @apiNote: 리뷰쓰기 전 서비스 완료리스트에서 선택
+	 */
 	@Override
 	public ReviewAutoResponseDTO selectReviewData(Long reservationId) {
 		Optional<ReservationSubmitForm> reservation = reservationFormRepository.serviceComplete(reservationId);
@@ -119,7 +128,7 @@ public class ReviewServiceImpl implements ReviewService {
 		}
 		ReviewAutoResponseDTO responseDTO = ReviewAutoResponseDTO.builder()
 				.reservationId(reservation.get().getId())
-				.name(reservation.get().getMember().getUsername())
+				.name(answerMap.get(QuestionIdentify.APPLICANTNAME))
 				.address(answerMap.get(QuestionIdentify.ADDRESS))
 				.reservationDate(answerMap.get(QuestionIdentify.SERVICEDATE))
 				.before(before)
@@ -133,7 +142,7 @@ public class ReviewServiceImpl implements ReviewService {
 	 * @apiNote : 유저 리뷰리스트 조회
 	 */
 	@Override
-	@Transactional(isolation = Isolation.REPEATABLE_READ)
+	@Transactional(readOnly = true)
 	public List<ReviewListUserDTO> listReview() {
 		List<Review> reviews = reviewRepository.reviewList();
 		List<ReviewListUserDTO> reviewListUserDTOS=new ArrayList<>();
@@ -168,7 +177,7 @@ public class ReviewServiceImpl implements ReviewService {
 	}
 
 	@Override
-	@Transactional(isolation = Isolation.REPEATABLE_READ)
+	@Transactional(readOnly = true)
 	public ReviewListUserDTO findBestReview(){
 		Optional<Review> bestReview = reviewRepository.findByBestReviewUser();
 		if(bestReview.isEmpty()){
@@ -325,6 +334,34 @@ public class ReviewServiceImpl implements ReviewService {
 			throw new CommonException(ErrorCode.ERROR_IMAGE_COMPLETE);
 		}
 
+	}
+
+	/**
+	 * @apiNote: Review 리스트 어드민
+	 */
+	@Override
+	@Transactional(readOnly = true)
+	public List<ReviewListAdminDTO> listReviewAdmin() {
+		List<Review> reviews = reviewRepository.reviewList();
+		List<ReviewListAdminDTO> reviewListAdminDTOS=new ArrayList<>();
+		for(Review review:reviews){
+			ReservationSubmitForm reservation = review.getReservationSubmitForm();
+			List<ReservationAnswer> answers =  reservation.getReservationAnswerList();
+			Map<QuestionIdentify, String> answerMap
+					= answers.stream().collect(Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
+
+			ReviewListAdminDTO reviewListAdminDTO = ReviewListAdminDTO.builder()
+													.reviewId(review.getId())
+													.name(answerMap.get(QuestionIdentify.APPLICANTNAME))
+													.address(answerMap.get(QuestionIdentify.ADDRESS))
+													.title(review.getTitle())
+													.content(review.getContent())
+													.createAt(review.getUpdatedAt().toString())
+													.best(review.getBest())
+													.build();
+			reviewListAdminDTOS.add(reviewListAdminDTO);
+		}
+		return reviewListAdminDTOS;
 	}
 
 

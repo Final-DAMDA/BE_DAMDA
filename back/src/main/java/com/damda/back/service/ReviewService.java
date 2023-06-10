@@ -3,6 +3,7 @@ package com.damda.back.service;
 import com.damda.back.data.request.ReviewRequestDTO;
 import com.damda.back.data.request.ServiceCompleteRequestDTO;
 import com.damda.back.data.response.ReviewAutoResponseDTO;
+import com.damda.back.data.response.ReviewListAdminDTO;
 import com.damda.back.data.response.ReviewListUserDTO;
 import com.damda.back.data.response.ServiceCompleteInfoDTO;
 import com.damda.back.domain.ReservationSubmitForm;
@@ -24,4 +25,5 @@ public interface ReviewService {
 	ReviewListUserDTO findBestReview();
 	boolean deleteReviewImage(Long imageId);
 	boolean deleteReview(Long reviewId);
+	List<ReviewListAdminDTO> listReviewAdmin();
 }

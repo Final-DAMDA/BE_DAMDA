@@ -91,7 +91,6 @@ public class ReviewController {
 
 	/**
 	 * @apiNote: 리뷰 업로드
-	 * @param reservationId
 	 */
 	@PostMapping("/review/auto/{reservationId}")
 	public ResponseEntity<CommonResponse<?>> reviewUpload(@PathVariable Long reservationId,
@@ -133,6 +132,22 @@ public class ReviewController {
 				.body(commonResponse);
 	}
 
+	/**
+	 * @apiNote: 리뷰 리스트(유저)
+	 */
+	@GetMapping("/admin/review/list")
+	public ResponseEntity<CommonResponse<?>> reviewListAdmin(){
+
+		CommonResponse<?> commonResponse = CommonResponse
+				.builder()
+				.codeEnum(CodeEnum.SUCCESS)
+				.data(reviewService.listReviewAdmin())
+				.build();
+
+		return ResponseEntity
+				.status(commonResponse.getStatus())
+				.body(commonResponse);
+	}
 	/**
 	 * @apiNote: 베스트 리뷰 저장
 	 * @return
@@ -184,7 +199,7 @@ public class ReviewController {
 	}
 
 	/**
-	 * @apiNote: 리뷰삭제
+	 * @apiNote: 리뷰 삭제
 	 */
 	@DeleteMapping("/review/{reviewId}")
 	public ResponseEntity<CommonResponse<?>> deleteReview(@PathVariable("reviewId")Long reviewId){

@@ -165,14 +165,12 @@ public class ReservationFormRepositoryImpl implements ReservationFormCustomRepos
         @Override
         public Optional<ReservationSubmitForm> serviceComplete(Long reservationId){
                 QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
-                QMember member = QMember.member;
                 QReservationAnswer answer = QReservationAnswer.reservationAnswer;
 
                 ReservationSubmitForm reservationSubmitForm =
                         queryFactory.selectDistinct(submitForm)
                                 .from(submitForm)
                                 .innerJoin(submitForm.reservationAnswerList,answer).fetchJoin()
-                                .innerJoin(submitForm.member, member).fetchJoin()
                                 .where(submitForm.status.eq(ReservationStatus.SERVICE_COMPLETED),submitForm.id.eq(reservationId))
                                 .fetchOne();
 

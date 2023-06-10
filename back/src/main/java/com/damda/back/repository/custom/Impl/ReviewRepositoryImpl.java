@@ -41,8 +41,6 @@ public class ReviewRepositoryImpl implements ReviewCustomRepository {
 	@Override
 	public List<Review> reviewList(){
 		QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
-		QMember member = QMember.member;
-		QReservationAnswer answer = QReservationAnswer.reservationAnswer;
 		QReview review = QReview.review;
 		QImage image = QImage.image;
 
@@ -51,8 +49,6 @@ public class ReviewRepositoryImpl implements ReviewCustomRepository {
 						.from(review)
 						.innerJoin(review.reservationSubmitForm,submitForm).fetchJoin()
 						.innerJoin(review.reviewImage,image).fetchJoin()
-						.leftJoin(submitForm.reservationAnswerList,answer)
-						.leftJoin(submitForm.member,member)
 						.where(review.status.eq(true));
 
 		List<Review> list = query1.fetch();
