@@ -32,6 +32,12 @@ public class Review extends BaseEntity{
 		this.status=true;
 		this.best=false;
 	}
+	public void reviewDelete(){
+		this.content=null;
+		this.title=null;
+		this.status=false;
+		this.best=false;
+	}
 
 	public void setBestReview(boolean best){
 		this.best=best;

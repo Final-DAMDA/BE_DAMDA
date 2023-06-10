@@ -202,6 +202,33 @@ public class ReviewServiceImpl implements ReviewService {
 	}
 
 	/**
+	 * @apiNote: 이미지 삭제
+	 */
+	@Override
+	@Transactional(isolation = Isolation.REPEATABLE_READ)
+	public boolean deleteReviewImage(Long imageId) {
+		Optional<Image> image = imageRepository.findById(imageId);
+		nullCheck(image);
+		s3Service.deleteFile(image.get().getImgName());
+		imageRepository.deleteById(imageId);
+		return true;
+	}
+
+	/**
+	 * @apiNote: 리뷰 삭제
+	 */
+	@Override
+	public boolean deleteReview(Long reviewId) {
+		Optional<Review> review = reviewRepository.findById(reviewId);
+		nullCheck(review);
+
+		Review deleteReview=review.get();
+		deleteReview.reviewDelete();
+		reviewRepository.save(deleteReview);
+		return true;
+	}
+
+	/**
 	 * @apiNote: 베스트 리뷰 저장
 	 */
 	@Override

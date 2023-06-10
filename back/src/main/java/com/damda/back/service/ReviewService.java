@@ -22,4 +22,6 @@ public interface ReviewService {
 	List<ReviewListUserDTO> listReview();
 	boolean selectBestReview(Long reviewId);
 	ReviewListUserDTO findBestReview();
+	boolean deleteReviewImage(Long imageId);
+	boolean deleteReview(Long reviewId);
 }

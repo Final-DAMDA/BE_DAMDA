@@ -167,6 +167,40 @@ public class ReviewController {
 				.body(commonResponse);
 	}
 
+	/**
+	 * @apiNote: 이미지 삭제
+	 */
+	@DeleteMapping("/review/image/{imageId}")
+	public ResponseEntity<CommonResponse<?>> deleteReviewImage(@PathVariable("imageId")Long imageId){
+		CommonResponse<?> commonResponse = CommonResponse
+				.builder()
+				.codeEnum(CodeEnum.SUCCESS)
+				.data(reviewService.deleteReviewImage(imageId))
+				.build();
+
+		return ResponseEntity
+				.status(commonResponse.getStatus())
+				.body(commonResponse);
+	}
+
+	/**
+	 * @apiNote: 리뷰삭제
+	 */
+	@DeleteMapping("/review/{reviewId}")
+	public ResponseEntity<CommonResponse<?>> deleteReview(@PathVariable("reviewId")Long reviewId){
+		CommonResponse<?> commonResponse = CommonResponse
+				.builder()
+				.codeEnum(CodeEnum.SUCCESS)
+				.data(reviewService.deleteReview(reviewId))
+				.build();
+
+		return ResponseEntity
+				.status(commonResponse.getStatus())
+				.body(commonResponse);
+	}
+
+
+
 
 
 }
