@@ -10,4 +10,6 @@ public interface ReviewCustomRepository {
 	Optional<Review> serviceCompleteWithImages(Long reservationId);
 	List<Review> reviewList();
 	Optional<Review> findByReservationId(Long reservationId);
+	Optional<Review> findByBestReview();
+	Optional<Review> findByBestReviewUser();
 }

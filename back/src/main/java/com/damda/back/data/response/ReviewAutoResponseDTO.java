@@ -19,4 +19,6 @@ public class ReviewAutoResponseDTO {
 	private String reservationDate;
 	private Map<Long, String> before;
 	private Map<Long, String> after;
+
+
 }

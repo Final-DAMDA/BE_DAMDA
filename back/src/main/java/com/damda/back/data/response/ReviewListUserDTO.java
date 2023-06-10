@@ -3,6 +3,7 @@ package com.damda.back.data.response;
 import lombok.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
@@ -17,6 +18,7 @@ public class ReviewListUserDTO {
 	private List<String> before;
 	private List<String> after;
 	private boolean bestReview;
+
 
 
 }

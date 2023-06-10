@@ -7,6 +7,7 @@ import com.damda.back.data.common.ReservationStatus;
 import com.damda.back.data.request.ReviewRequestDTO;
 import com.damda.back.data.request.ServiceCompleteRequestDTO;
 import com.damda.back.data.response.ReviewAutoResponseDTO;
+import com.damda.back.data.response.ReviewListUserDTO;
 import com.damda.back.data.response.ServiceCompleteInfoDTO;
 import com.damda.back.domain.*;
 import com.damda.back.exception.CommonException;
@@ -128,6 +129,112 @@ public class ReviewServiceImpl implements ReviewService {
 	}
 
 	/***
+	 * @apiNote : 유저 리뷰리스트 조회
+	 * @return
+	 */
+	@Override
+	@Transactional(isolation = Isolation.REPEATABLE_READ)
+	public List<ReviewListUserDTO> listReview() {
+		List<Review> reviews = reviewRepository.reviewList();
+		List<ReviewListUserDTO> reviewListUserDTOS=new ArrayList<>();
+		for(Review review:reviews){
+			ReservationSubmitForm reservation = review.getReservationSubmitForm();
+			List<ReservationAnswer> answers =  reservation.getReservationAnswerList();
+			Map<QuestionIdentify, String> answerMap
+					= answers.stream().collect(Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
+			List<Image> images = review.getReviewImage();
+			List<String>before = new ArrayList<>();
+			List<String>after = new ArrayList<>();
+			for(Image image : images){
+				if(image.getImgType().equals(ImageType.BEFORE)){
+					before.add(image.getImgUrl());
+				}else{
+					after.add(image.getImgUrl());
+				}
+			}
+			ReviewListUserDTO reviewListUserDTO = ReviewListUserDTO.
+					builder()
+					.name(answerMap.get(QuestionIdentify.APPLICANTNAME))
+					.address(answerMap.get(QuestionIdentify.ADDRESS))
+					.date(answerMap.get(QuestionIdentify.SERVICEDATE))
+					.title(review.getTitle())
+					.content(review.getContent())
+					.before(before)
+					.after(after)
+					.build();
+			reviewListUserDTOS.add(reviewListUserDTO);
+		}
+		return reviewListUserDTOS;
+	}
+
+	@Override
+	@Transactional(isolation = Isolation.REPEATABLE_READ)
+	public ReviewListUserDTO findBestReview(){
+		Optional<Review> bestReview = reviewRepository.findByBestReviewUser();
+		if(bestReview.isEmpty()){
+			throw new CommonException(ErrorCode.NOT_FOUND_BEST_REVIEW);
+		}
+		ReservationSubmitForm reservation = bestReview.get().getReservationSubmitForm();
+		List<ReservationAnswer> answers =  reservation.getReservationAnswerList();
+		Map<QuestionIdentify, String> answerMap
+				= answers.stream().collect(Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
+		List<Image> images = bestReview.get().getReviewImage();
+		List<String>before = new ArrayList<>();
+		List<String>after = new ArrayList<>();
+		for(Image image : images){
+			if(image.getImgType().equals(ImageType.BEFORE)){
+				before.add(image.getImgUrl());
+			}else{
+				after.add(image.getImgUrl());
+			}
+		}
+		ReviewListUserDTO bestReviewDTO = ReviewListUserDTO.
+				builder()
+				.name(answerMap.get(QuestionIdentify.APPLICANTNAME))
+				.address(answerMap.get(QuestionIdentify.ADDRESS))
+				.date(answerMap.get(QuestionIdentify.SERVICEDATE))
+				.title(bestReview.get().getTitle())
+				.content(bestReview.get().getContent())
+				.before(before)
+				.after(after)
+				.build();
+		return bestReviewDTO;
+	}
+
+	/**
+	 * @apiNote: 베스트 리뷰 저장
+	 * @param reviewId
+	 */
+	@Override
+	@Transactional(isolation = Isolation.REPEATABLE_READ)
+	public void selectBestReview(Long reviewId) {
+		Optional<Review> review=reviewRepository.findById(reviewId);
+		nullCheck(review);
+
+		Optional<Review> oldBestReview = reviewRepository.findByBestReview();
+		if(oldBestReview.isPresent()){ //이미 베스트 리뷰가 있을경우 원래 베스트리뷰 내리기
+			Review beforeBestReview = oldBestReview.get();
+			beforeBestReview.setBestReview(false);
+			try{
+				reviewRepository.save(beforeBestReview);
+			}catch (Exception e){
+				throw new CommonException(ErrorCode.ERROR_BEST_REVIEW_COMPLETE);
+			}
+		}
+		//새로운 베스트 리뷰 업데이트
+		Review newBestReview = review.get();
+		newBestReview.setBestReview(true);
+		try{
+			reviewRepository.save(newBestReview);
+		}catch (Exception e){
+			throw new CommonException(ErrorCode.ERROR_BEST_REVIEW_COMPLETE);
+		}
+
+	}
+
+
+
+	/***
 	 * @apiNote : 리뷰 업로드
 	 * @param reservationId
 	 * @param reviewRequestDTO
@@ -147,6 +254,8 @@ public class ReviewServiceImpl implements ReviewService {
 		}
 	}
 
+
+
 	/**
 	 * @apiNote: null 체크
 	 * @param data
@@ -157,10 +266,15 @@ public class ReviewServiceImpl implements ReviewService {
 		}
 	}
 
+	/**
+	 * @apiNote: 이미지 저장
+	 * @param serviceComplete
+	 * @param before
+	 * @param after
+	 */
 
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
-	@Override
-	public void saveImage(Review serviceComplete, List<MultipartFile> before, List<MultipartFile> after) {
+	void saveImage(Review serviceComplete, List<MultipartFile> before, List<MultipartFile> after) {
 		List<String> beforeNameList = s3Service.uploadFile(before, ImageType.BEFORE.toString());
 		List<String> beforeUrlList = s3Service.uploadFileUrl(beforeNameList, ImageType.BEFORE.toString());
 		List<String> afterNameList = s3Service.uploadFile(after, ImageType.AFTER.toString());
@@ -202,6 +316,7 @@ public class ReviewServiceImpl implements ReviewService {
 		}
 
 	}
+
 
 
 }

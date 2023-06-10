@@ -33,4 +33,8 @@ public class Review extends BaseEntity{
 		this.best=false;
 	}
 
+	public void setBestReview(boolean best){
+		this.best=best;
+	}
+
 }

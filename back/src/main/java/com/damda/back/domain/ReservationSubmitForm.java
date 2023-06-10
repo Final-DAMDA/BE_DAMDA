@@ -54,6 +54,9 @@ public class ReservationSubmitForm extends BaseEntity{
     @BatchSize(size = 100)
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "reservationForm")
     private List<Match> matches = new ArrayList<>();
+
+
+
     public void addAnswer(ReservationAnswer answer){
         answer.changeForm(this);
         this.reservationAnswerList.add(answer);

@@ -113,5 +113,39 @@ public class ReviewController {
 				.body(commonResponse);
 	}
 
+	/**
+	 * @apiNote: 리뷰 리스트(유저)
+	 */
+	@GetMapping("/user/review/list")
+	public ResponseEntity<CommonResponse<?>> reviewList(){
+
+		CommonResponse<?> commonResponse = CommonResponse
+				.builder()
+				.codeEnum(CodeEnum.SUCCESS)
+				.data(reviewService.listReview())
+				.build();
+
+		return ResponseEntity
+				.status(commonResponse.getStatus())
+				.body(commonResponse);
+	}
+
+	/**
+	 * @apiNote: 베스트 리뷰 저장
+	 * @return
+	 */
+	@PostMapping("/review/best")
+	public ResponseEntity<CommonResponse<?>> bestReviewChoice(){
+
+		CommonResponse<?> commonResponse = CommonResponse
+				.builder()
+				.codeEnum(CodeEnum.SUCCESS)
+				.data(reviewService.listReview())
+				.build();
+
+		return ResponseEntity
+				.status(commonResponse.getStatus())
+				.body(commonResponse);
+	}
 
 }

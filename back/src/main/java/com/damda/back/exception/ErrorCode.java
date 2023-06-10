@@ -23,6 +23,8 @@ public enum ErrorCode {
     ERROR_SERVICE_COMPLETE(HttpStatus.INTERNAL_SERVER_ERROR,"서비스 완료 폼 저장 중에 에러가 발생했습니다. "),
     ERROR_IMAGE_COMPLETE(HttpStatus.INTERNAL_SERVER_ERROR,"이미지 저장 중에 에러가 발생했습니다. "),
     ERROR_REVIEW_COMPLETE(HttpStatus.INTERNAL_SERVER_ERROR,"리뷰 저장 중에 에러가 발생했습니다. "),
+    ERROR_BEST_REVIEW_COMPLETE(HttpStatus.INTERNAL_SERVER_ERROR,"리뷰 저장 중에 에러가 발생했습니다. "),
+    NOT_FOUND_BEST_REVIEW(HttpStatus.BAD_REQUEST,"지정된 베스트리뷰가 없습니다. "),
     SUBMITTED_SERVICE_COMPLETE(HttpStatus.BAD_REQUEST,"이미 서비스 완료폼이 제출되었습니다. ");
 
 
