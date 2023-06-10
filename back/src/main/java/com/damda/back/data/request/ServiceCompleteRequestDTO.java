@@ -23,7 +23,7 @@ public class ServiceCompleteRequestDTO {
 		return Review
 				.builder()
 				.reservationSubmitForm(reservationSubmitForm)
-				.submit(true)
+				.status(false)
 				.build();
 	}
 

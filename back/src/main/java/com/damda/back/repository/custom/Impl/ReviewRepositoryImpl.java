@@ -1,9 +1,9 @@
 package com.damda.back.repository.custom.Impl;
 
-import com.damda.back.domain.QImage;
-import com.damda.back.domain.QReview;
-import com.damda.back.domain.Review;
+import com.damda.back.data.common.ReservationStatus;
+import com.damda.back.domain.*;
 import com.damda.back.repository.custom.ReviewCustomRepository;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -37,5 +37,26 @@ public class ReviewRepositoryImpl implements ReviewCustomRepository {
 				.fetchOne();
 
 		return Optional.ofNullable(review);
+	}
+
+	@Override
+	public List<Review> serviceCompleteList(){
+		QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
+		QMember member = QMember.member;
+		QReservationAnswer answer = QReservationAnswer.reservationAnswer;
+		QReview review = QReview.review;
+		QImage image = QImage.image;
+
+		JPAQuery<Review> query1 =
+				queryFactory.selectDistinct(review)
+						.from(review)
+						.innerJoin(review.reservationSubmitForm,submitForm).fetchJoin()
+						.innerJoin(review.reviewImage,image).fetchJoin().fetchJoin()
+						.leftJoin(submitForm.reservationAnswerList,answer)
+						.leftJoin(submitForm.member,member)
+						.where(submitForm.status.eq(ReservationStatus.SERVICE_COMPLETED),review.status.eq(true));
+
+		List<Review> list = query1.fetch();
+		return list;
 	}
 }

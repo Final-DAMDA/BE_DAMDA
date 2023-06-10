@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface ReviewCustomRepository {
 	boolean existReservation(Long reservationId);
 	Optional<Review> serviceCompleteWithImages(Long reservationId);
+	List<Review> serviceCompleteList();
 }

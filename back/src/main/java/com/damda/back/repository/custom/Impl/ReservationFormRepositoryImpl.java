@@ -7,6 +7,7 @@ import com.damda.back.repository.custom.ReservationFormCustomRepository;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Wildcard;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -147,6 +148,7 @@ public class ReservationFormRepositoryImpl implements ReservationFormCustomRepos
                 QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
                 QMember member = QMember.member;
                 QReservationAnswer answer = QReservationAnswer.reservationAnswer;
+                QReview review = QReview.review;
 
                 JPAQuery<ReservationSubmitForm> query =
                         queryFactory.selectDistinct(submitForm)
@@ -154,6 +156,8 @@ public class ReservationFormRepositoryImpl implements ReservationFormCustomRepos
                                 .innerJoin(submitForm.reservationAnswerList,answer).fetchJoin()
                                 .innerJoin(submitForm.member, member).fetchJoin()
                                 .where(submitForm.status.eq(ReservationStatus.SERVICE_COMPLETED));
+
+
 
                 List<ReservationSubmitForm> list = query.fetch();
                 return list;

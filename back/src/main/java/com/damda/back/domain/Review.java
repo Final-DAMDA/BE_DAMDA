@@ -18,7 +18,7 @@ public class Review extends BaseEntity{
 	private String title;
 	private String content;
 	private Boolean best;
-	private boolean submit;
+	private boolean status;
 	@OneToOne
 	@JoinColumn(name = "reservation_submit_form_id") // 외래 키
 	private ReservationSubmitForm reservationSubmitForm;

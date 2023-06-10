@@ -5,6 +5,7 @@ import com.damda.back.data.common.CodeEnum;
 import com.damda.back.data.common.CommonResponse;
 import com.damda.back.data.common.ImageType;
 import com.damda.back.data.request.ServiceCompleteRequestDTO;
+import com.damda.back.repository.ReviewRepository;
 import com.damda.back.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -73,7 +74,26 @@ public class ReviewController {
 				.body(commonResponse);
 	}
 
+	/***
+	 * @apiNote: 리뷰 불러오기(더블클릭하면 선택됨)
+	 * @param id
+	 * @return
+	 */
+
 	@GetMapping("/review/auto/{id}")
+	public ResponseEntity<CommonResponse<?>> reviewChoice(@PathVariable Long id){
+		CommonResponse<?> commonResponse = CommonResponse
+				.builder()
+				.codeEnum(CodeEnum.SUCCESS)
+				.data(reviewService.selectReviewData(id))
+				.build();
+
+		return ResponseEntity
+				.status(commonResponse.getStatus())
+				.body(commonResponse);
+	}
+
+	@PostMapping("/review/auto/{id}")
 	public ResponseEntity<CommonResponse<?>> reviewUpload(@PathVariable Long id){
 		CommonResponse<?> commonResponse = CommonResponse
 				.builder()
