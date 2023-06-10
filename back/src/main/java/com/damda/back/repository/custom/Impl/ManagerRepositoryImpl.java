@@ -15,11 +15,11 @@ public class ManagerRepositoryImpl implements ManagerCustomRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public List<DistrictEnum> districtEnumList(){
-        QManager manager = QManager.manager;
-
-        return queryFactory.select(manager.activityArea)
-                .from(manager)
-                .fetch();
-    }
+    // public List<DistrictEnum> districtEnumList(){
+    //     QManager manager = QManager.manager;
+    //
+    //     return queryFactory.select(manager.activityArea)
+    //             .from(manager)
+    //             .fetch();
+    // }
 }
