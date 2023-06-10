@@ -18,8 +18,8 @@ public interface ReviewService {
 	ReservationSubmitForm checkServiceComplete(Long reservationId);
 	List<ServiceCompleteInfoDTO> listServiceComplete();
 	ReviewAutoResponseDTO selectReviewData(Long reservationId);
-	void uploadReview(Long reservationId, ReviewRequestDTO reviewRequestDTO);
+	boolean uploadReview(Long reservationId, ReviewRequestDTO reviewRequestDTO);
 	List<ReviewListUserDTO> listReview();
-	void selectBestReview(Long reviewId);
+	boolean selectBestReview(Long reviewId);
 	ReviewListUserDTO findBestReview();
 }

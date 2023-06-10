@@ -53,7 +53,8 @@ public class ReviewServiceImpl implements ReviewService {
 			throw new CommonException(ErrorCode.ERROR_SERVICE_COMPLETE);
 		}
 
-		saveImage(serviceComplete,serviceCompleteRequestDTO.getBefore(),serviceCompleteRequestDTO.getAfter());
+		saveImage(serviceComplete,serviceCompleteRequestDTO.getBefore(),ImageType.BEFORE);
+		saveImage(serviceComplete,serviceCompleteRequestDTO.getAfter(),ImageType.AFTER);
 
 		return true;
 	}
@@ -130,7 +131,6 @@ public class ReviewServiceImpl implements ReviewService {
 
 	/***
 	 * @apiNote : 유저 리뷰리스트 조회
-	 * @return
 	 */
 	@Override
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
@@ -203,11 +203,10 @@ public class ReviewServiceImpl implements ReviewService {
 
 	/**
 	 * @apiNote: 베스트 리뷰 저장
-	 * @param reviewId
 	 */
 	@Override
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
-	public void selectBestReview(Long reviewId) {
+	public boolean selectBestReview(Long reviewId) {
 		Optional<Review> review=reviewRepository.findById(reviewId);
 		nullCheck(review);
 
@@ -229,36 +228,40 @@ public class ReviewServiceImpl implements ReviewService {
 		}catch (Exception e){
 			throw new CommonException(ErrorCode.ERROR_BEST_REVIEW_COMPLETE);
 		}
-
+		return true;
 	}
 
 
 
 	/***
 	 * @apiNote : 리뷰 업로드
-	 * @param reservationId
-	 * @param reviewRequestDTO
 	 */
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	@Override
-	public void uploadReview(Long reservationId, ReviewRequestDTO reviewRequestDTO) {
+	public boolean uploadReview(Long reservationId, ReviewRequestDTO reviewRequestDTO) {
 		Optional<Review> review = reviewRepository.findByReservationId(reservationId);
 		nullCheck(review);
-
 		Review uploadReview = review.get();
 		uploadReview.reviewUpload(reviewRequestDTO);
+
+		if(reviewRequestDTO.getBefore()!=null){
+			saveImage(uploadReview,reviewRequestDTO.getBefore(),ImageType.BEFORE);
+		}
+		if(reviewRequestDTO.getAfter()!=null){
+			saveImage(uploadReview,reviewRequestDTO.getAfter(),ImageType.AFTER);
+		}
+
 		try {
 			reviewRepository.save(uploadReview);
 		}catch (Exception e){
 			throw new CommonException(ErrorCode.ERROR_REVIEW_COMPLETE);
 		}
+		return true;
 	}
-
 
 
 	/**
 	 * @apiNote: null 체크
-	 * @param data
 	 */
 	private void nullCheck(Optional<?> data){
 		if(data.isEmpty()){
@@ -268,49 +271,29 @@ public class ReviewServiceImpl implements ReviewService {
 
 	/**
 	 * @apiNote: 이미지 저장
-	 * @param serviceComplete
-	 * @param before
-	 * @param after
 	 */
-
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
-	void saveImage(Review serviceComplete, List<MultipartFile> before, List<MultipartFile> after) {
-		List<String> beforeNameList = s3Service.uploadFile(before, ImageType.BEFORE.toString());
-		List<String> beforeUrlList = s3Service.uploadFileUrl(beforeNameList, ImageType.BEFORE.toString());
-		List<String> afterNameList = s3Service.uploadFile(after, ImageType.AFTER.toString());
-		List<String> afterUrlList = s3Service.uploadFileUrl(afterNameList, ImageType.AFTER.toString());
+	void saveImage(Review serviceComplete, List<MultipartFile> images, ImageType imageType) {
+		List<String> imageNameList = s3Service.uploadFile(images, imageType.toString());
+		List<String> imageUrlList = s3Service.uploadFileUrl(imageNameList, imageType.toString());
 
-		List<Image> beforeImages = IntStream.range(0, beforeNameList.size())
+		List<Image> saveImages = IntStream.range(0, imageNameList.size())
 				.mapToObj(i -> {
-					String imgName = beforeNameList.get(i);
-					String imgUrl = beforeUrlList.get(i);
+					String imgName = imageNameList.get(i);
+					String imgUrl = imageUrlList.get(i);
 					Image image = Image.builder()
 							.imgName(imgName)
 							.imgUrl(imgUrl)
 							.review(serviceComplete)
-							.imgType(ImageType.BEFORE)
-							.build();
-					return image;
-				})
-				.collect(Collectors.toList());
-
-		List<Image> afterImages = IntStream.range(0, afterNameList.size())
-				.mapToObj(i -> {
-					String imgName = afterNameList.get(i);
-					String imgUrl = afterUrlList.get(i);
-					Image image = Image.builder()
-							.imgName(imgName)
-							.imgUrl(imgUrl)
-							.review(serviceComplete)
-							.imgType(ImageType.AFTER)
+							.imgType(imageType)
 							.build();
 					return image;
 				})
 				.collect(Collectors.toList());
 
 		try{
-			imageRepository.saveAll(beforeImages);
-			imageRepository.saveAll(afterImages);
+			imageRepository.saveAll(saveImages);
+
 		} catch(Exception e){
 			throw new CommonException(ErrorCode.ERROR_IMAGE_COMPLETE);
 		}
