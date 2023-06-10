@@ -103,19 +103,20 @@ public class ReviewServiceImpl implements ReviewService {
 	}
 
 	/**
-	 * @apiNote: 리뷰쓰기 전 서비스 완료리스트에서 선택
+	 * @apiNote: 리뷰쓰기 전 서비스 완료 리스트에서 선택
 	 */
 	@Override
+	@Transactional(readOnly = true)
 	public ReviewAutoResponseDTO selectReviewData(Long reservationId) {
-		Optional<ReservationSubmitForm> reservation = reservationFormRepository.serviceComplete(reservationId);
-		nullCheck(reservation);
+		Optional<Review> review = reviewRepository.serviceCompleteWithImages(reservationId);
+		if(review.isEmpty()){
+			throw new CommonException(ErrorCode.SUBMITTED_REVIEW_COMPLETE);
+		}
 
-		List<ReservationAnswer> answers =  reservation.get().getReservationAnswerList();
+		List<ReservationAnswer> answers =  review.get().getReservationSubmitForm().getReservationAnswerList();
 		Map<QuestionIdentify, String> answerMap
 				= answers.stream().collect(Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
 
-		Optional<Review> review = reviewRepository.serviceCompleteWithImages(reservationId);
-		nullCheck(review);
 		List<Image> images = review.get().getReviewImage();
 		Map<Long, String> before = new HashMap<>();
 		Map<Long, String> after = new HashMap<>();
@@ -127,7 +128,7 @@ public class ReviewServiceImpl implements ReviewService {
 			}
 		}
 		ReviewAutoResponseDTO responseDTO = ReviewAutoResponseDTO.builder()
-				.reservationId(reservation.get().getId())
+				.reservationId(review.get().getReservationSubmitForm().getId())
 				.name(answerMap.get(QuestionIdentify.APPLICANTNAME))
 				.address(answerMap.get(QuestionIdentify.ADDRESS))
 				.reservationDate(answerMap.get(QuestionIdentify.SERVICEDATE))
@@ -136,6 +137,35 @@ public class ReviewServiceImpl implements ReviewService {
 				.build();
 
 		return responseDTO;
+	}
+
+
+	/**
+	 * @apiNote: Review 리스트 어드민
+	 */
+	@Override
+	@Transactional(readOnly = true)
+	public List<ReviewListAdminDTO> listReviewAdmin() {
+		List<Review> reviews = reviewRepository.reviewList();
+		List<ReviewListAdminDTO> reviewListAdminDTOS=new ArrayList<>();
+		for(Review review:reviews){
+			ReservationSubmitForm reservation = review.getReservationSubmitForm();
+			List<ReservationAnswer> answers =  reservation.getReservationAnswerList();
+			Map<QuestionIdentify, String> answerMap
+					= answers.stream().collect(Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
+
+			ReviewListAdminDTO reviewListAdminDTO = ReviewListAdminDTO.builder()
+					.reviewId(review.getId())
+					.name(answerMap.get(QuestionIdentify.APPLICANTNAME))
+					.address(answerMap.get(QuestionIdentify.ADDRESS))
+					.title(review.getTitle())
+					.content(review.getContent())
+					.createAt(review.getUpdatedAt().toString())
+					.best(review.getBest())
+					.build();
+			reviewListAdminDTOS.add(reviewListAdminDTO);
+		}
+		return reviewListAdminDTOS;
 	}
 
 	/***
@@ -170,6 +200,7 @@ public class ReviewServiceImpl implements ReviewService {
 					.content(review.getContent())
 					.before(before)
 					.after(after)
+					.bestReview(review.getBest())
 					.build();
 			reviewListUserDTOS.add(reviewListUserDTO);
 		}
@@ -206,6 +237,7 @@ public class ReviewServiceImpl implements ReviewService {
 				.content(bestReview.get().getContent())
 				.before(before)
 				.after(after)
+				.bestReview(bestReview.get().getBest())
 				.build();
 		return bestReviewDTO;
 	}
@@ -266,6 +298,8 @@ public class ReviewServiceImpl implements ReviewService {
 		}
 		return true;
 	}
+
+
 
 
 
@@ -336,33 +370,6 @@ public class ReviewServiceImpl implements ReviewService {
 
 	}
 
-	/**
-	 * @apiNote: Review 리스트 어드민
-	 */
-	@Override
-	@Transactional(readOnly = true)
-	public List<ReviewListAdminDTO> listReviewAdmin() {
-		List<Review> reviews = reviewRepository.reviewList();
-		List<ReviewListAdminDTO> reviewListAdminDTOS=new ArrayList<>();
-		for(Review review:reviews){
-			ReservationSubmitForm reservation = review.getReservationSubmitForm();
-			List<ReservationAnswer> answers =  reservation.getReservationAnswerList();
-			Map<QuestionIdentify, String> answerMap
-					= answers.stream().collect(Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
-
-			ReviewListAdminDTO reviewListAdminDTO = ReviewListAdminDTO.builder()
-													.reviewId(review.getId())
-													.name(answerMap.get(QuestionIdentify.APPLICANTNAME))
-													.address(answerMap.get(QuestionIdentify.ADDRESS))
-													.title(review.getTitle())
-													.content(review.getContent())
-													.createAt(review.getUpdatedAt().toString())
-													.best(review.getBest())
-													.build();
-			reviewListAdminDTOS.add(reviewListAdminDTO);
-		}
-		return reviewListAdminDTOS;
-	}
 
 
 

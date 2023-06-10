@@ -152,7 +152,7 @@ public class ReviewController {
 	 * @apiNote: 베스트 리뷰 저장
 	 * @return
 	 */
-	@PostMapping("/review/best/{reviewId}")
+	@PutMapping("/review/best/{reviewId}")
 	public ResponseEntity<CommonResponse<?>> bestReviewChoice(@PathVariable Long reviewId){
 		CommonResponse<?> commonResponse = CommonResponse
 				.builder()

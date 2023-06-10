@@ -28,11 +28,13 @@ public class ReviewRepositoryImpl implements ReviewCustomRepository {
 	public Optional<Review> serviceCompleteWithImages(Long reservationId) {
 		QReview qReview = QReview.review;
 		QImage qReviewImage = QImage.image;
+		QReservationSubmitForm qReservationSubmitForm = QReservationSubmitForm.reservationSubmitForm;
 
 		Review review = queryFactory.selectDistinct(qReview)
 				.from(qReview)
 				.innerJoin(qReview.reviewImage, qReviewImage).fetchJoin()
-				.where(qReview.reservationSubmitForm.id.eq(reservationId))
+				.innerJoin(qReview.reservationSubmitForm, qReservationSubmitForm).fetchJoin()
+				.where(qReview.reservationSubmitForm.id.eq(reservationId),qReview.status.eq(false))
 				.fetchOne();
 
 		return Optional.ofNullable(review);
@@ -61,7 +63,7 @@ public class ReviewRepositoryImpl implements ReviewCustomRepository {
 
 		Review review = queryFactory.selectDistinct(qReview)
 				.from(qReview)
-				.where(qReview.reservationSubmitForm.id.eq(reservationId))
+				.where(qReview.reservationSubmitForm.id.eq(reservationId),qReview.status.eq(false))
 				.fetchOne();
 
 		return Optional.ofNullable(review);
