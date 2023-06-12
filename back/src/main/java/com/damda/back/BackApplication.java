@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Profile;
 import java.util.List;
 
 @SpringBootApplication
-public class BackApplication implements CommandLineRunner{
+public class BackApplication {
 
 	@Profile("dev")
 	@Bean
@@ -212,31 +212,12 @@ public class BackApplication implements CommandLineRunner{
 	}
 
 
-	@Autowired
-	private MemberRepository memberRepository;
 	public static void main(String[] args) {
 
 		SpringApplication.run(BackApplication.class, args);
 	}
 
-	@Override
-	public void run(String... args) throws Exception {
-		// 더미 데이터 생성
-		createDummyData();
-	}
-	private void createDummyData() {
-		Member member = Member.builder()
-				.gender("여")
-				.address("경기도 시흥시")
-				.profileImage("image.png")
-				.role(MemberRole.USER)
-				.password("aaa")
-				.username("hi")
-				.phoneNumber("010-1234-4321")
-				.build();
-		memberRepository.save(member);
 
-	}
 
 
 }
