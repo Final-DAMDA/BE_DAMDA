@@ -15,7 +15,10 @@ import java.util.List;
 @AllArgsConstructor
 public class ManagerApplicationDTO {
 
+    private String name;
+    private String phone;
     private List<Boolean> activityDay;//(월~일 boolean만 보냄)
+
     private List<String> activityCity;
     private List<String> activityDistrict;
     private String certificateStatus;
@@ -31,6 +34,8 @@ public class ManagerApplicationDTO {
 
     public Manager toManagerEntity(Member manager) { //TODO: 매니저 상태값 체크
         return Manager.builder()
+                .managerName(name)
+                .managerPhoneNumber(phone)
                 .certificateStatusEtc(certificateStatusEtc)
                 .certificateStatus(CertificateStatusEnum.valueOf(certificateStatus))
                 .vehicle(vehicle)
