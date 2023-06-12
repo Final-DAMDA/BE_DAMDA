@@ -6,6 +6,8 @@ import com.damda.back.data.response.*;
 import com.damda.back.domain.ReservationSubmitForm;
 import com.damda.back.domain.Review;
 import com.damda.back.domain.ServiceComplete;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -14,7 +16,7 @@ import java.util.Optional;
 public interface ReviewService {
 	boolean uploadServiceComplete(Long reservationId,ServiceCompleteRequestDTO serviceCompleteRequestDTO);
 	ServiceCompleteResponseDTO checkServiceComplete(Long reservationId);
-	List<ServiceCompleteInfoDTO> listServiceComplete();
+	Page<ServiceCompleteInfoDTO> listServiceComplete(Pageable pageable);
 	ReviewAutoResponseDTO selectReviewData(Long reservationId);
 	boolean uploadReview(Long reservationId, ReviewRequestDTO reviewRequestDTO);
 	List<ReviewListUserDTO> listReview();

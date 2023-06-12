@@ -7,6 +7,8 @@ import com.damda.back.data.request.ReviewRequestDTO;
 import com.damda.back.data.request.ServiceCompleteRequestDTO;
 import com.damda.back.service.ReviewService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -61,11 +63,14 @@ public class ReviewController {
 	 * @apiNote: 서비스 완료 폼 제출된 고객 리스트 조회 (리뷰 작성 안 되어 있는)
 	 */
 	@GetMapping("/service/complete/list")
-	public ResponseEntity<CommonResponse<?>> serviceCompleteList(){
+	public ResponseEntity<CommonResponse<?>> serviceCompleteList(@RequestParam(name = "page", defaultValue = "0") int page,
+																 @RequestParam(name = "size", defaultValue = "8") int size){
+
+		Pageable pageable = PageRequest.of(page, size);
 		CommonResponse<?> commonResponse = CommonResponse
 				.builder()
 				.codeEnum(CodeEnum.SUCCESS)
-				.data(reviewService.listServiceComplete())
+				.data(reviewService.listServiceComplete(pageable))
 				.build();
 
 		return ResponseEntity

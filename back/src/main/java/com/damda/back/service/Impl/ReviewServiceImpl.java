@@ -15,6 +15,9 @@ import com.damda.back.repository.ReviewRepository;
 import com.damda.back.service.ReviewService;
 import com.damda.back.service.S3Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -88,16 +91,15 @@ public class ReviewServiceImpl implements ReviewService {
 	 */
 	@Override
 	@Transactional(readOnly = true)
-	public List<ServiceCompleteInfoDTO> listServiceComplete() {
-		List<ReservationSubmitForm> completeList = reservationFormRepository.serviceCompleteList();
-		List<ServiceCompleteInfoDTO> dtoList = new ArrayList<>();
-		for(ReservationSubmitForm submitForm : completeList){
+	public Page<ServiceCompleteInfoDTO> listServiceComplete(Pageable pageable) {
+		Page<ReservationSubmitForm> completeList = reservationFormRepository.serviceCompleteList(pageable);
 
+		List<ServiceCompleteInfoDTO> dtoList = completeList.stream().map(submitForm -> {
 			Member member = submitForm.getMember();
-			List<ReservationAnswer> answers =  submitForm.getReservationAnswerList();
-			Map<QuestionIdentify, String> answerMap
-					= answers.stream().collect(Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
-			ServiceCompleteInfoDTO dto =new ServiceCompleteInfoDTO();
+			List<ReservationAnswer> answers = submitForm.getReservationAnswerList();
+			Map<QuestionIdentify, String> answerMap = answers.stream()
+					.collect(Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
+			ServiceCompleteInfoDTO dto = new ServiceCompleteInfoDTO();
 			dto.setAddress(answerMap.get(QuestionIdentify.ADDRESS));
 			dto.setName(member.getUsername());
 			dto.setCreatedAt(submitForm.getCreatedAt().toString());
@@ -108,9 +110,11 @@ public class ReviewServiceImpl implements ReviewService {
 			dto.setPayMentStatus(submitForm.getPayMentStatus());
 			dto.setReservationDate(answerMap.get(QuestionIdentify.SERVICEDATE));
 			dto.setReservationId(submitForm.getId());
-			dtoList.add(dto);
-		}
-		return dtoList;
+			return dto;
+		}).collect(Collectors.toList());
+
+		Page<ServiceCompleteInfoDTO> resultPage = new PageImpl<>(dtoList, pageable, completeList.getTotalElements());
+		return resultPage;
 	}
 
 	/**
