@@ -5,6 +5,7 @@ import com.damda.back.data.response.ManagerResponseDTO;
 import com.damda.back.domain.Member;
 import com.damda.back.domain.area.Area;
 import com.damda.back.domain.manager.ActivityDay;
+import com.damda.back.domain.manager.AreaManager;
 import com.damda.back.domain.manager.Manager;
 import com.damda.back.exception.CommonException;
 import com.damda.back.exception.ErrorCode;
@@ -34,7 +35,7 @@ public class ManagerServiceImpl implements ManagerService {
 
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.REPEATABLE_READ, readOnly = true)
     public boolean managerCreate(ManagerApplicationDTO dto, Integer memberId) {
 
         Optional<Member> member = memberRepository.findById(memberId);
@@ -60,7 +61,7 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    @Transactional(isolation = Isolation.REPEATABLE_READ, readOnly = true)
+    @Transactional(readOnly = true)
     public List<ManagerResponseDTO> managerResponseDTOList() {
 
         List<ManagerResponseDTO> managerResponseDTOList = new ArrayList<>();
@@ -71,8 +72,17 @@ public class ManagerServiceImpl implements ManagerService {
                     .id(manager.getId())
                     .managerName(manager.getManagerName())
                     .managerPhoneNumber(manager.getManagerPhoneNumber())
+                    .address(manager.getMember().getAddress())
+                    .level(manager.getLevel())
+                    .certificateStatus(manager.getCertificateStatus())
+                    .certificateStatusEtc(manager.getCertificateStatusEtc())
+                    .vehicle(manager.getVehicle())
+                    .prevManagerStatus(manager.getPrevManagerStatus())
+                    .currManagerStatus(manager.getCurrManagerStatus())
                     .build();
-
+            
+            List<AreaManager> managers = manager.getAreaManagers();
+            
             managerResponseDTOList.add(dto);
             
         });

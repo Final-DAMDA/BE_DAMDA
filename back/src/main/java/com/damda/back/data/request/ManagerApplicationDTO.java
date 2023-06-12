@@ -16,8 +16,6 @@ import java.util.List;
 @Setter
 public class ManagerApplicationDTO {
 
-
-
     private List<String> activityDay;
 
     private List<String> activityCity;
