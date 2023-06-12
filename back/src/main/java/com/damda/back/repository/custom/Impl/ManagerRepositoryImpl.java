@@ -1,6 +1,7 @@
 package com.damda.back.repository.custom.Impl;
 
 import com.damda.back.domain.manager.Manager;
+import com.damda.back.domain.manager.ManagerStatusEnum;
 import com.damda.back.domain.manager.QManager;
 import com.damda.back.repository.custom.ManagerCustomRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -22,8 +23,7 @@ public class ManagerRepositoryImpl implements ManagerCustomRepository {
 
         List<Manager> list = queryFactory.selectDistinct(manager)
                 .from(manager)
-                .where()
-                // .orderBy(manager.updateAt.asc())
+                .where(manager.currManagerStatus.eq(ManagerStatusEnum.ACTIVE))
                 .fetch();
 
         return list;

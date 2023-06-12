@@ -57,7 +57,6 @@ public class ManagerServiceImpl implements ManagerService {
                     String city = dto.getActivityCity().get(i);
                     String district = dto.getActivityDistrict().get(i);
                     Optional<Area> area=areaRepository.searchArea(city,district);
-                    System.out.println("---------"+area);
                     if(area.isEmpty()){
                         throw new CommonException(ErrorCode.BAD_REQUEST);
                     }
