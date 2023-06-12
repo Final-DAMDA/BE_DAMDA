@@ -24,7 +24,15 @@ public enum ErrorCode {
     FORM_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR,"저장되지 않은 폼 값이 넘어왔습닌다."),
     ERROR_WHILE_SUBMITTING_USER_FORM(HttpStatus.INTERNAL_SERVER_ERROR,"유저 폼 제출 중에 에러가 발생"),
     BAD_REQUEST(HttpStatus.BAD_REQUEST,"알 수 없는 데이터가 넘어왔습니다."),
-    SEND_KAKAO_FAIL(HttpStatus.INTERNAL_SERVER_ERROR,"카카오톡 전송 실패");
+
+    SEND_KAKAO_FAIL(HttpStatus.INTERNAL_SERVER_ERROR,"카카오톡 전송 실패"),
+    ERROR_SERVICE_COMPLETE(HttpStatus.INTERNAL_SERVER_ERROR,"서비스 완료 폼 저장 중에 에러가 발생했습니다. "),
+    ERROR_IMAGE_COMPLETE(HttpStatus.INTERNAL_SERVER_ERROR,"이미지 저장 중에 에러가 발생했습니다. "),
+    ERROR_REVIEW_COMPLETE(HttpStatus.INTERNAL_SERVER_ERROR,"리뷰 저장 중에 에러가 발생했습니다. "),
+    ERROR_BEST_REVIEW_COMPLETE(HttpStatus.INTERNAL_SERVER_ERROR,"리뷰 저장 중에 에러가 발생했습니다. "),
+    NOT_FOUND_BEST_REVIEW(HttpStatus.BAD_REQUEST,"지정된 베스트리뷰가 없습니다. "),
+    SUBMITTED_REVIEW_COMPLETE(HttpStatus.BAD_REQUEST,"이미 해당 예약의 리뷰가 존재합니다. "),
+    SUBMITTED_SERVICE_COMPLETE(HttpStatus.BAD_REQUEST,"이미 서비스 완료폼이 제출되었습니다. ");
 
 
     private HttpStatus httpStatus;
