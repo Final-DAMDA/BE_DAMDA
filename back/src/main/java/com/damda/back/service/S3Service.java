@@ -24,7 +24,7 @@ import java.util.UUID;
 public interface S3Service {
 
 	List<String> uploadFile(List<MultipartFile> multipartFiles, String folderName);
-	List<String> uploadFileUrl(List<String> fileNameList);
+	List<String> uploadFileUrl(List<String> fileNameList, String folderName);
 	String createFileName(String fileName);
 	String getFileExtension(String fileName);
 	void deleteFile(String fileName);
