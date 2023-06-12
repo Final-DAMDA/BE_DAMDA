@@ -138,15 +138,17 @@ public class ReviewController {
 	}
 
 	/**
-	 * @apiNote: 리뷰 리스트(유저)
+	 * @apiNote: 리뷰 리스트(어드민)
 	 */
 	@GetMapping("/admin/review/list")
-	public ResponseEntity<CommonResponse<?>> reviewListAdmin(){
+	public ResponseEntity<CommonResponse<?>> reviewListAdmin(@RequestParam(name = "page", defaultValue = "0") int page,
+															 @RequestParam(name = "size", defaultValue = "8") int size){
 
+		Pageable pageable = PageRequest.of(page, size);
 		CommonResponse<?> commonResponse = CommonResponse
 				.builder()
 				.codeEnum(CodeEnum.SUCCESS)
-				.data(reviewService.listReviewAdmin())
+				.data(reviewService.listReviewAdmin(pageable))
 				.build();
 
 		return ResponseEntity

@@ -160,8 +160,8 @@ public class ReviewServiceImpl implements ReviewService {
 	 */
 	@Override
 	@Transactional(readOnly = true)
-	public List<ReviewListAdminDTO> listReviewAdmin() {
-		List<Review> reviews = reviewRepository.reviewList();
+	public Page<ReviewListAdminDTO> listReviewAdmin(Pageable pageable) {
+		Page<Review> reviews = reviewRepository.reviewList(pageable);
 		List<ReviewListAdminDTO> reviewListAdminDTOS=new ArrayList<>();
 		for(Review review:reviews){
 			ReservationSubmitForm reservation = review.getReservationSubmitForm();
@@ -180,7 +180,8 @@ public class ReviewServiceImpl implements ReviewService {
 					.build();
 			reviewListAdminDTOS.add(reviewListAdminDTO);
 		}
-		return reviewListAdminDTOS;
+		Page<ReviewListAdminDTO> resultPage = new PageImpl<>(reviewListAdminDTOS, pageable, reviews.getTotalElements());
+		return resultPage;
 	}
 
 	/***
@@ -189,7 +190,7 @@ public class ReviewServiceImpl implements ReviewService {
 	@Override
 	@Transactional(readOnly = true)
 	public List<ReviewListUserDTO> listReview() {
-		List<Review> reviews = reviewRepository.reviewList();
+		List<Review> reviews = reviewRepository.reviewListUser();
 		List<ReviewListUserDTO> reviewListUserDTOS=new ArrayList<>();
 		for(Review review:reviews){
 			ReservationSubmitForm reservation = review.getReservationSubmitForm();

@@ -24,5 +24,5 @@ public interface ReviewService {
 	ReviewListUserDTO findBestReview();
 	boolean deleteReviewImage(Long imageId);
 	boolean deleteReview(Long reviewId);
-	List<ReviewListAdminDTO> listReviewAdmin();
+	Page<ReviewListAdminDTO> listReviewAdmin(Pageable pageable);
 }
