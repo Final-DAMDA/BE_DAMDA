@@ -31,7 +31,7 @@ public class Manager {
     @JoinColumn(name = "activity_day_id")
     private ActivityDay activityDay;
 
-    @OneToMany(mappedBy = "managerId.manager", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "areaManagerKey", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AreaManager> areaManagers = new ArrayList<>();
     
     @Enumerated(EnumType.STRING)
@@ -39,15 +39,15 @@ public class Manager {
     
     private String certificateStatusEtc;
     
-    private Integer level;
+    private Integer level; // 매니저 레벨
 
-    private Boolean vehicle;
+    private Boolean vehicle; //자차 여부
 
-    private String fieldExperience;
+    private String fieldExperience; //현장경험 유무
     
-    private Boolean mainJobStatus;
+    private Boolean mainJobStatus; //본업 유무
     
-    private String mainJobStatusEtc;
+    private String mainJobStatusEtc; //본업 기재
 
     private String memo;
     

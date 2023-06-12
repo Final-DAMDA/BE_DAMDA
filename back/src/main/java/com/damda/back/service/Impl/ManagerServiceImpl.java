@@ -8,22 +8,25 @@ import com.damda.back.domain.manager.AreaManager;
 import com.damda.back.domain.manager.Manager;
 import com.damda.back.exception.CommonException;
 import com.damda.back.exception.ErrorCode;
-import com.damda.back.repository.AreaRepository;
-import com.damda.back.repository.ManagerRepository;
-import com.damda.back.repository.MemberRepository;
+import com.damda.back.repository.*;
 import com.damda.back.service.ManagerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ManagerServiceImpl implements ManagerService {
-    
+    private final ActivityDayRepository activityDayRepository;
+    private final AreaManagerRepository areaManagerRepository;
+
     private final MemberRepository memberRepository;
     
     private final ManagerRepository managerRepository;
@@ -36,29 +39,46 @@ public class ManagerServiceImpl implements ManagerService {
     public boolean managerCreate(ManagerApplicationDTO dto, Integer memberId) {
 
         Optional<Member> member = memberRepository.findById(memberId);
-        
         if(member.isEmpty()) {
             throw new CommonException(ErrorCode.BAD_REQUEST, "유저를 찾을 수 없습니다.");
         }
 
         Manager manager = dto.toManagerEntity(member.get());
-        ActivityDay activityDay = new ActivityDay();
-
-        activityDay.addManager(manager);
+        ActivityDay activityDay = dto.toDayEntity();
         manager.addActivityDay(activityDay);
+        try{
+            managerRepository.save(manager);
+            activityDayRepository.save(activityDay);
+        }catch (Exception e){
+            //TODO:
+        }
 
-        Optional<Area> area= areaRepository.searchArea(dto.getActivityCity().get(1),dto.getActivityDistrict().get(1));
-//        AreaManagerKey areaManagerKey = new AreaManagerKey(area, manager);
-//
-//        // AreaManager 객체 생성 및 AreaManagerKey 설정
-//        AreaManager areaManager = new AreaManager();
-//        areaManager.setManagerId(areaManagerKey);
 
+        List<Area> areas = IntStream.range(0,dto.getActivityDistrict().size())
+                .mapToObj(i->{
+                    String city = dto.getActivityCity().get(i);
+                    String district = dto.getActivityDistrict().get(i);
+                    Optional<Area> area=areaRepository.searchArea(city,district);
+                    if(area.isEmpty()){
+                        throw new CommonException(ErrorCode.BAD_REQUEST);
+                    }
+                    return area.get();
+                }).collect(Collectors.toList());
+
+
+        for(Area a : areas){
+            AreaManager areaManager = AreaManager.builder()
+                    .areaManagerKey(new AreaManager.AreaManagerKey(a,manager))
+                    .build();
+            try{
+                areaManagerRepository.save(areaManager);
+            }catch (Exception e){
+                //TODO:
+            }
+        }
         return false;
     }
     
-    // public managerResponseDTOList(ManagerResponseDTO dto, Integer managerId) {
-    //    
-    // }
+
     
 }
