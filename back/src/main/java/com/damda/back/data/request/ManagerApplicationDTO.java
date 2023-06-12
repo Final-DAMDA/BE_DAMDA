@@ -5,9 +5,11 @@ import com.damda.back.domain.area.Area;
 import com.damda.back.domain.manager.ActivityDay;
 import com.damda.back.domain.manager.CertificateStatusEnum;
 import com.damda.back.domain.manager.Manager;
+import com.damda.back.domain.manager.ManagerStatusEnum;
 import lombok.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
@@ -43,6 +45,7 @@ public class ManagerApplicationDTO {
                 .mainJobStatus(mainJobStatus)
                 .mainJobStatusEtc(mainJobStatusEtc)
                 .member(manager)
+                .currManagerStatus(ManagerStatusEnum.WAITING)
                 .build();
     }
 

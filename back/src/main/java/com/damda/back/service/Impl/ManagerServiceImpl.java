@@ -16,9 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -35,7 +34,7 @@ public class ManagerServiceImpl implements ManagerService {
 
 
     @Override
-    @Transactional(isolation = Isolation.REPEATABLE_READ, readOnly = true)
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public boolean managerCreate(ManagerApplicationDTO dto, Integer memberId) {
 
         Optional<Member> member = memberRepository.findById(memberId);
@@ -58,6 +57,7 @@ public class ManagerServiceImpl implements ManagerService {
                     String city = dto.getActivityCity().get(i);
                     String district = dto.getActivityDistrict().get(i);
                     Optional<Area> area=areaRepository.searchArea(city,district);
+                    System.out.println("---------"+area);
                     if(area.isEmpty()){
                         throw new CommonException(ErrorCode.BAD_REQUEST);
                     }
@@ -84,28 +84,29 @@ public class ManagerServiceImpl implements ManagerService {
 
         List<ManagerResponseDTO> managerResponseDTOList = new ArrayList<>();
 
-        managerRepository.managerList().forEach(manager -> {
+//        managerRepository.managerList().forEach(manager -> {
+//
+//            ManagerResponseDTO dto = ManagerResponseDTO.builder()
+//                    .id(manager.getId())
+//                    .managerName(manager.getManagerName())
+//                    .managerPhoneNumber(manager.getManagerPhoneNumber())
+//                    .address(manager.getMember().getAddress())
+//                    .level(manager.getLevel())
+//                    .certificateStatus(manager.getCertificateStatus())
+//                    .certificateStatusEtc(manager.getCertificateStatusEtc())
+//                    .vehicle(manager.getVehicle())
+//                    .prevManagerStatus(manager.getPrevManagerStatus())
+//                    .currManagerStatus(manager.getCurrManagerStatus())
+//                    .build();
+//
+//            List<AreaManager> managers = manager.getAreaManagers();
+//
+//            managerResponseDTOList.add(dto);
+//
+//        });
 
-            ManagerResponseDTO dto = ManagerResponseDTO.builder()
-                    .id(manager.getId())
-                    .managerName(manager.getManagerName())
-                    .managerPhoneNumber(manager.getManagerPhoneNumber())
-                    .address(manager.getMember().getAddress())
-                    .level(manager.getLevel())
-                    .certificateStatus(manager.getCertificateStatus())
-                    .certificateStatusEtc(manager.getCertificateStatusEtc())
-                    .vehicle(manager.getVehicle())
-                    .prevManagerStatus(manager.getPrevManagerStatus())
-                    .currManagerStatus(manager.getCurrManagerStatus())
-                    .build();
+        return null;
 
-            List<AreaManager> managers = manager.getAreaManagers();
-
-            managerResponseDTOList.add(dto);
-
-        });
-
-        return managerResponseDTOList;
 
     }
 

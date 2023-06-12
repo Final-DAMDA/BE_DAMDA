@@ -31,7 +31,7 @@ public class Manager extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "activity_day_id")
     private ActivityDay activityDay;
-    @OneToMany(mappedBy = "areaManagerKey", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "areaManagerKey.manager", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AreaManager> areaManagers = new ArrayList<>();
     @Enumerated(EnumType.STRING)
     private CertificateStatusEnum certificateStatus;
@@ -49,9 +49,9 @@ public class Manager extends BaseEntity {
 
     private String memo;
 
-    private String prevManagerStatus;
+    private ManagerStatusEnum prevManagerStatus;
 
-    private String currManagerStatus;
+    private ManagerStatusEnum currManagerStatus;
 
     public void addActivityDay(ActivityDay activityDay) {
         this.activityDay = activityDay;

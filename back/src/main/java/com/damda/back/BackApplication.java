@@ -222,7 +222,7 @@ public class BackApplication implements CommandLineRunner{
 	@Override
 	public void run(String... args) throws Exception {
 		// 더미 데이터 생성
-		createDummyData();
+		//createDummyData();
 	}
 	private void createDummyData() {
 		Member member = Member.builder()
