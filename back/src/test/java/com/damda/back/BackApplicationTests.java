@@ -1,6 +1,8 @@
 package com.damda.back;
 
+import com.damda.back.domain.area.Area;
 import com.damda.back.domain.area.DistrictEnum;
+import com.damda.back.domain.manager.AreaManager;
 import com.damda.back.domain.manager.CertificateStatusEnum;
 import com.damda.back.domain.manager.Manager;
 import com.damda.back.repository.*;
@@ -18,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -60,27 +63,29 @@ class BackApplicationTests {
 
 
 	@Test
+	@Transactional
+	@Commit
 	void contextLoads() {
-	   IntStream.rangeClosed(1,10)
-               .forEach(value -> {
-                   Manager manager = Manager.builder()
-                           .certificateStatus(CertificateStatusEnum.FIRST_RATE_ON)
-                           .memo("테스트 매니저..."+value)
-                           .level(1)
-                           .vehicle(true)
-                           .fieldExperience("테스트 매니저..."+value)
-						   .mainJobStatus(false)
-						   .certificateStatusEtc("테스트 매니저..."+value)
-						   .managerStatus("테스트 매니저..."+value)
-                           .build();
+		//managerRepository.managerWithArea("하남시").forEach(System.out::println);
 
-               });
+		Area area = entityManager
+				.createQuery("SELECT a FROM Area  a WHERE a.district = '하남시'", Area.class).getSingleResult();
+		ReservationSubmitForm submitForm = reservationFormRepository.findById(3L).get();
+
+		Manager manager = managerRepository.findById(3L).get();
 
 
+		Match match = Match.builder()
+				.matching(true)
+				.reservationForm(submitForm)
+				.managerName(manager.getManagerName())
+				.manager(manager)
+				.build();
 
+
+		entityManager.persist(match);
 
 	}
-
 	@Test
 	@DisplayName("테스트 데이터 넣기")
 	void test_insert(){

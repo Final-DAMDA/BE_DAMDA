@@ -2,6 +2,7 @@ package com.damda.back.controller;
 
 import com.damda.back.data.common.CodeEnum;
 import com.damda.back.data.common.CommonResponse;
+import com.damda.back.data.request.FormStatusModifyRequestDTO;
 import com.damda.back.data.request.ReservationFormRequestDTO;
 import com.damda.back.data.request.SubmitRequestDTO;
 import com.damda.back.service.ExcelService;
@@ -47,6 +48,8 @@ public class FormController {
                 .body(commonResponse);
     }
 
+
+
     @GetMapping("/api/v1/excel/download")
     public void downloadExcel(
             @RequestParam(required = false) String startDate,
@@ -82,7 +85,7 @@ public class FormController {
             @RequestBody SubmitRequestDTO dto,
             HttpServletRequest request){
         Integer id = Integer.parseInt(request.getAttribute("id").toString());
-        submitService.saverFormSubmit(dto,id);
+        submitService.jpaFormInsert(dto,id);
 
         CommonResponse<?> commonResponse = CommonResponse
                 .builder()
@@ -93,4 +96,23 @@ public class FormController {
                 .status(commonResponse.getStatus())
                 .body(commonResponse);
     }
+
+    @PutMapping("/api/v1/admin/submit/status")
+    public ResponseEntity<CommonResponse<?>> statusModify(
+            @RequestBody FormStatusModifyRequestDTO dto
+    ){
+
+        submitService.statusModify(dto);
+
+
+        CommonResponse<?> commonResponse = CommonResponse
+                .builder()
+                .codeEnum(CodeEnum.SUCCESS)
+                .data(true)
+                .build();
+        return ResponseEntity
+                .status(commonResponse.getStatus())
+                .body(commonResponse);
+    }
+
 }

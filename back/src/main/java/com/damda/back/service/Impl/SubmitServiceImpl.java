@@ -6,20 +6,24 @@ import com.damda.back.data.common.PayMentStatus;
 import com.damda.back.data.common.QuestionIdentify;
 import com.damda.back.data.common.ReservationStatus;
 import com.damda.back.data.common.SubmitSlice;
+import com.damda.back.data.request.FormStatusModifyRequestDTO;
+import com.damda.back.data.request.MatchingCompletedDTO;
 import com.damda.back.data.request.SubmitRequestDTO;
 import com.damda.back.data.response.FormResultDTO;
 import com.damda.back.data.response.FormSliceDTO;
 import com.damda.back.data.response.Statistical;
 import com.damda.back.data.response.SubmitTotalResponse;
-import com.damda.back.domain.Match;
-import com.damda.back.domain.Member;
-import com.damda.back.domain.ReservationAnswer;
-import com.damda.back.domain.ReservationSubmitForm;
+import com.damda.back.domain.*;
+import com.damda.back.domain.manager.Manager;
 import com.damda.back.exception.CommonException;
 import com.damda.back.exception.ErrorCode;
+import com.damda.back.repository.ManagerRepository;
+import com.damda.back.repository.MatchRepository;
 import com.damda.back.repository.MemberRepository;
 import com.damda.back.repository.ReservationFormRepository;
+import com.damda.back.service.CodeService;
 import com.damda.back.service.SubmitService;
+import com.damda.back.service.TalkSendService;
 import com.damda.back.utils.SolapiUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,6 +60,15 @@ public class SubmitServiceImpl implements SubmitService {
 
         private final MemberRepository memberRepository;
 
+        private final TalkSendService talkSendService;
+
+        private final MatchRepository matchRepository;
+
+        private final ManagerRepository managerRepository;
+
+        private final CodeService codeService;
+
+
         private final ArrayList<QuestionIdentify> identifies = new ArrayList<>();
 
         private final JdbcTemplate jdbcTemplate;
@@ -72,6 +85,9 @@ public class SubmitServiceImpl implements SubmitService {
             identifies.add(QuestionIdentify.APPLICANTNAME);
             identifies.add(QuestionIdentify.APPLICANTCONACTINFO);
             identifies.add(QuestionIdentify.LEARNEDROUTE);
+            identifies.add(QuestionIdentify.RESERVATIONENTER);
+            identifies.add(QuestionIdentify.RESERVATIONOTE);
+            identifies.add(QuestionIdentify.RESERVATIONREQUEST);
         }
 
 
@@ -79,6 +95,8 @@ public class SubmitServiceImpl implements SubmitService {
         @TimeChecking
         @Transactional(isolation = Isolation.REPEATABLE_READ,rollbackFor = CommonException.class)
         public Long saverFormSubmit(SubmitRequestDTO dto,Integer memberId){
+
+
 
             String formInsertSql = "INSERT INTO reservation_submit_form (status, total_price, deleted, member_id, pay_ment_status ,created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
             String answerInsertSql = "INSERT INTO reservation_answer (answer, question_identify, form_id) VALUES (?, ?, ?)";
@@ -143,8 +161,10 @@ public class SubmitServiceImpl implements SubmitService {
                     throw new SQLException("예약 Insert 하다가 실패하여 rollback함");
                 }
             } catch (SQLException e) {
+                System.out.println(e);
                 throw new CommonException(ErrorCode.SERVER_ERROR);
             } catch (CommonException c) {
+                System.out.println(c);
                 throw new CommonException(ErrorCode.SERVER_ERROR);
             } finally {
                 try {
@@ -155,9 +175,9 @@ public class SubmitServiceImpl implements SubmitService {
         }
 
 
-
+        @TimeChecking
         @Transactional(isolation = Isolation.REPEATABLE_READ)
-        public List<ReservationAnswer> jpaFormInsert(SubmitRequestDTO dto,Integer memberId){
+        public Long jpaFormInsert(SubmitRequestDTO dto,Integer memberId){
             boolean isValid = dto.getSubmit().stream()
                     .map(SubmitSlice::getQuestionIdentify)
                     .collect(Collectors.toSet())
@@ -175,20 +195,23 @@ public class SubmitServiceImpl implements SubmitService {
                         .build();
 
 
-                try{
-                    ReservationSubmitForm form = reservationFormRepository.save(reservationSubmitForm);
+            //    try{
                     dto.getSubmit().forEach(submitSlice -> {
-
-                        answers.add( ReservationAnswer.builder()
-                                .formId(form.getId())
+                        reservationSubmitForm.addAnswer(ReservationAnswer.builder()
                                 .questionIdentify(submitSlice.getQuestionIdentify())
                                 .answer(submitSlice.getAnswer())
                                 .build());
+
                     });
-                    return answers;
-                }catch (Exception e){
-                    throw new CommonException(ErrorCode.ERROR_WHILE_SUBMITTING_USER_FORM);
-                 }
+
+                    ReservationSubmitForm form = reservationFormRepository.save(reservationSubmitForm);
+
+                    talkSendService.sendReservationSubmitAfter(form.getId(),dto.getAddressFront(),form.getReservationAnswerList(),dto.getTotalPrice());
+
+                    return form.getId();
+//                }catch (Exception e){
+//                    throw new CommonException(ErrorCode.ERROR_WHILE_SUBMITTING_USER_FORM);
+//                 }
 
             }else{
                 throw new CommonException(ErrorCode.NO_REQUIRED_VALUE);
@@ -254,12 +277,76 @@ public class SubmitServiceImpl implements SubmitService {
             return resultDTO;
        }
 
+
+       @Transactional(isolation = Isolation.REPEATABLE_READ)
+       public void statusModify(FormStatusModifyRequestDTO dto){
+           ReservationSubmitForm form = reservationFormRepository.submitFormWithAnswer(dto.getId()).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_RESERIVATION));
+
+
+           if(dto.getStatus().equals(ReservationStatus.MANAGER_MATCHING_COMPLETED) && !form.getStatus().equals(ReservationStatus.MANAGER_MATCHING_COMPLETED)){
+               List<ReservationAnswer> answers = form.getReservationAnswerList();
+
+               List<Long> managerList = new ArrayList<>();
+               List<String> phoneNumbers = new ArrayList<>();
+               Map<QuestionIdentify, String> answerMap
+                       = answers.stream().collect(Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
+
+
+               MatchingCompletedDTO data = MatchingCompletedDTO.builder()
+                       .reservationDate(answerMap.get(QuestionIdentify.SERVICEDATE))
+                       .reservationAddress(answerMap.get(QuestionIdentify.ADDRESS))
+                       .reservationHour(answerMap.get(QuestionIdentify.SERVICEDURATION))
+                       .build();
+
+               form.changeStatus(dto.getStatus());
+               form.getMatches().forEach(match -> {
+                   managerList.add(match.getManagerId());
+               });
+
+               managerRepository.managers(managerList).forEach(manager -> {
+                    log.info("수신자들 {} : {}",manager.getManagerName(),manager.getPhoneNumber());
+                    phoneNumbers.add(manager.getPhoneNumber());
+               });
+               if(!phoneNumbers.isEmpty()) talkSendService.sendManagerWithCustomer(data,phoneNumbers);
+           }else if(dto.getStatus().equals(ReservationStatus.SERVICE_COMPLETED)){ // 서비스완료시
+
+               Member member = form.getMember();
+               DiscountCode discountCode = member.getDiscountCode();
+
+               if(discountCode == null){
+                   String code = "";
+                   code = codeService.codePublish();
+
+                   while (memberRepository.existCode(code)){
+                       log.info("반복된 코드로 재발급요청");
+                       code = codeService.codePublish();
+                   }
+
+                   log.info("발급된 할인코드 {}",code);
+                   DiscountCode discountCodeNew = DiscountCode.builder()
+                           .code(code)
+                           .build();
+
+
+                   member.changeCode(discountCodeNew);
+                   form.changeStatus(dto.getStatus());
+               }else{
+                   log.info("기존 코드 그대로 사용됨 {}",discountCode.getCode());
+               }
+               form.changeStatus(dto.getStatus());
+               //TODO: 서비스 완료시 고객에게 설문 조사 링크 보내야함
+           }else{
+               form.changeStatus(dto.getStatus());
+           }
+       }
+
+
         public FormSliceDTO asDTO(ReservationSubmitForm submitForm){
             FormSliceDTO dto = new FormSliceDTO();
 
             List<String> managerNames = new ArrayList<>();
 
-            if(submitForm.getStatus().equals(ReservationStatus.MANAGER_MATCHING_COMPLETED)){
+            if(submitForm.getStatus().equals(ReservationStatus.MANAGER_MATCHING_COMPLETED)) {
                 managerNames = submitForm.getMatches().stream()
                         .filter(match -> match.isMatching()).map(Match::getManagerName).collect(Collectors.toList());
             }else{

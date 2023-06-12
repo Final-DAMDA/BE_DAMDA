@@ -28,6 +28,7 @@ public class FormSliceDTO {
 
        // , 신청일자, 사용자 이름, 연락처, 주소, 예약일자, 가격 ,소요시간, 매니저 인원
      //   *  ,매니저 매칭(누가지원했는지), 서비스 상태(ReservationStatus),  결제상태
+    private Long id;
 
     private String createdAt;
 

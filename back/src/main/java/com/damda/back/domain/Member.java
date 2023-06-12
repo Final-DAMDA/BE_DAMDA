@@ -1,14 +1,13 @@
 package com.damda.back.domain;
 
 
-import com.damda.back.data.common.Gender;
 import com.damda.back.data.common.MemberRole;
 import com.damda.back.data.common.MemberStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.aspectj.apache.bcel.classfile.Code;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -41,6 +40,9 @@ public class Member extends BaseEntity {
 
     private String profileImage;
 
+    @Column(columnDefinition = "TEXT")
+    private String memo;
+
     @Enumerated(EnumType.STRING)
     private MemberRole role;
 
@@ -54,5 +56,17 @@ public class Member extends BaseEntity {
             mappedBy = "member")
     private List<ReservationSubmitForm> reservationSubmitFormList = new ArrayList<>();
 
+
+    @OneToOne(mappedBy = "member",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            orphanRemoval = true)
+    private DiscountCode discountCode;
+
+
+    public void changeCode(DiscountCode discountCode){
+        this.discountCode = discountCode;
+        discountCode.changeMember(this);
+    }
 
 }

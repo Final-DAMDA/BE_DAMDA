@@ -192,7 +192,7 @@ public class BackApplication {
 
 			questionRepository.save(
 					Question.builder() //선택시 응답 true 같은 값보내면됨
-							.questionIdentify(QuestionIdentify.REQUIREDGUIDELINES)
+							.questionIdentify(QuestionIdentify.OPTIONAL)
 							.questionTitle("필수 안내사항")
 							.order(12)
 							.questionType(QuestionType.SELECT)

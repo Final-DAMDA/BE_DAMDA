@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ErrorCode {
 
+    NOT_FOUND_RESERIVATION(HttpStatus.BAD_REQUEST,"예약 정보를 찾지 못함"),
+    ACTIVITY_MANAGER_NOT_FOUND(HttpStatus.BAD_REQUEST,"해당 지역에 활동 가능 매니저를 찾지 못함"),
     RESERVATION_FORM_SAVE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR,"저장 중 에러 발생"),
     KAKAO_TOKEN_EXPIRE(HttpStatus.BAD_REQUEST,"카카오 토큰 만료됨"),
     DATE_FORMAT_EXCEPTION(HttpStatus.BAD_REQUEST,"날짜 포맷이 맞지 않습니다."),

@@ -37,6 +37,7 @@ public class AccessCheckFilter extends OncePerRequestFilter {
             return;
         }
 
+        log.info("TOKEN 검증 시작");
       try{
           Map<String,Claim> claimMap = validateAccessToken(request);
 
