@@ -8,14 +8,17 @@ import com.damda.back.data.response.MemberResponseDTO;
 import com.damda.back.data.response.TokenWithImageDTO;
 import com.damda.back.service.KaKaoService;
 import com.damda.back.service.MemberService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,22 +28,21 @@ public class MemberController {
 
     private final MemberService memberService;
 
-
     @GetMapping("/api/v1/member/code")
-    public ResponseEntity<CommonResponse<?>> reservationFormDelete(
+    public void reservationFormDelete(
             @RequestParam(required = false) String code,
-            HttpServletResponse response){
+            HttpServletResponse response) throws IOException {
 
         TokenWithImageDTO tokenWithImageDTO = kaKaoService.loginProcessing(code);
 
-        Cookie cookie = new Cookie("access_token",tokenWithImageDTO.getToken());
-        cookie.setMaxAge(86400);
-        cookie.setPath("/");
-      //  cookie.setHttpOnly(true);
-        response.addCookie(cookie);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.SET_COOKIE, cookie.toString());
+        ResponseCookie cookie = ResponseCookie.from("access_token", tokenWithImageDTO.getToken())
+                .maxAge(24 * 60 * 60)
+                .path("/")
+                .secure(false)// https 환경에서만 쿠키가 발동합니다.
+                .sameSite("Strict")// 동일 사이트과 크로스 사이트에 모두 쿠키 전송이 가능합니다
+                //HTTPS 환경에서 None으로 변경예정
+                .httpOnly(true)// 브라우저에서 쿠키에 접근할 수 없도록 제한
+                .build();
 
         CommonResponse<?> commonResponse = CommonResponse
                 .builder()
@@ -48,11 +50,10 @@ public class MemberController {
                 .data(tokenWithImageDTO.getProfileImage())
                 .build();
 
-        return ResponseEntity
-                .status(commonResponse.getStatus())
-                .headers(headers)
-                .body(commonResponse);
+        response.setHeader("Set-Cookie",cookie.toString());
+        response.getWriter().println(new ObjectMapper().writeValueAsString(commonResponse));
     }
+
 
     @GetMapping("/api/v1/member/token")
     public ResponseEntity<CommonResponse<?>> reservationFormDelete(@RequestBody AccessTokenResponse response){

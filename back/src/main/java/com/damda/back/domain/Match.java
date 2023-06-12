@@ -29,6 +29,9 @@ public class Match {
 	private ReservationSubmitForm reservationForm;
 
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "manager_id")
+	@JoinColumn(name = "manager_id",insertable = false,updatable = false)
 	private Manager manager;
+
+	@Column(name = "manager_id")
+	private Long managerId;
 }

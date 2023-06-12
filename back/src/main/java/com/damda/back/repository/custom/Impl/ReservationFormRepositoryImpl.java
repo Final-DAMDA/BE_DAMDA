@@ -131,6 +131,23 @@ public class ReservationFormRepositoryImpl implements ReservationFormCustomRepos
                 return list;
         }
 
+        @Override
+        public Optional<ReservationSubmitForm> submitFormWithAnswer(Long formId) {
+                QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
+                QReservationAnswer answer = QReservationAnswer.reservationAnswer;
+
+                ReservationSubmitForm submitFormEntity =
+                        queryFactory.selectDistinct(submitForm)
+                        .from(submitForm)
+                        .innerJoin(submitForm.reservationAnswerList, answer).fetchJoin()
+                        .where(submitForm.id.eq(formId))
+                        .fetchOne();
+
+                if(submitForm != null) return Optional.of(submitFormEntity);
+                else return Optional.empty();
+
+        }
+
 
         private BooleanExpression createdAtBetween(Timestamp startDate, Timestamp endDate, QReservationSubmitForm form) {
                 if (startDate != null && endDate != null) {

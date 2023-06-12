@@ -8,4 +8,6 @@ public interface MemberCustomRepository {
     public Optional<Member> findByPhoneNumber(String phoneNumber);
 
     public Optional<Member> findByIdWhereActive(Integer id);
+    public boolean existCode(String code);
+
 }
