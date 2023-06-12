@@ -7,7 +7,6 @@ import com.damda.back.service.ManagerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -20,13 +19,13 @@ public class ManagerController {
     /**
      * @apiNote 
      */
-    @GetMapping("/api/v1/member/manager/all")
+    @GetMapping("/api/v1/member/manager/active")
     public ResponseEntity<CommonResponse<?>> managerList() {
 
         CommonResponse<Object> commonResponse = CommonResponse
                 .builder()
                 .codeEnum(CodeEnum.SUCCESS)
-                .data(managerService)
+                .data(managerService.managerResponseDTOList())
                 .build();
 
         return ResponseEntity
@@ -34,6 +33,12 @@ public class ManagerController {
                 .body(commonResponse);
 
     }
+
+    // @GetMapping("/api/v1/member/manager/waitlist")
+
+    // @GetMapping("/api/v1/member/manager/pending")
+
+    // @GetMapping("/api/v1/member/manager/inactive")
 
     @PostMapping("/api/v1/member/manager")
     public ResponseEntity<CommonResponse<?>> managerCreate(@RequestBody ManagerApplicationDTO managerApplicationDTO) {

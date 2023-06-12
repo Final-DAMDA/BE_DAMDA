@@ -1,7 +1,6 @@
 package com.damda.back.domain.manager;
 
 import com.damda.back.domain.Member;
-import com.damda.back.domain.area.DistrictEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,6 +25,10 @@ public class Manager {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    private String managerName;
+
+    private String managerPhoneNumber;
     
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "activity_day_id")

@@ -1,6 +1,6 @@
 package com.damda.back.repository.custom.Impl;
 
-import com.damda.back.domain.area.DistrictEnum;
+import com.damda.back.domain.manager.Manager;
 import com.damda.back.domain.manager.QManager;
 import com.damda.back.repository.custom.ManagerCustomRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -14,6 +14,21 @@ import java.util.List;
 public class ManagerRepositoryImpl implements ManagerCustomRepository {
 
     private final JPAQueryFactory queryFactory;
+
+    @Override
+    public List<Manager> managerList() {
+        
+        QManager manager = QManager.manager;
+
+        List<Manager> list = queryFactory.selectDistinct(manager)
+                .from(manager)
+                .where()
+                // .orderBy(manager.updateAt.asc())
+                .fetch();
+
+        return list;
+        
+    }
 
     // public List<DistrictEnum> districtEnumList(){
     //     QManager manager = QManager.manager;
