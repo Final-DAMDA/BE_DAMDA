@@ -20,7 +20,7 @@ public class ManagerController {
     /**
      * @apiNote 
      */
-    @GetMapping("/api/v1/member/manager/all")
+    @GetMapping("/api/v1/admin/manager/active")
     public ResponseEntity<CommonResponse<?>> managerList() {
 
         CommonResponse<Object> commonResponse = CommonResponse
@@ -49,7 +49,7 @@ public class ManagerController {
 
 
 
-    @PostMapping("/api/v1/member/manager")
+    @PostMapping("/api/v1/manager/form/submit")
     public ResponseEntity<CommonResponse<?>> managerCreate(HttpServletRequest request,@RequestBody ManagerApplicationDTO managerApplicationDTO) {
 //        System.out.println(request.getAttribute("id").toString());
         managerService.managerCreate(managerApplicationDTO,1);
