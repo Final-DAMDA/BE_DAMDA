@@ -48,11 +48,7 @@ public class ManagerServiceImpl implements ManagerService {
         manager.addActivityDay(activityDay);
 
         Optional<Area> area= areaRepository.searchArea(dto.getActivityCity().get(1),dto.getActivityDistrict().get(1));
-//        AreaManagerKey areaManagerKey = new AreaManagerKey(area, manager);
-//
-//        // AreaManager 객체 생성 및 AreaManagerKey 설정
-//        AreaManager areaManager = new AreaManager();
-//        areaManager.setManagerId(areaManagerKey);
+
 
         return false;
     }

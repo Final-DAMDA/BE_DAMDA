@@ -28,7 +28,7 @@ public class ReviewController {
 		CommonResponse<?> commonResponse = CommonResponse
 				.builder()
 				.codeEnum(CodeEnum.SUCCESS)
-				.data(reviewService.checkServiceComplete(reservationId).getId())
+				.data(reviewService.checkServiceComplete(reservationId))
 				.build();
 
 		return ResponseEntity

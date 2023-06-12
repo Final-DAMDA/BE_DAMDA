@@ -171,7 +171,7 @@ public class ReservationFormRepositoryImpl implements ReservationFormCustomRepos
                         queryFactory.selectDistinct(submitForm)
                                 .from(submitForm)
                                 .innerJoin(submitForm.reservationAnswerList,answer).fetchJoin()
-                                .where(submitForm.status.eq(ReservationStatus.SERVICE_COMPLETED),submitForm.id.eq(reservationId))
+                                .where(submitForm.id.eq(reservationId))
                                 .fetchOne();
 
                 return Optional.ofNullable(reservationSubmitForm);

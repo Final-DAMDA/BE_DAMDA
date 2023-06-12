@@ -5,10 +5,7 @@ import com.damda.back.data.common.QuestionIdentify;
 import com.damda.back.data.common.ReservationStatus;
 import com.damda.back.data.request.ReviewRequestDTO;
 import com.damda.back.data.request.ServiceCompleteRequestDTO;
-import com.damda.back.data.response.ReviewAutoResponseDTO;
-import com.damda.back.data.response.ReviewListAdminDTO;
-import com.damda.back.data.response.ReviewListUserDTO;
-import com.damda.back.data.response.ServiceCompleteInfoDTO;
+import com.damda.back.data.response.*;
 import com.damda.back.domain.*;
 import com.damda.back.exception.CommonException;
 import com.damda.back.exception.ErrorCode;
@@ -42,7 +39,9 @@ public class ReviewServiceImpl implements ReviewService {
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	@Override
 	public boolean uploadServiceComplete(Long reservationId, ServiceCompleteRequestDTO serviceCompleteRequestDTO){
-		ReservationSubmitForm reservationSubmitForm = checkServiceComplete(reservationId);
+		Optional<ReservationSubmitForm> reservation = reservationFormRepository.serviceComplete(reservationId);
+		nullCheck(reservation);
+		ReservationSubmitForm reservationSubmitForm =reservation.get();
 		reservationSubmitForm.setStatus(ReservationStatus.SERVICE_COMPLETED); //서비스 완료
 
 		Review serviceComplete = serviceCompleteRequestDTO.toEntity(reservationSubmitForm);
@@ -63,19 +62,32 @@ public class ReviewServiceImpl implements ReviewService {
 	 * @apiNote: 서비스 완료 폼 제출 체크
 	 */
 	@Override
-	public ReservationSubmitForm checkServiceComplete(Long reservationId){
-		Optional<ReservationSubmitForm> reservation = reservationFormRepository.findById(reservationId);
+	@Transactional(readOnly = true)
+	public ServiceCompleteResponseDTO checkServiceComplete(Long reservationId){
+		Optional<ReservationSubmitForm> reservation = reservationFormRepository.serviceComplete(reservationId);
 		nullCheck(reservation);
+
 		if(reviewRepository.existReservation(reservationId)){
 			throw new CommonException(ErrorCode.SUBMITTED_SERVICE_COMPLETE);
 		}
-		return reservation.get();
+		List<ReservationAnswer> answers =  reservation.get().getReservationAnswerList();
+		Map<QuestionIdentify, String> answerMap
+				= answers.stream().collect(Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
+
+		ServiceCompleteResponseDTO completeResponseDTO =
+				ServiceCompleteResponseDTO.builder()
+				.serviceDate(answerMap.get(QuestionIdentify.SERVICEDATE))
+				.serviceAddress(answerMap.get(QuestionIdentify.ADDRESS))
+				.build();
+
+		return completeResponseDTO;
 	}
 
 	/**
 	 * @apiNote: 서비스 완료 폼 리스트 조회
 	 */
 	@Override
+	@Transactional(readOnly = true)
 	public List<ServiceCompleteInfoDTO> listServiceComplete() {
 		List<ReservationSubmitForm> completeList = reservationFormRepository.serviceCompleteList();
 		List<ServiceCompleteInfoDTO> dtoList = new ArrayList<>();
@@ -83,7 +95,6 @@ public class ReviewServiceImpl implements ReviewService {
 
 			Member member = submitForm.getMember();
 			List<ReservationAnswer> answers =  submitForm.getReservationAnswerList();
-
 			Map<QuestionIdentify, String> answerMap
 					= answers.stream().collect(Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
 			ServiceCompleteInfoDTO dto =new ServiceCompleteInfoDTO();
