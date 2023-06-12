@@ -7,6 +7,7 @@ import com.damda.back.repository.custom.ReservationFormCustomRepository;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Wildcard;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -139,6 +141,40 @@ public class ReservationFormRepositoryImpl implements ReservationFormCustomRepos
                         return form.createdAt.loe(endDate);
                 }
                 return null;
+        }
+
+        @Override
+        public List<ReservationSubmitForm> serviceCompleteList(){
+                QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
+                QMember member = QMember.member;
+                QReservationAnswer answer = QReservationAnswer.reservationAnswer;
+                QReview review = QReview.review;
+
+                JPAQuery<ReservationSubmitForm> query =
+                        queryFactory.selectDistinct(submitForm)
+                                .from(submitForm)
+                                .innerJoin(submitForm.reservationAnswerList,answer).fetchJoin()
+                                .innerJoin(submitForm.member, member).fetchJoin()
+                                .where(submitForm.status.eq(ReservationStatus.SERVICE_COMPLETED));
+
+
+
+                List<ReservationSubmitForm> list = query.fetch();
+                return list;
+        }
+        @Override
+        public Optional<ReservationSubmitForm> serviceComplete(Long reservationId){
+                QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
+                QReservationAnswer answer = QReservationAnswer.reservationAnswer;
+
+                ReservationSubmitForm reservationSubmitForm =
+                        queryFactory.selectDistinct(submitForm)
+                                .from(submitForm)
+                                .innerJoin(submitForm.reservationAnswerList,answer).fetchJoin()
+                                .where(submitForm.status.eq(ReservationStatus.SERVICE_COMPLETED),submitForm.id.eq(reservationId))
+                                .fetchOne();
+
+                return Optional.ofNullable(reservationSubmitForm);
         }
 
 

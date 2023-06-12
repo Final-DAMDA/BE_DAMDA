@@ -6,6 +6,8 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.damda.back.exception.CommonException;
+import com.damda.back.exception.ErrorCode;
 import com.damda.back.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -70,10 +72,11 @@ public class S3ServiceIImpl implements S3Service {
 	 */
 
 	@Override
-	public List<String> uploadFileUrl(List<String> fileNameList){
+	public List<String> uploadFileUrl(List<String> fileNameList, String folderName){
+		String bucketFolder = bucket+"/"+folderName;
 		List<String> fileUrlList = new ArrayList<>();
 		fileNameList.forEach(fileName ->{
-			String fileUri = URLDecoder.decode(amazonS3Client.getUrl(bucket, fileName).toString(), StandardCharsets.UTF_8);
+			String fileUri = URLDecoder.decode(amazonS3Client.getUrl(bucketFolder, fileName).toString(), StandardCharsets.UTF_8);
 			fileUrlList.add(fileUri);
 		});
 		return fileUrlList;
@@ -91,7 +94,7 @@ public class S3ServiceIImpl implements S3Service {
 	@Override
 	public String getFileExtension(String fileName){
 		if (fileName.length() == 0) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 형식의 파일" + fileName + ") 입니다.");
+			throw new CommonException(ErrorCode.BAD_REQUEST,"잘못된 형식의 파일입니다.");
 		}
 		ArrayList<String> fileValidate = new ArrayList<>();
 		fileValidate.add(".jpg");
@@ -102,7 +105,7 @@ public class S3ServiceIImpl implements S3Service {
 		fileValidate.add(".PNG");
 		String idxFileName = fileName.substring(fileName.lastIndexOf("."));
 		if (!fileValidate.contains(idxFileName)) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 형식의 파일" + fileName + ") 입니다.");
+			throw new CommonException(ErrorCode.BAD_REQUEST,"이미지 형식의 파일(jpg, png)만 업로드 가능합니다!");
 		}
 		return "_"+fileName;
 

@@ -13,11 +13,13 @@ import com.damda.back.repository.ManagerRepository;
 import com.damda.back.repository.MemberRepository;
 import com.damda.back.service.ManagerService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ManagerServiceImpl implements ManagerService {
@@ -54,4 +56,9 @@ public class ManagerServiceImpl implements ManagerService {
 
         return false;
     }
+    
+    // public managerResponseDTOList(ManagerResponseDTO dto, Integer managerId) {
+    //    
+    // }
+    
 }
