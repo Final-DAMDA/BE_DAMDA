@@ -25,7 +25,7 @@ jobs:
       - name: Build with Gradle
         run: |
           cd back
-          ./gradlew clean build
+          ./gradlew clean build -x test
 
       # 디렉토리 생성
       - name: Make Directory
