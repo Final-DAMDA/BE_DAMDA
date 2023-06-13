@@ -30,4 +30,8 @@ public interface ReservationFormCustomRepository {
     List<ReservationSubmitForm> serviceCompleteList();
     Optional<ReservationSubmitForm> serviceComplete(Long reservationId);
 
+
+    public Optional<ReservationSubmitForm> submitFormWithAnswer(Long formId);
+
+
 }

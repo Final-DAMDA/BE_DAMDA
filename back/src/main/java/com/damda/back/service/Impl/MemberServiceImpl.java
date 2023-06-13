@@ -39,4 +39,9 @@ public class MemberServiceImpl implements MemberService {
             throw new CommonException(ErrorCode.NOT_FOUND_MEMBER);
         }
     }
+
+    @Override
+    public boolean existCode(String code) {
+        return memberRepository.existCode(code);
+    }
 }

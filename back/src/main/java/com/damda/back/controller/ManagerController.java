@@ -15,11 +15,9 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequiredArgsConstructor
 public class ManagerController {
+    
     private final ManagerService managerService;
-
-    /**
-     * @apiNote 
-     */
+    
     @GetMapping("/api/v1/admin/manager/active")
     public ResponseEntity<CommonResponse<?>> managerList() {
 
@@ -34,21 +32,13 @@ public class ManagerController {
                 .body(commonResponse);
 
     }
-
-
-    /**
-     * @apiNote : 매니저 추가
-     * @param managerApplicationDTO
-     * @return
-     */
-    // @GetMapping("/api/v1/member/manager/waitlist")
+    
+    // @GetMapping("/api/v1/member/manager/waiting")
 
     // @GetMapping("/api/v1/member/manager/pending")
 
     // @GetMapping("/api/v1/member/manager/inactive")
-
-
-
+    
     @PostMapping("/api/v1/manager/form/submit")
     public ResponseEntity<CommonResponse<?>> managerCreate(HttpServletRequest request,@RequestBody ManagerApplicationDTO managerApplicationDTO) {
 //        System.out.println(request.getAttribute("id").toString());

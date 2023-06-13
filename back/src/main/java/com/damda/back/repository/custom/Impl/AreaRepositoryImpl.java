@@ -4,12 +4,15 @@ import com.damda.back.domain.area.Area;
 import com.damda.back.domain.area.CityEnum;
 import com.damda.back.domain.area.DistrictEnum;
 import com.damda.back.domain.area.QArea;
+import com.damda.back.domain.manager.AreaManager;
+import com.damda.back.domain.manager.Manager;
 import com.damda.back.repository.custom.AreaCustomRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -33,5 +36,20 @@ public class AreaRepositoryImpl implements AreaCustomRepository {
 
         return Optional.ofNullable(result);
     }
+
+
+    public List<Area> searchActivityArea(){
+        QArea area = QArea.area;
+
+        List<Area> strings =
+               queryFactory
+                       .selectDistinct(area)
+                       .from(area)
+                       .where(area.managerCount.ne(0))
+                       .fetch();
+
+        return strings;
+    }
+
 
 }

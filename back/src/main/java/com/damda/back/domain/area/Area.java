@@ -1,8 +1,15 @@
 package com.damda.back.domain.area;
 
-import lombok.*;
+import com.damda.back.domain.manager.AreaManager;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 // TODO:
 // 1. 그냥 area db 에 저장해놓기
@@ -33,5 +40,10 @@ public class Area {
     private String district;
     
     private Integer managerCount;
+
+    @OneToMany(mappedBy = "managerId.area")
+    @BatchSize(size = 10)
+    @Builder.Default
+    private List<AreaManager> areaManagerList = new ArrayList<>();
     
 }

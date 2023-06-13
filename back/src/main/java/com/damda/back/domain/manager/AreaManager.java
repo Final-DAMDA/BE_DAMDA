@@ -1,16 +1,14 @@
 package com.damda.back.domain.manager;
 
 import com.damda.back.domain.area.Area;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
 @Embeddable
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "area_manager")
@@ -26,11 +24,11 @@ public class AreaManager {
     @AllArgsConstructor
     public static class AreaManagerKey implements Serializable {
         
-        @ManyToOne
+        @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "area_id")
         private Area area;
         
-        @ManyToOne
+        @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "manager_id")
         private Manager manager;
         

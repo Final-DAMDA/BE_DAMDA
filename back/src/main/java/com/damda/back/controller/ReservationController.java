@@ -24,6 +24,27 @@ public class ReservationController {
 
         private final ReservationService reservationService;
 
+
+
+        /**
+         * @apiNote 서비스 가능지역 Map으로 리턴함
+         *
+         * */
+        @GetMapping("/api/v1/activity/locations")
+        public ResponseEntity<CommonResponse<?>> locations(){
+
+            CommonResponse<?> commonResponse = CommonResponse
+                    .builder()
+                    .codeEnum(CodeEnum.SUCCESS)
+                    .data(reservationService.activityArea())
+                    .build();
+
+            return ResponseEntity
+                    .status(commonResponse.getStatus())
+                    .body(commonResponse);
+
+        }
+
         /**
          * @apiNote 일반 유저가 예약폼을 조회
          * @apiNote  토큰 검사해야함 / 비회원은 받지 않음

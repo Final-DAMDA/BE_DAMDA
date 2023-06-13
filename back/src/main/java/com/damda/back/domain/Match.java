@@ -1,5 +1,6 @@
 package com.damda.back.domain;
 
+import com.damda.back.data.common.MatchResponseStatus;
 import com.damda.back.domain.manager.Manager;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,11 +25,18 @@ public class Match {
 
 	private String managerName;
 
+
+	@Enumerated(EnumType.STRING)
+	private MatchResponseStatus matchStatus;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "form_id")
 	private ReservationSubmitForm reservationForm;
 
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "manager_id")
+	@JoinColumn(name = "manager_id",insertable = false,updatable = false)
 	private Manager manager;
+
+	@Column(name = "manager_id")
+	private Long managerId;
 }

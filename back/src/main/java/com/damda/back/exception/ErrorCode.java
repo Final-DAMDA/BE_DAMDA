@@ -9,8 +9,11 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ErrorCode {
 
+    NOT_FOUND_RESERIVATION(HttpStatus.BAD_REQUEST,"예약 정보를 찾지 못함"),
+    ACTIVITY_MANAGER_NOT_FOUND(HttpStatus.BAD_REQUEST,"해당 지역에 활동 가능 매니저를 찾지 못함"),
     RESERVATION_FORM_SAVE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR,"저장 중 에러 발생"),
     KAKAO_TOKEN_EXPIRE(HttpStatus.BAD_REQUEST,"카카오 토큰 만료됨"),
+    DATE_FORMAT_EXCEPTION(HttpStatus.BAD_REQUEST,"날짜 포맷이 맞지 않습니다."),
     KAKAO_LOGIN_FALIE(HttpStatus.INTERNAL_SERVER_ERROR,"카카오 로그인중 에러 - 인가코드 또는 액세스 토큰이 잘못됨"),
     NOT_FOUND_MEMBER(HttpStatus.BAD_REQUEST,"조회하려는 유저가 데이터 상에 존재하지 않습니다."),
     NOT_FOUND_QUESTION(HttpStatus.BAD_REQUEST,"없는 데이터를 조회했습니다."),
@@ -18,8 +21,11 @@ public enum ErrorCode {
     NOT_FOUND_QUESTION_MODIFIED(HttpStatus.BAD_REQUEST,"없는 데이터를 수정요청했습니다"),
     NO_REQUIRED_VALUE(HttpStatus.BAD_REQUEST,"필수 값 중에 누락된 값이 있습니다"),
     SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"DB 커넥션 에러"),
+    FORM_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR,"저장되지 않은 폼 값이 넘어왔습닌다."),
     ERROR_WHILE_SUBMITTING_USER_FORM(HttpStatus.INTERNAL_SERVER_ERROR,"유저 폼 제출 중에 에러가 발생"),
     BAD_REQUEST(HttpStatus.BAD_REQUEST,"알 수 없는 데이터가 넘어왔습니다."),
+
+    SEND_KAKAO_FAIL(HttpStatus.INTERNAL_SERVER_ERROR,"카카오톡 전송 실패"),
     ERROR_SERVICE_COMPLETE(HttpStatus.INTERNAL_SERVER_ERROR,"서비스 완료 폼 저장 중에 에러가 발생했습니다. "),
     ERROR_IMAGE_COMPLETE(HttpStatus.INTERNAL_SERVER_ERROR,"이미지 저장 중에 에러가 발생했습니다. "),
     ERROR_REVIEW_COMPLETE(HttpStatus.INTERNAL_SERVER_ERROR,"리뷰 저장 중에 에러가 발생했습니다. "),

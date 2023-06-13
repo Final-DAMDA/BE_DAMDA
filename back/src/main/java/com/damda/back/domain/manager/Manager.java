@@ -48,7 +48,7 @@ public class Manager extends BaseEntity {
     private String mainJobStatusEtc; //본업 기재
 
     private String memo;
-
+    
     private ManagerStatusEnum prevManagerStatus;
 
     private ManagerStatusEnum currManagerStatus;

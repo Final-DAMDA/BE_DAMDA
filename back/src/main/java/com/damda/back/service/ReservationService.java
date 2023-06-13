@@ -8,6 +8,7 @@ import com.damda.back.data.response.AdminFormResponseDTO;
 import com.damda.back.data.response.ReservationResponseDTO;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ReservationService {
     public void reservationForm(ReservationFormRequestDTO dto);
@@ -27,5 +28,7 @@ public interface ReservationService {
     public void formAddCategory(Long id, AddCategoryRequestDTO dto);
 
     public void formDeleteCategory(Long id);
+
+    public Map<String,List<String>> activityArea();
 
 }

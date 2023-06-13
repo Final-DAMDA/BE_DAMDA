@@ -6,7 +6,9 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.damda.back.data.common.CodeEnum;
 import com.damda.back.data.common.CommonResponse;
 import com.damda.back.utils.JwtManager;
+import com.damda.back.utils.SolapiUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +29,9 @@ public class TestController {
     private String KEY;
 
     private static final int EXP = 1000 * 60 * 60 * 24;
+
+    @Autowired
+    private SolapiUtils solapiUtils;
 
     @GetMapping("/api/v1/test/login")
     public ResponseEntity<CommonResponse<?>> token(HttpServletResponse response){
@@ -76,6 +81,7 @@ public class TestController {
         }
 
     }
+
 
 
 }
