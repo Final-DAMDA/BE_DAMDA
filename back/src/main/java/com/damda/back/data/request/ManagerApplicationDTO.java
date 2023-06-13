@@ -37,7 +37,7 @@ public class ManagerApplicationDTO {
     public Manager toManagerEntity(Member manager) { //TODO: 매니저 상태값 체크
         return Manager.builder()
                 .managerName(name)
-                .managerPhoneNumber(phone)
+                .phoneNumber(phone)
                 .certificateStatusEtc(certificateStatusEtc)
                 .certificateStatus(CertificateStatusEnum.valueOf(certificateStatus))
                 .vehicle(vehicle)
@@ -45,7 +45,7 @@ public class ManagerApplicationDTO {
                 .mainJobStatus(mainJobStatus)
                 .mainJobStatusEtc(mainJobStatusEtc)
                 .member(manager)
-                .currManagerStatus(ManagerStatusEnum.WAITING)
+                .currManagerStatus(String.valueOf(ManagerStatusEnum.WAITING))
                 .build();
     }
 

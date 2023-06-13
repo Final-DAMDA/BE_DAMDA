@@ -18,57 +18,19 @@ public class ManagerRepositoryImpl implements ManagerCustomRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public List<Manager> activeManagerList() {
+    @Override
+    public List<Manager> managerList(ManagerStatusEnum managerStatusEnum) {
 
         QManager manager = QManager.manager;
 
         List<Manager> list = queryFactory.selectDistinct(manager)
                 .from(manager)
-                .where(manager.currManagerStatus.eq(String.valueOf(ManagerStatusEnum.ACTIVE)))
+                .where(manager.currManagerStatus.eq(managerStatusEnum))
                 .orderBy(manager.updatedAt.asc())
                 .fetch();
 
         return list;
 
-    }
-
-    public List<Manager> waitingManagerList() {
-
-        QManager manager = QManager.manager;
-
-        List<Manager> list = queryFactory.selectDistinct(manager)
-                .from(manager)
-                .where(manager.currManagerStatus.eq(String.valueOf(ManagerStatusEnum.WAITING)))
-                .orderBy(manager.updatedAt.asc())
-                .fetch();
-
-        return list;
-    }
-
-    public List<Manager> pendingManagerList() {
-
-        QManager manager = QManager.manager;
-
-        List<Manager> list = queryFactory.selectDistinct(manager)
-                .from(manager)
-                .where(manager.currManagerStatus.eq(String.valueOf(ManagerStatusEnum.PENDING)))
-                .orderBy(manager.updatedAt.asc())
-                .fetch();
-
-        return list;
-    }
-
-    public List<Manager> inactiveManagerList() {
-
-        QManager manager = QManager.manager;
-
-        List<Manager> list = queryFactory.selectDistinct(manager)
-                .from(manager)
-                .where(manager.currManagerStatus.eq(String.valueOf(ManagerStatusEnum.INACTIVE)))
-                .orderBy(manager.updatedAt.asc())
-                .fetch();
-
-        return list;
     }
 
     // public List<DistrictEnum> districtEnumList(){
@@ -85,21 +47,21 @@ public class ManagerRepositoryImpl implements ManagerCustomRepository {
      * 그렇기 떄문에 칼럼은 모든 테이블의 칼럼이 포함되는 구조이지만, row수는 AreaManager 테이블의 영향만 받게 된다.
      */
     public List<Manager> managerWithArea(String addressFront) {
-
-        QManager manager = QManager.manager;
-        QAreaManager areaManager = QAreaManager.areaManager;
-        QArea area = QArea.area;
-
-
-        List<Manager> managers = queryFactory
-                .selectDistinct(manager)
-                .from(manager)
-                .join(manager.areaManagers, areaManager).fetchJoin()
-                .join(areaManager.managerId.area, area).fetchJoin()
-                .where(area.district.eq(addressFront))
-                .fetch();
-
-        return managers;
+    //
+    //     QManager manager = QManager.manager;
+    //     QAreaManager areaManager = QAreaManager.areaManager;
+    //     QArea area = QArea.area;
+    //
+    //
+    //     List<Manager> managers = queryFactory
+    //             .selectDistinct(manager)
+    //             .from(manager)
+    //             .join(manager.areaManagers, areaManager).fetchJoin()
+    //             .join(areaManager.managerId.area, area).fetchJoin()
+    //             .where(area.district.eq(addressFront))
+    //             .fetch();
+    //
+        return null; // TODO: 원래 return managers;
     }
 
 

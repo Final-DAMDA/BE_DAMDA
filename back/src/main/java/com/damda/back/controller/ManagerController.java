@@ -3,6 +3,7 @@ package com.damda.back.controller;
 import com.damda.back.data.common.CodeEnum;
 import com.damda.back.data.common.CommonResponse;
 import com.damda.back.data.request.ManagerApplicationDTO;
+import com.damda.back.domain.manager.ManagerStatusEnum;
 import com.damda.back.service.ManagerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,13 +19,13 @@ public class ManagerController {
 
     private final ManagerService managerService;
 
-    @GetMapping("/api/v1/admin/manager/active")
-    public ResponseEntity<CommonResponse<?>> activeManagerList() {
+    @GetMapping("/api/v1/admin/manager") // ../api/v1/admin/manager?status="활동중"
+    public ResponseEntity<CommonResponse<?>> activeManagerList(@RequestParam String status) {
 
         CommonResponse<Object> commonResponse = CommonResponse
                 .builder()
                 .codeEnum(CodeEnum.SUCCESS)
-                .data(managerService.managerResponseDTOList())
+                .data(managerService.managerResponseDTOList(ManagerStatusEnum.valueOf(status)))
                 .build();
 
         return ResponseEntity
@@ -32,52 +33,7 @@ public class ManagerController {
                 .body(commonResponse);
 
     }
-
-    @GetMapping("/api/v1/member/manager/waiting")
-    public ResponseEntity<CommonResponse<?>> waitingManagerList() {
-
-        CommonResponse<Object> commonResponse = CommonResponse
-                .builder()
-                .codeEnum(CodeEnum.SUCCESS)
-                .data(managerService.managerResponseDTOList())
-                .build();
-
-        return ResponseEntity
-                .status(commonResponse.getStatus())
-                .body(commonResponse);
-
-    }
-
-    @GetMapping("/api/v1/member/manager/pending")
-    public ResponseEntity<CommonResponse<?>> pendingManagerList() {
-
-        CommonResponse<Object> commonResponse = CommonResponse
-                .builder()
-                .codeEnum(CodeEnum.SUCCESS)
-                .data(managerService.managerResponseDTOList())
-                .build();
-
-        return ResponseEntity
-                .status(commonResponse.getStatus())
-                .body(commonResponse);
-
-    }
-
-    @GetMapping("/api/v1/member/manager/inactive")
-    public ResponseEntity<CommonResponse<?>> inactiveManagerList() {
-
-        CommonResponse<Object> commonResponse = CommonResponse
-                .builder()
-                .codeEnum(CodeEnum.SUCCESS)
-                .data(managerService.managerResponseDTOList())
-                .build();
-
-        return ResponseEntity
-                .status(commonResponse.getStatus())
-                .body(commonResponse);
-
-    }
-
+    
     @PostMapping("/api/v1/manager/form/submit")
     public ResponseEntity<CommonResponse<?>> managerCreate(HttpServletRequest request, @RequestBody ManagerApplicationDTO managerApplicationDTO) {
         //        System.out.println(request.getAttribute("id").toString());
