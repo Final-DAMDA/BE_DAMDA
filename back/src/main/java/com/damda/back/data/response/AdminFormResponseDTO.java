@@ -31,6 +31,10 @@ public class AdminFormResponseDTO {
 
     private boolean required;
 
+    private Integer page;
+
+    private String placeHolder;
+
     @Builder.Default
     private List<CategoryMapDTO> categoryList = new ArrayList<>();
 

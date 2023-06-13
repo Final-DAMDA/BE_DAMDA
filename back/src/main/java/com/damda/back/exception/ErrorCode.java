@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 @Getter
 public enum ErrorCode {
-
+    KAKAO_REQUIRED_VALUES_IS_EMPTY(HttpStatus.UNAUTHORIZED,"카카오에서 필요한 정보 중 한 개 이상을 못 받아옴"),
     NOT_FOUND_RESERIVATION(HttpStatus.BAD_REQUEST,"예약 정보를 찾지 못함"),
     ACTIVITY_MANAGER_NOT_FOUND(HttpStatus.BAD_REQUEST,"해당 지역에 활동 가능 매니저를 찾지 못함"),
     RESERVATION_FORM_SAVE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR,"저장 중 에러 발생"),

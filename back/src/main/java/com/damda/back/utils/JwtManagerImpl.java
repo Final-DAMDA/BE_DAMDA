@@ -9,6 +9,8 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.damda.back.data.common.MemberRole;
 import com.damda.back.data.common.MemberStatus;
 import com.damda.back.domain.Member;
+import com.damda.back.exception.CommonException;
+import com.damda.back.exception.ErrorCode;
 import com.damda.back.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,6 +29,7 @@ public class JwtManagerImpl implements JwtManager{
 
     private final PasswordEncoder passwordEncoder;
 
+    private final String UNKNOWN = "조회되지않음";
     private static final String SUBJECT = "JWT";
     private static final int EXP = 1000 * 60 * 60 * 24;
 
@@ -36,6 +39,8 @@ public class JwtManagerImpl implements JwtManager{
 
     }
     public String jwtToken(String name,String gender,String phoneNumber,String profileImage){
+        if(phoneNumber.equals(UNKNOWN) || name.equals(UNKNOWN)) throw new CommonException(ErrorCode.KAKAO_REQUIRED_VALUES_IS_EMPTY);
+
         phoneNumber = "0"+phoneNumber.substring(4);
 
         Optional<Member> memberOptional = memberRepository.findByPhoneNumber(phoneNumber);

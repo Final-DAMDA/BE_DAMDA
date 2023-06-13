@@ -4,6 +4,7 @@ package com.damda.back.data.request;
 import com.damda.back.data.common.QuestionIdentify;
 import com.damda.back.data.common.QuestionType;
 import com.damda.back.domain.Category;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,21 +16,28 @@ import java.util.List;
 import java.util.Map;
 
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class ReservationFormRequestDTO {
 
-        private QuestionIdentify questionIdentify;
 
-        private QuestionType questionType;
+                private QuestionIdentify questionIdentify;
 
-        private String questionTitle;
+                private QuestionType questionType;
 
-        private boolean required;
+                private String questionTitle;
 
-        @Builder.Default
-        private Map<String,Integer> category = new HashMap<>();
+                private boolean required;
+
+                private Integer page;
+
+                private Integer order;
+
+                private String placeHolder;
+
+                @Builder.Default
+                private Map<String,Integer> category = new HashMap<>();
 
 
 }

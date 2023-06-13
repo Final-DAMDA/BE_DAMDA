@@ -15,5 +15,7 @@ public class RearrangeRequestDTO {
     private Long questionNumber;
     private Integer order;
 
+    private Integer page;
+
 
 }
