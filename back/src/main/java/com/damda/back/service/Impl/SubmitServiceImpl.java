@@ -175,8 +175,11 @@ public class SubmitServiceImpl implements SubmitService {
         }
 
 
-        @TimeChecking
-        @Transactional(isolation = Isolation.REPEATABLE_READ)
+    /**
+     * 실질적으로 쓰는 insert 메소드
+     */
+    @TimeChecking
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
         public Long jpaFormInsert(SubmitRequestDTO dto,Integer memberId){
             boolean isValid = dto.getSubmit().stream()
                     .map(SubmitSlice::getQuestionIdentify)
