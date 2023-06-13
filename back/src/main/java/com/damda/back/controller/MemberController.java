@@ -27,7 +27,7 @@ public class MemberController {
     private final KaKaoService kaKaoService;
 
     private final MemberService memberService;
-
+    //http://localhost:8080/api/v1/member/code
     @GetMapping("/api/v1/member/code")
     public void reservationFormDelete(
             @RequestParam(required = false) String code,
