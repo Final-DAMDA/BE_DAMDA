@@ -1,15 +1,15 @@
 package com.damda.back.domain.area;
 
-<<<<<<< HEAD
+
 import com.damda.back.domain.manager.AreaManager;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.BatchSize;
-=======
+
 import lombok.*;
->>>>>>> 640b42c94b7d7b167469d30cd62b1ea8ce758683
+
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class Area {
     
     private Integer managerCount;
 
-    @OneToMany(mappedBy = "managerId.area")
+    @OneToMany(mappedBy = "areaManagerKey.area")
     @BatchSize(size = 10)
     @Builder.Default
     private List<AreaManager> areaManagerList = new ArrayList<>();

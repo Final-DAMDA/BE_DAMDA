@@ -218,27 +218,26 @@ public class BackApplication {
 		SpringApplication.run(BackApplication.class, args);
 	}
 
-<<<<<<< HEAD
-=======
-	@Override
-	public void run(String... args) throws Exception {
-		// 더미 데이터 생성
-		//createDummyData();
-	}
-	private void createDummyData() {
-		Member member = Member.builder()
-				.gender("여")
-				.address("경기도 시흥시")
-				.profileImage("image.png")
-				.role(MemberRole.USER)
-				.password("aaa")
-				.username("hi")
-				.phoneNumber("010-1234-4321")
-				.build();
-		memberRepository.save(member);
 
-	}
->>>>>>> 640b42c94b7d7b167469d30cd62b1ea8ce758683
+
+//	public void run(String... args) throws Exception {
+//		// 더미 데이터 생성
+//		//createDummyData();
+//	}
+//	private void createDummyData() {
+//		Member member = Member.builder()
+//				.gender("여")
+//				.address("경기도 시흥시")
+//				.profileImage("image.png")
+//				.role(MemberRole.USER)
+//				.password("aaa")
+//				.username("hi")
+//				.phoneNumber("010-1234-4321")
+//				.build();
+//		memberRepository.save(member);
+//
+//	}
+
 
 
 }

@@ -59,11 +59,11 @@ public class ManagerServiceImpl implements ManagerService {
                 .mapToObj(i->{
                     String city = dto.getActivityCity().get(i);
                     String district = dto.getActivityDistrict().get(i);
-                    Optional<Area> area=areaRepository.searchArea(city,district);
-                    if(area.isEmpty()){
+                    Optional<Area> area2=areaRepository.searchArea(city,district);
+                    if(area2.isEmpty()){
                         throw new CommonException(ErrorCode.BAD_REQUEST);
                     }
-                    return area.get();
+                    return area2.get();
                 }).collect(Collectors.toList());
 
 
