@@ -85,4 +85,16 @@ public class MemberController {
         return ResponseEntity.ok(commonResponse);
     }
 
+    @GetMapping("/api/v1/verify/code")
+    public ResponseEntity<CommonResponse<?>> verifyCode(@RequestParam String code){
+
+        CommonResponse<?> commonResponse = CommonResponse
+                .builder()
+                .codeEnum(CodeEnum.SUCCESS)
+                .data(memberService.existCode(code))
+                .build();
+
+        return ResponseEntity.ok(commonResponse);
+    }
+
 }

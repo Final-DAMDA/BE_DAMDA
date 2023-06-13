@@ -11,4 +11,6 @@ public interface TalkSendService {
 
     public void sendManagerWithCustomer(MatchingCompletedDTO dto, List<String> phoneNumbers);
 
+
+    public void sendCustomenrCompleted(String toPhoneNumber,Long formId);
 }

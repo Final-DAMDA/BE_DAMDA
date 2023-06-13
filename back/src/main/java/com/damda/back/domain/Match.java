@@ -1,5 +1,6 @@
 package com.damda.back.domain;
 
+import com.damda.back.data.common.MatchResponseStatus;
 import com.damda.back.domain.manager.Manager;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +24,10 @@ public class Match {
 	private boolean matching;
 
 	private String managerName;
+
+
+	@Enumerated(EnumType.STRING)
+	private MatchResponseStatus matchStatus;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "form_id")

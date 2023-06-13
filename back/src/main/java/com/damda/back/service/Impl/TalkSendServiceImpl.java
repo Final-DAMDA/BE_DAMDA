@@ -103,4 +103,10 @@ public class TalkSendServiceImpl implements TalkSendService {
     }
 
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public void sendCustomenrCompleted(String toPhoneNumber,Long formId){
+
+        solapiUtils.serviceCompletedSendTalk(toPhoneNumber,formId);
+    }
+
 }
