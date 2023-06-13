@@ -5,6 +5,7 @@ import com.damda.back.domain.manager.AreaManager;
 import com.damda.back.domain.manager.QAreaManager;
 import com.damda.back.domain.manager.QManager;
 import com.damda.back.repository.custom.AreaManagerCustomRepository;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -18,17 +19,20 @@ public class AreaManagerRepositoryImpl implements AreaManagerCustomRepository {
 
 	private final JPAQueryFactory queryFactory;
 	@Override
-	public List<AreaManager> findAreaManagerList(Long areaId) {
+	public List<AreaManager> findAreaManagerList(String district) {
 
 		QAreaManager qAreaManager = QAreaManager.areaManager;
 		QManager qManager = QManager.manager;
 		QArea qArea = QArea.area;
 
-//		JPAQueryFactory query = queryFactory.selectDistinct(qAreaManager)
-//				.from(qAreaManager)
-//				.innerJoin(qAreaManager.managerId.manager,qManager).fetchJoin()
-//				.innerJoin(qAreaManager.managerId.area,qArea).fetchJoin()
-//				.where(qAreaManager.managerId.area.id.eq(areaId))
-		return null;
+		JPAQuery<AreaManager> query = queryFactory.selectDistinct(qAreaManager)
+				.from(qAreaManager)
+				.innerJoin(qAreaManager.areaManagerKey.manager, qManager).fetchJoin()
+				.innerJoin(qAreaManager.areaManagerKey.area, qArea).fetchJoin()
+				.where(qAreaManager.areaManagerKey.area.district.eq(district).and(qAreaManager.status.eq(true)));
+
+		List<AreaManager> list=query.fetch();
+
+		return list;
 	}
 }

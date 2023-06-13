@@ -51,8 +51,8 @@ public class ManagerController {
 
     @PostMapping("/api/v1/member/manager")
     public ResponseEntity<CommonResponse<?>> managerCreate(HttpServletRequest request,@RequestBody ManagerApplicationDTO managerApplicationDTO) {
-//        System.out.println(request.getAttribute("id").toString());
-        managerService.managerCreate(managerApplicationDTO,1);
+
+        managerService.managerCreate(managerApplicationDTO,Integer.parseInt(request.getAttribute("id").toString()));
         CommonResponse<?> commonResponse = CommonResponse
                 .builder()
                 .codeEnum(CodeEnum.SUCCESS)

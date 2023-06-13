@@ -47,9 +47,22 @@ public class AreaRepositoryImpl implements AreaCustomRepository {
                        .from(area)
                        .where(area.managerCount.ne(0))
                        .fetch();
-
         return strings;
     }
 
+    @Override
+    public Optional<Area> searchArea(String district) {
+
+        QArea area = QArea.area;
+
+        BooleanExpression predicate = area.district.eq(district);
+
+        Area result = queryFactory.select(area)
+                .from(area)
+                .where(predicate)
+                .fetchOne();
+
+        return Optional.ofNullable(result);
+    }
 
 }

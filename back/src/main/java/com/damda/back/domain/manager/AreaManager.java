@@ -17,7 +17,7 @@ public class AreaManager {
     
     @EmbeddedId
     private AreaManagerKey areaManagerKey;
-    
+    private boolean status;
     @Data
     @Embeddable
     @NoArgsConstructor

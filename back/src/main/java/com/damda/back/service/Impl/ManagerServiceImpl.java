@@ -37,12 +37,8 @@ public class ManagerServiceImpl implements ManagerService {
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public boolean managerCreate(ManagerApplicationDTO dto, Integer memberId) {
 
-        Optional<Member> member = memberRepository.findById(memberId);
-
-        if(member.isEmpty()) {
-        }
-
-        Manager manager = dto.toManagerEntity(member.get());
+        Member member = memberRepository.findById(memberId).orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_MEMBER));
+        Manager manager = dto.toManagerEntity(member);
         ActivityDay activityDay = dto.toDayEntity();
         manager.addActivityDay(activityDay);
         try{
@@ -52,25 +48,19 @@ public class ManagerServiceImpl implements ManagerService {
             //TODO:
         }
 
-        Optional<Area> area= areaRepository.searchArea(dto.getActivityCity().get(1),dto.getActivityDistrict().get(1));
-
 
         List<Area> areas = IntStream.range(0,dto.getActivityDistrict().size())
                 .mapToObj(i->{
                     String city = dto.getActivityCity().get(i);
                     String district = dto.getActivityDistrict().get(i);
-                    Optional<Area> area2=areaRepository.searchArea(city,district);
-                    if(area2.isEmpty()){
-                        throw new CommonException(ErrorCode.BAD_REQUEST);
-                    }
-                    return area2.get();
+                    Area area2=areaRepository.searchArea(city,district).orElseThrow(()-> new CommonException(ErrorCode.NOT_FOUND_AREA));
+                    return area2;
                 }).collect(Collectors.toList());
-
-
 
         for(Area a : areas){
             AreaManager areaManager = AreaManager.builder()
                     .areaManagerKey(new AreaManager.AreaManagerKey(a,manager))
+                    .status(false)
                     .build();
             try{
                 areaManagerRepository.save(areaManager);
