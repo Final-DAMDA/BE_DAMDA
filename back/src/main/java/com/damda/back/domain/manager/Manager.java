@@ -2,10 +2,7 @@ package com.damda.back.domain.manager;
 
 import com.damda.back.domain.Member;
 import com.damda.back.domain.area.DistrictEnum;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -17,6 +14,7 @@ import java.util.List;
 @Entity
 @Getter
 @Table(name = "manager_tb")
+@ToString
 public class Manager {
 
     @Id
@@ -54,6 +52,10 @@ public class Manager {
     private String prevManagerStatus;
     
     private String currManagerStatus;
+
+    private String phoneNumber;
+
+    private String managerName;
 
     public void addActivityDay(ActivityDay activityDay){
         this.activityDay=activityDay;

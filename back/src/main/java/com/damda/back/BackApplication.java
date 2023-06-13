@@ -157,7 +157,7 @@ public class BackApplication {
 
 			questionRepository.save(
 					Question.builder()
-							.questionIdentify(QuestionIdentify.RECOMENDEDCODE)
+							.questionIdentify(QuestionIdentify.SERVICEDATE)
 							.questionTitle("추천인 코드 또는 프로모션 코드가 있다면 입력해주세요")
 							.order(9)
 							.questionType(QuestionType.STRING)
@@ -198,7 +198,7 @@ public class BackApplication {
 
 			questionRepository.save(
 					Question.builder() //선택시 응답 true 같은 값보내면됨
-							.questionIdentify(QuestionIdentify.REQUIREDGUIDELINES)
+							.questionIdentify(QuestionIdentify.OPTIONAL)
 							.questionTitle("필수 안내사항")
 							.order(12)
 							.questionType(QuestionType.SELECT)
@@ -212,11 +212,11 @@ public class BackApplication {
 	}
 
 
+
 	public static void main(String[] args) {
 
 		SpringApplication.run(BackApplication.class, args);
 	}
-
 
 
 

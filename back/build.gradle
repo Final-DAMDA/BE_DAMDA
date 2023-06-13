@@ -43,6 +43,8 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
+	//솔라피
+	implementation 'net.nurigo:sdk:4.3.0'
 
 	//Excel 다운 라이브러리
 	implementation 'org.apache.poi:poi:5.2.0'
