@@ -1,6 +1,7 @@
 package com.damda.back.service.Impl;
 
 
+import com.damda.back.service.CodeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -9,7 +10,7 @@ import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
-public class CodeServiceImpl {
+public class CodeServiceImpl implements CodeService {
 
 
     public String codeCheckPublish(){

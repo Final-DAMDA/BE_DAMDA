@@ -50,7 +50,6 @@ public class ReservationSubmitForm extends BaseEntity{
     private Member member;
 
     @Builder.Default
-    @Where(clause = "matching = true")
     @BatchSize(size = 100)
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "reservationForm")
     private List<Match> matches = new ArrayList<>();
@@ -63,6 +62,12 @@ public class ReservationSubmitForm extends BaseEntity{
     }
     public void setStatus(ReservationStatus reservationStatus){
         this.status = reservationStatus;
+    }
+
+
+    public void changeStatus(ReservationStatus status){
+        this.status =status;
+
     }
 
 

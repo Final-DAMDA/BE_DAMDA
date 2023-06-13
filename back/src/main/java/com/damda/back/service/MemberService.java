@@ -5,4 +5,8 @@ import com.damda.back.data.response.MemberResponseDTO;
 public interface MemberService {
 
     public MemberResponseDTO detail(Integer id);
+
+
+    public boolean existCode(String code);
+
 }

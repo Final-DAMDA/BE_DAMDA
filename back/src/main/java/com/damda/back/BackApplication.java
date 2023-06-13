@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Profile;
 import java.util.List;
 
 @SpringBootApplication
-public class BackApplication implements CommandLineRunner{
+public class BackApplication{
 
 	@Profile("dev")
 	@Bean
@@ -157,7 +157,7 @@ public class BackApplication implements CommandLineRunner{
 
 			questionRepository.save(
 					Question.builder()
-							.questionIdentify(QuestionIdentify.RECOMENDEDCODE)
+							.questionIdentify(QuestionIdentify.SERVICEDATE)
 							.questionTitle("추천인 코드 또는 프로모션 코드가 있다면 입력해주세요")
 							.order(9)
 							.questionType(QuestionType.STRING)
@@ -198,7 +198,7 @@ public class BackApplication implements CommandLineRunner{
 
 			questionRepository.save(
 					Question.builder() //선택시 응답 true 같은 값보내면됨
-							.questionIdentify(QuestionIdentify.REQUIREDGUIDELINES)
+							.questionIdentify(QuestionIdentify.OPTIONAL)
 							.questionTitle("필수 안내사항")
 							.order(12)
 							.questionType(QuestionType.SELECT)
@@ -212,31 +212,31 @@ public class BackApplication implements CommandLineRunner{
 	}
 
 
-	@Autowired
-	private MemberRepository memberRepository;
+//	@Autowired
+//	private MemberRepository memberRepository;
 	public static void main(String[] args) {
 
 		SpringApplication.run(BackApplication.class, args);
 	}
 
-	@Override
-	public void run(String... args) throws Exception {
-		// 더미 데이터 생성
-		createDummyData();
-	}
-	private void createDummyData() {
-		Member member = Member.builder()
-				.gender("여")
-				.address("경기도 시흥시")
-				.profileImage("image.png")
-				.role(MemberRole.USER)
-				.password("aaa")
-				.username("hi")
-				.phoneNumber("010-1234-4321")
-				.build();
-		memberRepository.save(member);
-
-	}
+//	@Override
+//	public void run(String... args) throws Exception {
+//		// 더미 데이터 생성
+//		createDummyData();
+//	}
+//	private void createDummyData() {
+//		Member member = Member.builder()
+//				.gender("여")
+//				.address("경기도 시흥시")
+//				.profileImage("image.png")
+//				.role(MemberRole.USER)
+//				.password("aaa")
+//				.username("hi")
+//				.phoneNumber("010-1234-4321")
+//				.build();
+//		memberRepository.save(member);
+//
+//	}
 
 
 }
