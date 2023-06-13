@@ -7,14 +7,14 @@ import com.damda.back.service.ManagerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 public class ManagerController {
-
     private final ManagerService managerService;
 
     /**
@@ -26,7 +26,7 @@ public class ManagerController {
         CommonResponse<Object> commonResponse = CommonResponse
                 .builder()
                 .codeEnum(CodeEnum.SUCCESS)
-                .data(managerService)
+                .data(managerService.managerResponseDTOList())
                 .build();
 
         return ResponseEntity
@@ -35,9 +35,24 @@ public class ManagerController {
 
     }
 
-    @PostMapping("/api/v1/member/manager")
-    public ResponseEntity<CommonResponse<?>> managerCreate(@RequestBody ManagerApplicationDTO managerApplicationDTO) {
 
+    /**
+     * @apiNote : 매니저 추가
+     * @param managerApplicationDTO
+     * @return
+     */
+    // @GetMapping("/api/v1/member/manager/waitlist")
+
+    // @GetMapping("/api/v1/member/manager/pending")
+
+    // @GetMapping("/api/v1/member/manager/inactive")
+
+
+
+    @PostMapping("/api/v1/member/manager")
+    public ResponseEntity<CommonResponse<?>> managerCreate(HttpServletRequest request,@RequestBody ManagerApplicationDTO managerApplicationDTO) {
+//        System.out.println(request.getAttribute("id").toString());
+        managerService.managerCreate(managerApplicationDTO,1);
         CommonResponse<?> commonResponse = CommonResponse
                 .builder()
                 .codeEnum(CodeEnum.SUCCESS)
