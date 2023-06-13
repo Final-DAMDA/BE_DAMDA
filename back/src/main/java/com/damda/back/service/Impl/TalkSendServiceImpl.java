@@ -16,14 +16,14 @@ import com.damda.back.service.TalkSendService;
 import com.damda.back.utils.SolapiUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.nurigo.sdk.message.exception.NurigoEmptyResponseException;
+import net.nurigo.sdk.message.exception.NurigoMessageNotReceivedException;
+import net.nurigo.sdk.message.exception.NurigoUnknownException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,6 +51,8 @@ public class TalkSendServiceImpl implements TalkSendService {
 
         if(answers.isEmpty()) throw new CommonException(ErrorCode.FORM_NOT_FOUND);
         List<Manager> managerList = managerRepository.managerWithArea(addressFront);
+        List<String> phoneNumbers = new ArrayList<>();
+
         if(managerList.isEmpty()) throw new CommonException(ErrorCode.ACTIVITY_MANAGER_NOT_FOUND);
 
         Map<QuestionIdentify, String> answerMap =
@@ -69,14 +71,23 @@ public class TalkSendServiceImpl implements TalkSendService {
                 .reservationEnter(answerMap.get(QuestionIdentify.RESERVATIONENTER))
                 .reservationNote(answerMap.get(QuestionIdentify.RESERVATIONOTE))
                 .reservationRequest(answerMap.get(QuestionIdentify.RESERVATIONREQUEST))
-                .acceptLink("https://api/damda.store") //TODO: https:를 제외한 도메인 생성해서 너허야ㅕ함
+                .formId(formId.toString())
                 .build();
 
         for (Manager manager : managerList) {
             log.info("전송된 번호 {}" , manager.getPhoneNumber());
-            solapiUtils.reservationCompletedSendManager(manager.getPhoneNumber(), resCompleteRequestDTO);
+            phoneNumbers.add(manager.getPhoneNumber());
         }
 
+        try{
+            solapiUtils.reservationCompletedSendManager(phoneNumbers, resCompleteRequestDTO);
+        }catch (NurigoEmptyResponseException e) {
+            throw new RuntimeException(e);
+        } catch (NurigoUnknownException e) {
+            throw new RuntimeException(e);
+        } catch (NurigoMessageNotReceivedException e) {
+            throw new RuntimeException(e);
+        }
 
         //-- 고객에게 보내는 알림톡 - 서비스일시(reservationTime), 서비스장소(reserveAddress),
         // 매니저 인원(managerAmount), 예상 소요시간(requiredTime), 견적가(estimate)
