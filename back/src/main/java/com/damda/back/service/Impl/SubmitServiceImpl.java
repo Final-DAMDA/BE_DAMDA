@@ -177,6 +177,7 @@ public class SubmitServiceImpl implements SubmitService {
 
     /**
      * 실질적으로 쓰는 insert 메소드
+     * 예약Insert시 실행되는 메소드
      */
     @TimeChecking
     @Transactional(isolation = Isolation.REPEATABLE_READ)
@@ -208,7 +209,7 @@ public class SubmitServiceImpl implements SubmitService {
                     });
 
                     ReservationSubmitForm form = reservationFormRepository.save(reservationSubmitForm);
-
+                    //TODO: 매칭로직 추가
                     talkSendService.sendReservationSubmitAfter(form.getId(),dto.getAddressFront(),form.getReservationAnswerList(),dto.getTotalPrice());
 
                     return form.getId();
