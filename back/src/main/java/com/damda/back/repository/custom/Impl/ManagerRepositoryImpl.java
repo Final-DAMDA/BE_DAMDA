@@ -25,7 +25,7 @@ public class ManagerRepositoryImpl implements ManagerCustomRepository {
 
         List<Manager> list = queryFactory.selectDistinct(manager)
                 .from(manager)
-                .where(manager.currManagerStatus.eq(String.valueOf(managerStatusEnum)))
+                .where(manager.currManagerStatus.eq(managerStatusEnum))
                 .orderBy(manager.updatedAt.asc())
                 .fetch();
 

@@ -50,9 +50,9 @@ public class Manager extends BaseEntity {
 
     private String memo;
 
-    private String prevManagerStatus;
+    private ManagerStatusEnum prevManagerStatus;
 
-    private String currManagerStatus;
+    private ManagerStatusEnum currManagerStatus;
 
     private String phoneNumber;
 

@@ -45,7 +45,7 @@ public class ManagerApplicationDTO {
                 .mainJobStatus(mainJobStatus)
                 .mainJobStatusEtc(mainJobStatusEtc)
                 .member(manager)
-                .currManagerStatus(String.valueOf(ManagerStatusEnum.WAITING))
+                .currManagerStatus(ManagerStatusEnum.WAITING)
                 .build();
     }
 
