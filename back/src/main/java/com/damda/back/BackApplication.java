@@ -218,8 +218,7 @@ public class BackApplication{
 
 		SpringApplication.run(BackApplication.class, args);
 	}
-
-<<<<<<< HEAD
+	
 	@Override
 	public void run(String... args) throws Exception {
 		// 더미 데이터 생성

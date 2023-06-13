@@ -15,11 +15,11 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequiredArgsConstructor
 public class ManagerController {
-    
+
     private final ManagerService managerService;
-    
+
     @GetMapping("/api/v1/admin/manager/active")
-    public ResponseEntity<CommonResponse<?>> managerList() {
+    public ResponseEntity<CommonResponse<?>> activeManagerList() {
 
         CommonResponse<Object> commonResponse = CommonResponse
                 .builder()
@@ -32,17 +32,56 @@ public class ManagerController {
                 .body(commonResponse);
 
     }
-    
-    // @GetMapping("/api/v1/member/manager/waiting")
 
-    // @GetMapping("/api/v1/member/manager/pending")
+    @GetMapping("/api/v1/member/manager/waiting")
+    public ResponseEntity<CommonResponse<?>> waitingManagerList() {
 
-    // @GetMapping("/api/v1/member/manager/inactive")
-    
+        CommonResponse<Object> commonResponse = CommonResponse
+                .builder()
+                .codeEnum(CodeEnum.SUCCESS)
+                .data(managerService.managerResponseDTOList())
+                .build();
+
+        return ResponseEntity
+                .status(commonResponse.getStatus())
+                .body(commonResponse);
+
+    }
+
+    @GetMapping("/api/v1/member/manager/pending")
+    public ResponseEntity<CommonResponse<?>> pendingManagerList() {
+
+        CommonResponse<Object> commonResponse = CommonResponse
+                .builder()
+                .codeEnum(CodeEnum.SUCCESS)
+                .data(managerService.managerResponseDTOList())
+                .build();
+
+        return ResponseEntity
+                .status(commonResponse.getStatus())
+                .body(commonResponse);
+
+    }
+
+    @GetMapping("/api/v1/member/manager/inactive")
+    public ResponseEntity<CommonResponse<?>> inactiveManagerList() {
+
+        CommonResponse<Object> commonResponse = CommonResponse
+                .builder()
+                .codeEnum(CodeEnum.SUCCESS)
+                .data(managerService.managerResponseDTOList())
+                .build();
+
+        return ResponseEntity
+                .status(commonResponse.getStatus())
+                .body(commonResponse);
+
+    }
+
     @PostMapping("/api/v1/manager/form/submit")
-    public ResponseEntity<CommonResponse<?>> managerCreate(HttpServletRequest request,@RequestBody ManagerApplicationDTO managerApplicationDTO) {
-//        System.out.println(request.getAttribute("id").toString());
-        managerService.managerCreate(managerApplicationDTO,1);
+    public ResponseEntity<CommonResponse<?>> managerCreate(HttpServletRequest request, @RequestBody ManagerApplicationDTO managerApplicationDTO) {
+        //        System.out.println(request.getAttribute("id").toString());
+        managerService.managerCreate(managerApplicationDTO, 1);
         CommonResponse<?> commonResponse = CommonResponse
                 .builder()
                 .codeEnum(CodeEnum.SUCCESS)
