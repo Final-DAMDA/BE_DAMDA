@@ -61,7 +61,7 @@ public class ManagerRepositoryImpl implements ManagerCustomRepository {
                 .from(manager)
                 .join(manager.areaManagers, areaManager).fetchJoin()
                 .join(areaManager.managerId.area, area).fetchJoin()
-                .where(area.district.eq("하남시"))
+                .where(area.district.eq(addressFront))
                 .fetch();
 
         return managers;

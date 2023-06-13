@@ -10,7 +10,9 @@ import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.exception.NurigoBadRequestException;
+import net.nurigo.sdk.message.exception.NurigoEmptyResponseException;
 import net.nurigo.sdk.message.exception.NurigoMessageNotReceivedException;
+import net.nurigo.sdk.message.exception.NurigoUnknownException;
 import net.nurigo.sdk.message.model.KakaoOption;
 import net.nurigo.sdk.message.model.Message;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
@@ -50,38 +52,42 @@ public class SolapiUtils {
      * @return SingleMessageSentResponse(groupId = G4V20230609161743TUX3RLAAHYGNO9J, to = 01040783843, from = 01099636287, type = ATA, statusMessage = 정상 접수 ( 이통사로 접수 예정) , country=82, messageId=M4V20230609161743DVEYDZXAL5IAYZD, statusCode=2000, accountId=23052316644799)
      *  NurigoBadRequestException 처리가 필요ㅗ
      * */
-    public void reservationCompletedSendManager(String toPhoneNumber, ResCompleteRequestDTO dto){
-        KakaoOption kakaoOption = new KakaoOption();
+    public void reservationCompletedSendManager(List<String> toPhoneNumber, ResCompleteRequestDTO dto) throws NurigoMessageNotReceivedException, NurigoEmptyResponseException, NurigoUnknownException {
 
-        kakaoOption.setPfId(OfPartner);
-        kakaoOption.setTemplateId("KA01TP230607053205027Iilud2IFQfl"); //템플릿 ID 수정해야함
+        ArrayList<Message> messageList = new ArrayList<>();
 
-        HashMap<String, String> variables = new HashMap<>();
-        variables.put("#{reservationDate}", dto.getReservationDate());
-        variables.put("#{reservationHour}", dto.getReservationHour());
-        variables.put("#{managerAmount}", dto.getManagerAmount());
-        variables.put("#{userAddress}", dto.getUserAddressCity());   //이거 승인되면 ㅂ녀수 수저
-        variables.put("#{reservationParking}", dto.getReservationParking());
-        variables.put("#{reservationEnter}", dto.getReservationEnter());
-        variables.put("#{reservationNote}",dto.getReservationNote());
-        variables.put("#{reservationRequest}", dto.getReservationRequest());
-        variables.put("#{acceptLink}", dto.getAcceptLink());
+        toPhoneNumber.forEach(phoneNumber -> {
+            KakaoOption kakaoOption = new KakaoOption();
+
+            kakaoOption.setPfId(OfPartner);
+            kakaoOption.setTemplateId("KA01TP230610060324504DHhZlkDUtRr"); //템플릿 ID 수정해야함
+
+            HashMap<String, String> variables = new HashMap<>();
+            variables.put("#{reservationDate}", dto.getReservationDate());
+            variables.put("#{reservationHour}", dto.getReservationHour());
+            variables.put("#{managerAmount}", dto.getManagerAmount());
+            variables.put("#{userAddress}", dto.getUserAddressCity());   //이거 승인되면 ㅂ녀수 수저
+            variables.put("#{reservationParking}", dto.getReservationParking());
+            variables.put("#{reservationEnter}", dto.getReservationEnter());
+            variables.put("#{reservationNote}",dto.getReservationNote());
+            variables.put("#{reservationRequest}", dto.getReservationRequest());
+            variables.put("#{domain}", domain+"?id="+dto.getFormId());
 
 
 
-        kakaoOption.setVariables(variables);
+            kakaoOption.setVariables(variables);
 
-        Message message = new Message();
-        // 발신번호 및 수신번호는 반드시 01012345678 형태로 입력되어야 합니다.
-        message.setFrom("01099636287");
-        message.setTo(toPhoneNumber);
-        message.setKakaoOptions(kakaoOption);
+            Message message = new Message();
+            // 발신번호 및 수신번호는 반드시 01012345678 형태로 입력되어야 합니다.
+            message.setFrom("01099636287");
+            message.setTo(phoneNumber);
+            message.setKakaoOptions(kakaoOption);
 
-        //try{
-            SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
-//        }catch (NurigoBadRequestException e){
-//            throw new CommonException(ErrorCode.SERVER_ERROR);
-//        }
+            messageList.add(message);
+        });
+
+        MultipleDetailMessageSentResponse response = this.messageService.send(messageList);
+
 
         log.info("알림톡 전송 후 응답 객체 {}",response);
         System.out.println(response);
@@ -96,7 +102,7 @@ public class SolapiUtils {
     public void reservationCompletedSendCustomer(CustomerTalkDTO dto,String toPhoneNumber){
         KakaoOption kakaoOption = new KakaoOption();
 
-        kakaoOption.setPfId(OfPartner);
+        kakaoOption.setPfId(mainCh);
         kakaoOption.setTemplateId("KA01TP230607055039283yWlI9RuSJBA");
 
 

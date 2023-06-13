@@ -24,7 +24,7 @@ public class ResCompleteRequestDTO {
 
     private String reservationRequest;
 
-    private String acceptLink;
+    private String formId;
 
 
 }

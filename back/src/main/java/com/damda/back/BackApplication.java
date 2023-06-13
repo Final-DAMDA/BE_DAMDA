@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Profile;
 import java.util.List;
 
 @SpringBootApplication
-public class BackApplication implements CommandLineRunner{
+public class BackApplication{
 
 	@Profile("dev")
 	@Bean
@@ -212,13 +212,14 @@ public class BackApplication implements CommandLineRunner{
 	}
 
 
-	@Autowired
-	private MemberRepository memberRepository;
+//	@Autowired
+//	private MemberRepository memberRepository;
 	public static void main(String[] args) {
 
 		SpringApplication.run(BackApplication.class, args);
 	}
 
+<<<<<<< HEAD
 	@Override
 	public void run(String... args) throws Exception {
 		// 더미 데이터 생성
