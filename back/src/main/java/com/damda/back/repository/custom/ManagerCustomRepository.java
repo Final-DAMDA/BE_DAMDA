@@ -7,6 +7,7 @@ import com.damda.back.domain.manager.AreaManager;
 import com.damda.back.domain.manager.Manager;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ManagerCustomRepository {
 
@@ -15,5 +16,6 @@ public interface ManagerCustomRepository {
     public List<Manager> managers(List<Long> ids);
 
     List<Manager> managerList();
+    String findManagerName(Integer memberId);
 
 }
