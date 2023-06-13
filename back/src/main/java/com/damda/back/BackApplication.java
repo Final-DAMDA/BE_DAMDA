@@ -1,11 +1,17 @@
 package com.damda.back;
 
+import com.damda.back.data.common.MemberRole;
+import com.damda.back.domain.Member;
+import com.damda.back.repository.MemberRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.damda.back.data.common.QuestionIdentify;
 import com.damda.back.data.common.QuestionType;
 import com.damda.back.domain.Category;
 import com.damda.back.domain.Question;
 import com.damda.back.domain.QuestionStatus;
 import com.damda.back.repository.QuestionRepository;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,7 +21,7 @@ import org.springframework.context.annotation.Profile;
 import java.util.List;
 
 @SpringBootApplication
-public class BackApplication {
+public class BackApplication implements CommandLineRunner{
 
 	@Profile("dev")
 	@Bean
@@ -202,11 +208,35 @@ public class BackApplication {
 			);
 
 		};
+
 	}
 
 
+	@Autowired
+	private MemberRepository memberRepository;
 	public static void main(String[] args) {
+
 		SpringApplication.run(BackApplication.class, args);
 	}
+
+	@Override
+	public void run(String... args) throws Exception {
+		// 더미 데이터 생성
+		createDummyData();
+	}
+	private void createDummyData() {
+		Member member = Member.builder()
+				.gender("여")
+				.address("경기도 시흥시")
+				.profileImage("image.png")
+				.role(MemberRole.USER)
+				.password("aaa")
+				.username("hi")
+				.phoneNumber("010-1234-4321")
+				.build();
+		memberRepository.save(member);
+
+	}
+
 
 }
