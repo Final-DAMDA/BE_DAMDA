@@ -157,7 +157,7 @@ public class BackApplication implements CommandLineRunner{
 
 			questionRepository.save(
 					Question.builder()
-							.questionIdentify(QuestionIdentify.RECOMENDEDCODE)
+							.questionIdentify(QuestionIdentify.SERVICEDATE)
 							.questionTitle("추천인 코드 또는 프로모션 코드가 있다면 입력해주세요")
 							.order(9)
 							.questionType(QuestionType.STRING)

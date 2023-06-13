@@ -281,16 +281,16 @@ public class SubmitServiceImpl implements SubmitService {
        @Transactional(isolation = Isolation.REPEATABLE_READ)
        public void statusModify(FormStatusModifyRequestDTO dto){
            ReservationSubmitForm form = reservationFormRepository.submitFormWithAnswer(dto.getId()).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_RESERIVATION));
+           List<ReservationAnswer> answers = form.getReservationAnswerList();
+
+           Map<QuestionIdentify, String> answerMap
+                   = answers.stream().collect(Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
 
 
            if(dto.getStatus().equals(ReservationStatus.MANAGER_MATCHING_COMPLETED) && !form.getStatus().equals(ReservationStatus.MANAGER_MATCHING_COMPLETED)){
-               List<ReservationAnswer> answers = form.getReservationAnswerList();
 
                List<Long> managerList = new ArrayList<>();
                List<String> phoneNumbers = new ArrayList<>();
-               Map<QuestionIdentify, String> answerMap
-                       = answers.stream().collect(Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
-
 
                MatchingCompletedDTO data = MatchingCompletedDTO.builder()
                        .reservationDate(answerMap.get(QuestionIdentify.SERVICEDATE))
@@ -327,12 +327,14 @@ public class SubmitServiceImpl implements SubmitService {
                            .code(code)
                            .build();
 
-
                    member.changeCode(discountCodeNew);
                    form.changeStatus(dto.getStatus());
                }else{
                    log.info("기존 코드 그대로 사용됨 {}",discountCode.getCode());
                }
+               talkSendService.sendCustomenrCompleted(
+                       answerMap.get(QuestionIdentify.APPLICANTCONACTINFO),form.getId());
+
                form.changeStatus(dto.getStatus());
                //TODO: 서비스 완료시 고객에게 설문 조사 링크 보내야함
            }else{

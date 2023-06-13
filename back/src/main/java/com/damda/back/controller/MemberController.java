@@ -27,7 +27,7 @@ public class MemberController {
     private final KaKaoService kaKaoService;
 
     private final MemberService memberService;
-
+    //http://localhost:8080/api/v1/member/code
     @GetMapping("/api/v1/member/code")
     public void reservationFormDelete(
             @RequestParam(required = false) String code,
@@ -82,6 +82,18 @@ public class MemberController {
                 .codeEnum(CodeEnum.SUCCESS)
                 .data(dto)
                 .build();
+        return ResponseEntity.ok(commonResponse);
+    }
+
+    @GetMapping("/api/v1/verify/code")
+    public ResponseEntity<CommonResponse<?>> verifyCode(@RequestParam String code){
+
+        CommonResponse<?> commonResponse = CommonResponse
+                .builder()
+                .codeEnum(CodeEnum.SUCCESS)
+                .data(memberService.existCode(code))
+                .build();
+
         return ResponseEntity.ok(commonResponse);
     }
 

@@ -36,6 +36,8 @@ public class SolapiUtils {
     @Value("${channal.main}")
     private String mainCh;
 
+    @Value("${damda.domain}")
+    private String domain;
 
     private final DefaultMessageService messageService;
 
@@ -95,7 +97,7 @@ public class SolapiUtils {
         KakaoOption kakaoOption = new KakaoOption();
 
         kakaoOption.setPfId(OfPartner);
-        kakaoOption.setTemplateId("KA01TP230607055039283yWlI9RuSJBA"); //템플릿 ID 수정해야함
+        kakaoOption.setTemplateId("KA01TP230607055039283yWlI9RuSJBA");
 
 
         HashMap<String, String> variables = new HashMap<>();
@@ -124,7 +126,7 @@ public class SolapiUtils {
 
         toPhoneNumber.forEach(phoneNumber -> {
             KakaoOption kakaoOption = new KakaoOption();
-            kakaoOption.setPfId("KA01PF2306020320514155hZHea72lmz");
+            kakaoOption.setPfId(mainCh);
             // 등록하신 카카오 알림톡 템플릿의 templateId를 입력해주세요.
             kakaoOption.setTemplateId("KA01TP230612051326414qMmEGl08iVx");
 
@@ -160,6 +162,31 @@ public class SolapiUtils {
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
         }
+    }
+
+    public void serviceCompletedSendTalk(String toPhoneNumber,Long formId){
+
+        KakaoOption kakaoOption = new KakaoOption();
+
+        kakaoOption.setPfId(mainCh);
+        kakaoOption.setTemplateId("KA01TP2306100607150398Gs50ssTUnD"); //템플릿 ID 수정해야함
+
+        String domainQuery = domain + "?id="+formId;
+
+        HashMap<String, String> variables = new HashMap<>();
+        variables.put("#{domain}" , domainQuery);
+
+        log.info(domainQuery);
+        kakaoOption.setVariables(variables);
+
+        Message message = new Message();
+        // 발신번호 및 수신번호는 반드시 01012345678 형태로 입력되어야 합니다.
+        message.setFrom("01099636287");
+        message.setTo(toPhoneNumber);
+        message.setKakaoOptions(kakaoOption);
+
+        SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
+
     }
 
 }
