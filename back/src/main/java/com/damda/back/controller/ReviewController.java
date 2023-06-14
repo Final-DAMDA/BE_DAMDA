@@ -7,6 +7,8 @@ import com.damda.back.data.request.ReviewRequestDTO;
 import com.damda.back.data.request.ServiceCompleteRequestDTO;
 import com.damda.back.service.ReviewService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,12 +25,12 @@ public class ReviewController {
 	 * @apiNote: GET 서비스 완료 폼 제출여부 판단
 	 */
 	@GetMapping("/service/complete/{reservationId}") //id는 예약 id
-	public ResponseEntity<CommonResponse<?>> serviceCompleteCheck(@PathVariable Long reservationId){
+	public ResponseEntity<CommonResponse<?>> serviceCompleteCheck(@PathVariable("reservationId") Long reservationId){
 
 		CommonResponse<?> commonResponse = CommonResponse
 				.builder()
 				.codeEnum(CodeEnum.SUCCESS)
-				.data(reviewService.checkServiceComplete(reservationId).getId())
+				.data(reviewService.checkServiceComplete(reservationId))
 				.build();
 
 		return ResponseEntity
@@ -41,7 +43,7 @@ public class ReviewController {
 	 * @apiNote: 서비스 완료 폼 제출
 	 */
 	@PostMapping("/service/complete/{reservationId}") //id는 예약 id
-	public ResponseEntity<CommonResponse<?>> serviceCompleteSave(@PathVariable Long reservationId, @RequestParam(value = "before") List<MultipartFile> before, @RequestParam(value = "after")List<MultipartFile> after){
+	public ResponseEntity<CommonResponse<?>> serviceCompleteSave(@PathVariable("reservationId") Long reservationId, @RequestParam(value = "before") List<MultipartFile> before, @RequestParam(value = "after")List<MultipartFile> after){
 		ServiceCompleteRequestDTO serviceCompleteRequestDTO=new ServiceCompleteRequestDTO();
 		serviceCompleteRequestDTO.setBefore(before);
 		serviceCompleteRequestDTO.setAfter(after);
@@ -61,11 +63,14 @@ public class ReviewController {
 	 * @apiNote: 서비스 완료 폼 제출된 고객 리스트 조회 (리뷰 작성 안 되어 있는)
 	 */
 	@GetMapping("/service/complete/list")
-	public ResponseEntity<CommonResponse<?>> serviceCompleteList(){
+	public ResponseEntity<CommonResponse<?>> serviceCompleteList(@RequestParam(name = "page", defaultValue = "0") int page,
+																 @RequestParam(name = "size", defaultValue = "8") int size){
+
+		Pageable pageable = PageRequest.of(page, size);
 		CommonResponse<?> commonResponse = CommonResponse
 				.builder()
 				.codeEnum(CodeEnum.SUCCESS)
-				.data(reviewService.listServiceComplete())
+				.data(reviewService.listServiceComplete(pageable))
 				.build();
 
 		return ResponseEntity
@@ -77,7 +82,7 @@ public class ReviewController {
 	 * @apiNote: 리뷰 불러오기(더블클릭하면 선택됨)
 	 */
 	@GetMapping("/review/auto/{reservationId}")
-	public ResponseEntity<CommonResponse<?>> reviewChoice(@PathVariable Long reservationId){
+	public ResponseEntity<CommonResponse<?>> reviewChoice(@PathVariable("reservationId") Long reservationId){
 		CommonResponse<?> commonResponse = CommonResponse
 				.builder()
 				.codeEnum(CodeEnum.SUCCESS)
@@ -93,7 +98,7 @@ public class ReviewController {
 	 * @apiNote: 리뷰 업로드
 	 */
 	@PostMapping("/review/auto/{reservationId}")
-	public ResponseEntity<CommonResponse<?>> reviewUpload(@PathVariable Long reservationId,
+	public ResponseEntity<CommonResponse<?>> reviewUpload(@PathVariable("reservationId") Long reservationId,
 														  @RequestParam(value = "before",required = false) List<MultipartFile> before,
 														  @RequestParam(value = "after",required = false)List<MultipartFile> after,
 														  @RequestParam(value = "title")String title,
@@ -133,15 +138,17 @@ public class ReviewController {
 	}
 
 	/**
-	 * @apiNote: 리뷰 리스트(유저)
+	 * @apiNote: 리뷰 리스트(어드민)
 	 */
 	@GetMapping("/admin/review/list")
-	public ResponseEntity<CommonResponse<?>> reviewListAdmin(){
+	public ResponseEntity<CommonResponse<?>> reviewListAdmin(@RequestParam(name = "page", defaultValue = "0") int page,
+															 @RequestParam(name = "size", defaultValue = "8") int size){
 
+		Pageable pageable = PageRequest.of(page, size);
 		CommonResponse<?> commonResponse = CommonResponse
 				.builder()
 				.codeEnum(CodeEnum.SUCCESS)
-				.data(reviewService.listReviewAdmin())
+				.data(reviewService.listReviewAdmin(pageable))
 				.build();
 
 		return ResponseEntity
@@ -153,7 +160,7 @@ public class ReviewController {
 	 * @return
 	 */
 	@PutMapping("/review/best/{reviewId}")
-	public ResponseEntity<CommonResponse<?>> bestReviewChoice(@PathVariable Long reviewId){
+	public ResponseEntity<CommonResponse<?>> bestReviewChoice(@PathVariable("reviewId") Long reviewId){
 		CommonResponse<?> commonResponse = CommonResponse
 				.builder()
 				.codeEnum(CodeEnum.SUCCESS)

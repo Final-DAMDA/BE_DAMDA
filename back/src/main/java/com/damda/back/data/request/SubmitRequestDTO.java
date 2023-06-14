@@ -14,8 +14,6 @@ import java.util.List;
 public class SubmitRequestDTO {
 
     private List<SubmitSlice> submit;
-
-
     private String addressFront;
     private Integer totalPrice;
 

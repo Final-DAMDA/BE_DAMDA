@@ -16,8 +16,9 @@ import java.io.Serializable;
 public class AreaManager {
     
     @EmbeddedId
-    private AreaManagerKey managerId;
-    
+    private AreaManagerKey areaManagerKey;
+    private boolean status;
+
     @Data
     @Embeddable
     @NoArgsConstructor
