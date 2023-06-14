@@ -12,7 +12,7 @@ public interface ManagerCustomRepository {
     public List<Manager> managerWithArea(String addressFront);
 
     public List<Manager> managers(List<Long> ids);
-
+    
     public List<Manager> managerList(ManagerStatusEnum managerStatusEnum);
 
 }

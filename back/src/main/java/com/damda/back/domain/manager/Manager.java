@@ -4,7 +4,6 @@ import com.damda.back.domain.BaseEntity;
 import com.damda.back.domain.Member;
 import com.damda.back.domain.area.DistrictEnum;
 import lombok.*;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,11 +48,11 @@ public class Manager extends BaseEntity {
     private String mainJobStatusEtc;
 
     private String memo;
-
+    
     private ManagerStatusEnum prevManagerStatus;
 
     private ManagerStatusEnum currManagerStatus;
-
+    
     private String phoneNumber;
 
     private String managerName;
@@ -61,4 +60,5 @@ public class Manager extends BaseEntity {
     public void addActivityDay(ActivityDay activityDay){
         this.activityDay=activityDay;
     }
+
 }

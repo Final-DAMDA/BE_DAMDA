@@ -53,17 +53,20 @@ public class ManagerServiceImpl implements ManagerService {
             //TODO:
         }
 
+        Optional<Area> area= areaRepository.searchArea(dto.getActivityCity().get(1),dto.getActivityDistrict().get(1));
+
+
         List<Area> areas = IntStream.range(0,dto.getActivityDistrict().size())
                 .mapToObj(i->{
                     String city = dto.getActivityCity().get(i);
                     String district = dto.getActivityDistrict().get(i);
-                    Optional<Area> area=areaRepository.searchArea(city,district);
-                    System.out.println("---------"+area);
-                    if(area.isEmpty()){
+                    Optional<Area> area2=areaRepository.searchArea(city,district);
+                    if(area2.isEmpty()){
                         throw new CommonException(ErrorCode.BAD_REQUEST);
                     }
-                    return area.get();
+                    return area2.get();
                 }).collect(Collectors.toList());
+
 
 
         for(Area a : areas){

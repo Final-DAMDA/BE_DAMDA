@@ -19,7 +19,7 @@ public class ManagerController {
 
     private final ManagerService managerService;
 
-    @GetMapping("/api/v1/admin/manager") // ../api/v1/admin/manager?status="활동중"
+    @GetMapping("/api/v1/admin/manager") // ../api/v1/admin/manager?status=ACTIVE
     public ResponseEntity<CommonResponse<?>> activeManagerList(@RequestParam String status) {
 
         CommonResponse<Object> commonResponse = CommonResponse

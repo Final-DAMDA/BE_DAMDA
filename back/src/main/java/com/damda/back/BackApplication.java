@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Profile;
 import java.util.List;
 
 @SpringBootApplication
-public class BackApplication{
+public class BackApplication {
 
 	@Profile("dev")
 	@Bean
@@ -212,11 +212,10 @@ public class BackApplication{
 	}
 
 
-//	@Autowired
-//	private MemberRepository memberRepository;
+
 	public static void main(String[] args) {
 
 		SpringApplication.run(BackApplication.class, args);
 	}
-
+	
 }

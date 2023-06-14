@@ -45,6 +45,7 @@ public class ManagerRepositoryImpl implements ManagerCustomRepository {
     /**
      * @ManyToMany fetchJoin OneToMany 관계를 같이 영속화시키면서 ManyToOne 관계의 데이터도 모두 영속화 시킨다.
      * 그렇기 떄문에 칼럼은 모든 테이블의 칼럼이 포함되는 구조이지만, row수는 AreaManager 테이블의 영향만 받게 된다.
+<<<<<<< HEAD
      */
     public List<Manager> managerWithArea(String addressFront) {
     //

@@ -161,23 +161,26 @@ public class ReservationFormRepositoryImpl implements ReservationFormCustomRepos
         }
 
         @Override
-        public List<ReservationSubmitForm> serviceCompleteList(){
+        public Page<ReservationSubmitForm> serviceCompleteList(Pageable pageable){
                 QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
                 QMember member = QMember.member;
                 QReservationAnswer answer = QReservationAnswer.reservationAnswer;
-                QReview review = QReview.review;
 
-                JPAQuery<ReservationSubmitForm> query =
+                List<ReservationSubmitForm> list =
                         queryFactory.selectDistinct(submitForm)
-                                .from(submitForm)
-                                .innerJoin(submitForm.reservationAnswerList,answer).fetchJoin()
-                                .innerJoin(submitForm.member, member).fetchJoin()
-                                .where(submitForm.status.eq(ReservationStatus.SERVICE_COMPLETED));
+                                        .from(submitForm)
+                                        .innerJoin(submitForm.reservationAnswerList,answer).fetchJoin()
+                                        .innerJoin(submitForm.member, member).fetchJoin()
+                                        .where(submitForm.status.eq(ReservationStatus.SERVICE_COMPLETED))
+                                        .offset(pageable.getOffset())
+                                        .limit(pageable.getPageSize())
+                                        .fetch();
 
-
-
-                List<ReservationSubmitForm> list = query.fetch();
-                return list;
+                JPAQuery<Long> count = queryFactory.select(submitForm.count())
+                        .from(submitForm)
+                        .where(submitForm.status.eq(ReservationStatus.SERVICE_COMPLETED));
+                
+                return PageableExecutionUtils.getPage(list,pageable,count::fetchOne);
         }
         @Override
         public Optional<ReservationSubmitForm> serviceComplete(Long reservationId){
@@ -188,7 +191,7 @@ public class ReservationFormRepositoryImpl implements ReservationFormCustomRepos
                         queryFactory.selectDistinct(submitForm)
                                 .from(submitForm)
                                 .innerJoin(submitForm.reservationAnswerList,answer).fetchJoin()
-                                .where(submitForm.status.eq(ReservationStatus.SERVICE_COMPLETED),submitForm.id.eq(reservationId))
+                                .where(submitForm.id.eq(reservationId))
                                 .fetchOne();
 
                 return Optional.ofNullable(reservationSubmitForm);
