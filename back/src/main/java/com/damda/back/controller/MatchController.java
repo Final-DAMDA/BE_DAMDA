@@ -57,6 +57,11 @@ public class MatchController {
 		return ResponseEntity.ok(commonResponse);
 	}
 
+	/**
+	 * @apiNote : 매칭 리스트
+	 * @param reservationId
+	 * @return
+	 */
 	@GetMapping("/api/v1/matching/list/{id}")
 	public ResponseEntity<CommonResponse<?>> matchingAccept( @PathVariable("id") Long reservationId){//reservationID 임
 
