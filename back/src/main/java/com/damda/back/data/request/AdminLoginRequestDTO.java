@@ -6,16 +6,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RearrangeRequestDTO {
+public class AdminLoginRequestDTO {
 
-    private Long questionNumber;
-    private Integer order;
+    private String username;
 
-    private Integer page;
-
+    private String password;
 
 }

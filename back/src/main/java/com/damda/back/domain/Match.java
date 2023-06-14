@@ -2,6 +2,8 @@ package com.damda.back.domain;
 
 import com.damda.back.data.common.MatchResponseStatus;
 import com.damda.back.domain.manager.Manager;
+import com.damda.back.exception.CommonException;
+import com.damda.back.exception.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,7 +18,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Table(name = "match_tb")
-public class Match {
+public class Match extends BaseEntity{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -39,4 +41,17 @@ public class Match {
 
 	@Column(name = "manager_id")
 	private Long managerId;
+
+	public void matchStatusYes(){
+		if(this.matchStatus!=MatchResponseStatus.WAITING){
+			throw new CommonException(ErrorCode.NOT_FOUND_MATCH);
+		}
+		this.matchStatus=MatchResponseStatus.YES;
+	}
+	public void matchStatusNO(){
+		if(this.matchStatus!=MatchResponseStatus.WAITING){
+			throw new CommonException(ErrorCode.NOT_FOUND_MATCH);
+		}
+		this.matchStatus=MatchResponseStatus.NO;
+	}
 }

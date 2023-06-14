@@ -31,7 +31,7 @@ public class AccessCheckFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String path = request.getRequestURI();
-        if(path.startsWith("/api/v1/member/code") || path.startsWith("/api/v1/test/login") || path.startsWith("/h2-console")){
+        if(path.startsWith("/api/v1/member/code") || path.startsWith("/api/v1/test/login") || path.startsWith("/h2-console") || path.startsWith("/api/v1/admin/form/save")){
             log.info("TOKEN PASS");
             filterChain.doFilter(request,response);
             return;
@@ -47,8 +47,12 @@ public class AccessCheckFilter extends OncePerRequestFilter {
           }
 
           String id = claimMap.get("id").toString();
+          String role = claimMap.get("role").toString();
+
           log.info("로그인한 번호 {}",id);
+          log.info("로그인한 권한 {}",role);
           request.setAttribute("id",id);
+          request.setAttribute("role",role);
 
           filterChain.doFilter(request,response);
         }catch (TokenException tokenExpiredException){

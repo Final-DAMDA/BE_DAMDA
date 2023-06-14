@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface ReservationService {
-    public void reservationForm(ReservationFormRequestDTO dto);
+    public void reservationForm(List<ReservationFormRequestDTO> dto);
 
     public List<ReservationResponseDTO> reservationResponseDTOList();
 

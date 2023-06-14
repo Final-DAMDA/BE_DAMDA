@@ -28,7 +28,7 @@ public interface ReservationFormCustomRepository {
 
     public List<ReservationSubmitForm> formList(Timestamp startDate,Timestamp endDate);
     Page<ReservationSubmitForm> serviceCompleteList(Pageable pageable);
-    Optional<ReservationSubmitForm> serviceComplete(Long reservationId);
+    Optional<ReservationSubmitForm> findByreservationId(Long reservationId);
 
 
     public Optional<ReservationSubmitForm> submitFormWithAnswer(Long formId);

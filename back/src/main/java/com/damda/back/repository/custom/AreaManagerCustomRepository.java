@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface AreaManagerCustomRepository {
 
-	List<AreaManager> findAreaManagerList(Long areaId);
+	List<AreaManager> findAreaManagerList(String district);
 }

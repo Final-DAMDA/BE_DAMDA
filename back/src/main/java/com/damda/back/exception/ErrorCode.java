@@ -9,6 +9,10 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ErrorCode {
 
+    ADMIN_NOT_FOUND(HttpStatus.BAD_REQUEST,"해당 username에 대항 어드민을 찾지 못함"),
+
+    ADMIBN_PASSWORD_FAIL(HttpStatus.UNAUTHORIZED,"비밀번호가 틀립니다"),
+    KAKAO_REQUIRED_VALUES_IS_EMPTY(HttpStatus.UNAUTHORIZED,"카카오에서 필요한 정보 중 한 개 이상을 못 받아옴"),
     NOT_FOUND_RESERIVATION(HttpStatus.BAD_REQUEST,"예약 정보를 찾지 못함"),
     ACTIVITY_MANAGER_NOT_FOUND(HttpStatus.BAD_REQUEST,"해당 지역에 활동 가능 매니저를 찾지 못함"),
     RESERVATION_FORM_SAVE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR,"저장 중 에러 발생"),
@@ -31,8 +35,11 @@ public enum ErrorCode {
     ERROR_REVIEW_COMPLETE(HttpStatus.INTERNAL_SERVER_ERROR,"리뷰 저장 중에 에러가 발생했습니다. "),
     ERROR_BEST_REVIEW_COMPLETE(HttpStatus.INTERNAL_SERVER_ERROR,"리뷰 저장 중에 에러가 발생했습니다. "),
     NOT_FOUND_BEST_REVIEW(HttpStatus.BAD_REQUEST,"지정된 베스트리뷰가 없습니다. "),
+    NOT_FOUND_MATCH(HttpStatus.BAD_REQUEST,"해당 매치정보가 없거나 이미 답변했습니다 "),
     SUBMITTED_REVIEW_COMPLETE(HttpStatus.BAD_REQUEST,"이미 해당 예약의 리뷰가 존재합니다. "),
-    SUBMITTED_SERVICE_COMPLETE(HttpStatus.BAD_REQUEST,"이미 서비스 완료폼이 제출되었습니다. ");
+    SUBMITTED_SERVICE_COMPLETE(HttpStatus.BAD_REQUEST,"이미 서비스 완료폼이 제출되었습니다. "),
+    ERROR_MATCH_COMPLETE(HttpStatus.INTERNAL_SERVER_ERROR,"매치 데이터 저장 중에 에러가 발생했습니다."),
+    NOT_FOUND_AREA(HttpStatus.BAD_REQUEST,"DB에 해당 지역이 존재하지 않습니다. ");
 
 
     private HttpStatus httpStatus;

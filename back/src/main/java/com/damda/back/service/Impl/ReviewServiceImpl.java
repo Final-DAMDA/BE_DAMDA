@@ -42,7 +42,7 @@ public class ReviewServiceImpl implements ReviewService {
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	@Override
 	public boolean uploadServiceComplete(Long reservationId, ServiceCompleteRequestDTO serviceCompleteRequestDTO){
-		Optional<ReservationSubmitForm> reservation = reservationFormRepository.serviceComplete(reservationId);
+		Optional<ReservationSubmitForm> reservation = reservationFormRepository.findByreservationId(reservationId);
 		nullCheck(reservation);
 		ReservationSubmitForm reservationSubmitForm =reservation.get();
 		reservationSubmitForm.setStatus(ReservationStatus.SERVICE_COMPLETED); //서비스 완료
@@ -67,7 +67,7 @@ public class ReviewServiceImpl implements ReviewService {
 	@Override
 	@Transactional(readOnly = true)
 	public ServiceCompleteResponseDTO checkServiceComplete(Long reservationId){
-		Optional<ReservationSubmitForm> reservation = reservationFormRepository.serviceComplete(reservationId);
+		Optional<ReservationSubmitForm> reservation = reservationFormRepository.findByreservationId(reservationId);
 		nullCheck(reservation);
 
 		if(reviewRepository.existReservation(reservationId)){

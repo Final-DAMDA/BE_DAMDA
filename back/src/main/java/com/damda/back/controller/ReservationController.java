@@ -87,7 +87,7 @@ public class ReservationController {
      * */
         @PostMapping("/api/v1/admin/form/save")
         public ResponseEntity<CommonResponse<?>> reservationFormSave(
-                @RequestBody ReservationFormRequestDTO dto){
+                @RequestBody List<ReservationFormRequestDTO> dto){
 
             reservationService.reservationForm(dto);
 

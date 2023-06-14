@@ -22,6 +22,7 @@ import com.damda.back.repository.MatchRepository;
 import com.damda.back.repository.MemberRepository;
 import com.damda.back.repository.ReservationFormRepository;
 import com.damda.back.service.CodeService;
+import com.damda.back.service.MatchService;
 import com.damda.back.service.SubmitService;
 import com.damda.back.service.TalkSendService;
 import com.damda.back.utils.SolapiUtils;
@@ -63,6 +64,7 @@ public class SubmitServiceImpl implements SubmitService {
         private final TalkSendService talkSendService;
 
         private final MatchRepository matchRepository;
+        private final MatchService matchService;
 
         private final ManagerRepository managerRepository;
 
@@ -210,6 +212,7 @@ public class SubmitServiceImpl implements SubmitService {
 
                     ReservationSubmitForm form = reservationFormRepository.save(reservationSubmitForm);
                     //TODO: 매칭로직 추가
+                    matchService.matchingListUp(reservationSubmitForm,dto.getAddressFront());
                     talkSendService.sendReservationSubmitAfter(form.getId(),dto.getAddressFront(),form.getReservationAnswerList(),dto.getTotalPrice());
 
                     return form.getId();
@@ -240,7 +243,7 @@ public class SubmitServiceImpl implements SubmitService {
         * 순번(이건프론트), 신청일자, 사용자 이름, 연락처, 주소, 예약일자, 가격 ,소요시간, 매니저 인원
         *  ,매니저 매칭(누가지원했는지), 서비스 상태(ReservationStatus),  결제상태
         * */
-       @Transactional(isolation = Isolation.REPEATABLE_READ)
+       @Transactional(isolation = Isolation.REPEATABLE_READ,readOnly = true)
        public FormResultDTO submitTotalResponse(int page,String startDate,String endDate){
             //TODO: 통계함수랑 매니저 조인해서 가져온 데이터 짬뽕해서 DTO 반환예쩡 통계함수 완성함
 
@@ -308,7 +311,7 @@ public class SubmitServiceImpl implements SubmitService {
                });
 
                managerRepository.managers(managerList).forEach(manager -> {
-                    log.info("수신자들 {} : {}",manager.getManagerName(),manager.getPhoneNumber());
+                    log.info("수신자들 {} : {}",manager.getName(),manager.getPhoneNumber());
                     phoneNumbers.add(manager.getPhoneNumber());
                });
                if(!phoneNumbers.isEmpty()) talkSendService.sendManagerWithCustomer(data,phoneNumbers);

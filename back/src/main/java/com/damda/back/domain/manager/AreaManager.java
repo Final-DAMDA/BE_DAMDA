@@ -14,24 +14,25 @@ import java.io.Serializable;
 @Table(name = "area_manager")
 @Builder
 public class AreaManager {
-    
+
     @EmbeddedId
     private AreaManagerKey areaManagerKey;
-    
+    private boolean status;
+
     @Data
     @Embeddable
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AreaManagerKey implements Serializable {
-        
+
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "area_id")
         private Area area;
-        
+
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "manager_id")
         private Manager manager;
-        
+
     }
-    
+
 }
