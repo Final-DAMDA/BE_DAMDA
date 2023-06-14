@@ -25,17 +25,17 @@ public class Manager extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private String managerName;
+    private String name;
     
-    private String managerPhoneNumber;
+    private String phoneNumber;
     
-    private String managerAddress;
+    private String address;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "activity_day_id")
     private ActivityDay activityDay;
 
-    @OneToMany(mappedBy = "managerId.manager", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "areaManagerKey.manager", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AreaManager> areaManagers = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)

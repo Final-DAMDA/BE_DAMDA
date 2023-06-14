@@ -41,7 +41,7 @@ public class MatchServiceImpl implements MatchService {
 		for (AreaManager areaManager : areaManagerList) {
 			Match match = Match.builder()
 					.managerId(areaManager.getAreaManagerKey().getManager().getId())
-					.managerName(areaManager.getAreaManagerKey().getManager().getManagerName())
+					.managerName(areaManager.getAreaManagerKey().getManager().getName())
 					.manager(areaManager.getAreaManagerKey().getManager())
 					.matchStatus(MatchResponseStatus.WAITING)
 					.reservationForm(reservationSubmitForm)

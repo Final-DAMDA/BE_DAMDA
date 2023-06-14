@@ -311,7 +311,7 @@ public class SubmitServiceImpl implements SubmitService {
                });
 
                managerRepository.managers(managerList).forEach(manager -> {
-                    log.info("수신자들 {} : {}",manager.getManagerName(),manager.getPhoneNumber());
+                    log.info("수신자들 {} : {}",manager.getName(),manager.getPhoneNumber());
                     phoneNumbers.add(manager.getPhoneNumber());
                });
                if(!phoneNumbers.isEmpty()) talkSendService.sendManagerWithCustomer(data,phoneNumbers);
