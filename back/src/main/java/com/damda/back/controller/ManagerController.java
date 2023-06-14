@@ -3,6 +3,8 @@ package com.damda.back.controller;
 import com.damda.back.data.common.CodeEnum;
 import com.damda.back.data.common.CommonResponse;
 import com.damda.back.data.request.ManagerApplicationDTO;
+import com.damda.back.data.request.ManagerRegionUpdateRequestDTO;
+import com.damda.back.data.request.ManagerUpdateRequestDTO;
 import com.damda.back.domain.manager.ManagerStatusEnum;
 import com.damda.back.service.ManagerService;
 import lombok.RequiredArgsConstructor;
@@ -35,27 +37,52 @@ public class ManagerController {
     }
 
     /**
-     * @apiNote : 매니저 추가
      * @param managerApplicationDTO
      * @return
+     * @apiNote : 매니저 추가
      */
     // @GetMapping("/api/v1/member/manager/waitlist")
 
     // @GetMapping("/api/v1/member/manager/pending")
 
     // @GetMapping("/api/v1/member/manager/inactive")
+    @PostMapping("/api/v1/manager/form/submit")
+    public ResponseEntity<CommonResponse<?>> managerCreate(HttpServletRequest request, @RequestBody ManagerApplicationDTO managerApplicationDTO) {
 
+        managerService.managerCreate(managerApplicationDTO, Integer.parseInt(request.getAttribute("id").toString()));
 
-
-    @PostMapping("/api/v1/member/manager")
-    public ResponseEntity<CommonResponse<?>> managerCreate(HttpServletRequest request,@RequestBody ManagerApplicationDTO managerApplicationDTO) {
-
-        managerService.managerCreate(managerApplicationDTO,Integer.parseInt(request.getAttribute("id").toString()));
-        
         CommonResponse<?> commonResponse = CommonResponse
                 .builder()
                 .codeEnum(CodeEnum.SUCCESS)
                 .data("")
+                .build();
+
+        return ResponseEntity
+                .status(commonResponse.getStatus())
+                .body(commonResponse);
+    }
+
+    @PostMapping("/api/v1/admin/manager/{id}/info")
+    public ResponseEntity<CommonResponse<?>> managerUpdate(@PathVariable("id") Long managerId, @RequestBody ManagerUpdateRequestDTO managerUpdateRequestDTO) {
+
+        CommonResponse<?> commonResponse = CommonResponse
+                .builder()
+                .codeEnum(CodeEnum.SUCCESS)
+                .data(managerService.managerUpdate(managerUpdateRequestDTO, managerId))
+                .build();
+
+        return ResponseEntity
+                .status(commonResponse.getStatus())
+                .body(commonResponse);
+    }
+
+    @PostMapping("/api/v1/admin/manager/{id}/region")
+    public ResponseEntity<CommonResponse<?>> managerRegionUpdate(@PathVariable("id") Long managerId, @RequestBody ManagerRegionUpdateRequestDTO managerRegionUpdateRequestDTO) {
+
+        CommonResponse<?> commonResponse = CommonResponse
+                .builder()
+                .codeEnum(CodeEnum.SUCCESS)
+                .data(managerService.managerRegionUpdate(managerRegionUpdateRequestDTO, managerId))
                 .build();
 
         return ResponseEntity

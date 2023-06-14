@@ -7,4 +7,6 @@ import java.util.List;
 public interface AreaManagerCustomRepository {
 
 	List<AreaManager> findAreaManagerList(String district);
+
+	public List<AreaManager> findAreaManagerListByManagerId(Long managerId);
 }
