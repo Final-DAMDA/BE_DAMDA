@@ -17,5 +17,5 @@ public interface ManagerCustomRepository {
 
     List<Manager> managerList();
     String findManagerName(Integer memberId);
-
+    Optional<Manager> findManager(Integer memberId);
 }

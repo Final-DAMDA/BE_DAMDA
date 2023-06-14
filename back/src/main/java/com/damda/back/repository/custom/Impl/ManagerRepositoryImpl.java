@@ -51,6 +51,18 @@ public class ManagerRepositoryImpl implements ManagerCustomRepository {
         return managerName;
     }
 
+    @Override
+    public Optional<Manager> findManager(Integer memberId) {
+        QManager manager = QManager.manager;
+
+        Manager manager1 = queryFactory.selectDistinct(manager)
+                .from(manager)
+                .where(manager.member.id.eq(memberId).and(manager.currManagerStatus.eq(ManagerStatusEnum.ACTIVE)))
+                .fetchOne();
+
+        return Optional.ofNullable(manager1);
+    }
+
     // public List<DistrictEnum> districtEnumList(){
     //     QManager manager = QManager.manager;
     //

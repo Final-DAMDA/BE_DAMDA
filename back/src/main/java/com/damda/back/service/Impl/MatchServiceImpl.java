@@ -3,6 +3,7 @@ package com.damda.back.service.Impl;
 import com.damda.back.data.common.MatchResponseStatus;
 import com.damda.back.data.common.QuestionIdentify;
 import com.damda.back.data.response.MatchingAcceptGetDTO;
+import com.damda.back.data.response.MatchingListDTO;
 import com.damda.back.domain.Match;
 import com.damda.back.domain.ReservationAnswer;
 import com.damda.back.domain.ReservationSubmitForm;
@@ -15,8 +16,10 @@ import com.damda.back.repository.*;
 import com.damda.back.service.MatchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -32,7 +35,7 @@ public class MatchServiceImpl implements MatchService {
 
 
 	@Override
-	@Transactional
+	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	public void matchingListUp(ReservationSubmitForm reservationSubmitForm, String district) {
 		List<AreaManager> areaManagerList = areaManagerRepository.findAreaManagerList(district);
 		for (AreaManager areaManager : areaManagerList) {
@@ -54,14 +57,13 @@ public class MatchServiceImpl implements MatchService {
 
 	/**
 	 * @apiNote : matching 수락폼 GET
-	 * @param reservationId
-	 * @param memberId
-	 * @return
 	 */
 	@Transactional(readOnly = true)
 	@Override
 	public MatchingAcceptGetDTO matchingAcceptInfo(Long reservationId, Integer memberId) {
-		ReservationSubmitForm reservation = reservationFormRepository.findByreservationId(reservationId).orElseThrow(()->new CommonException(ErrorCode.FORM_NOT_FOUND));
+		ReservationSubmitForm reservation = reservationFormRepository.findByreservationId(reservationId)
+				.orElseThrow(()->new CommonException(ErrorCode.FORM_NOT_FOUND));
+
 		String managerName = managerRepository.findManagerName(memberId);
 		if(managerName.isEmpty()){
 			throw new CommonException(ErrorCode.ACTIVITY_MANAGER_NOT_FOUND);
@@ -82,4 +84,46 @@ public class MatchServiceImpl implements MatchService {
 				.build();
 		return matchingAcceptGetDTO;
 	}
+
+	/**
+	 * @apiNote : 매칭 수락폼 POST
+	 */
+	@Override
+	@Transactional(isolation = Isolation.REPEATABLE_READ)
+	public void matchingAccept(Long reservationId, Integer memberId, MatchResponseStatus matchResponseStatus) {
+		ReservationSubmitForm reservation = reservationFormRepository.findByreservationId(reservationId)
+				.orElseThrow(()->new CommonException(ErrorCode.FORM_NOT_FOUND));
+
+		Manager manager = managerRepository.findManager(memberId).
+				orElseThrow(()->new CommonException(ErrorCode.ACTIVITY_MANAGER_NOT_FOUND));
+		//TODO: 굳이 객체 전부 안가져와도 되긴 함, 나중에 id만 가져오는 걸로 바꾸기
+
+		Match match = matchRepository.matchFindByReservationAndMember(reservation.getId(),manager.getId())
+				.orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_MATCH));
+
+		if(matchResponseStatus==MatchResponseStatus.YES){ match.matchStatusYes(); }
+		else if(matchResponseStatus==MatchResponseStatus.NO){ match.matchStatusNO(); }
+
+		try{
+			matchRepository.save(match);
+		}catch (Exception e){
+			throw new CommonException(ErrorCode.ERROR_MATCH_COMPLETE);
+		}
+
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<MatchingListDTO> matchingList(Long reservationId) {
+		List<Match> matchList = matchRepository.matchList(reservationId);
+		List<MatchingListDTO> matchingListDTOS = new ArrayList<>();
+		for(Match m: matchList){
+			MatchingListDTO dto = new MatchingListDTO(m);
+			//TODO: 매니저 활동지역 리스트 DTO에 추가
+
+		}
+		return null;
+	}
+
+
 }

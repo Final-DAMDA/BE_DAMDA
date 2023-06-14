@@ -25,7 +25,7 @@ public class ReviewController {
 	 * @apiNote: GET 서비스 완료 폼 제출여부 판단
 	 */
 	@GetMapping("/service/complete/{reservationId}") //id는 예약 id
-	public ResponseEntity<CommonResponse<?>> serviceCompleteCheck(@PathVariable Long reservationId){
+	public ResponseEntity<CommonResponse<?>> serviceCompleteCheck(@PathVariable("reservationId") Long reservationId){
 
 		CommonResponse<?> commonResponse = CommonResponse
 				.builder()
@@ -43,7 +43,7 @@ public class ReviewController {
 	 * @apiNote: 서비스 완료 폼 제출
 	 */
 	@PostMapping("/service/complete/{reservationId}") //id는 예약 id
-	public ResponseEntity<CommonResponse<?>> serviceCompleteSave(@PathVariable Long reservationId, @RequestParam(value = "before") List<MultipartFile> before, @RequestParam(value = "after")List<MultipartFile> after){
+	public ResponseEntity<CommonResponse<?>> serviceCompleteSave(@PathVariable("reservationId") Long reservationId, @RequestParam(value = "before") List<MultipartFile> before, @RequestParam(value = "after")List<MultipartFile> after){
 		ServiceCompleteRequestDTO serviceCompleteRequestDTO=new ServiceCompleteRequestDTO();
 		serviceCompleteRequestDTO.setBefore(before);
 		serviceCompleteRequestDTO.setAfter(after);
@@ -82,7 +82,7 @@ public class ReviewController {
 	 * @apiNote: 리뷰 불러오기(더블클릭하면 선택됨)
 	 */
 	@GetMapping("/review/auto/{reservationId}")
-	public ResponseEntity<CommonResponse<?>> reviewChoice(@PathVariable Long reservationId){
+	public ResponseEntity<CommonResponse<?>> reviewChoice(@PathVariable("reservationId") Long reservationId){
 		CommonResponse<?> commonResponse = CommonResponse
 				.builder()
 				.codeEnum(CodeEnum.SUCCESS)
@@ -98,7 +98,7 @@ public class ReviewController {
 	 * @apiNote: 리뷰 업로드
 	 */
 	@PostMapping("/review/auto/{reservationId}")
-	public ResponseEntity<CommonResponse<?>> reviewUpload(@PathVariable Long reservationId,
+	public ResponseEntity<CommonResponse<?>> reviewUpload(@PathVariable("reservationId") Long reservationId,
 														  @RequestParam(value = "before",required = false) List<MultipartFile> before,
 														  @RequestParam(value = "after",required = false)List<MultipartFile> after,
 														  @RequestParam(value = "title")String title,
@@ -160,7 +160,7 @@ public class ReviewController {
 	 * @return
 	 */
 	@PutMapping("/review/best/{reviewId}")
-	public ResponseEntity<CommonResponse<?>> bestReviewChoice(@PathVariable Long reviewId){
+	public ResponseEntity<CommonResponse<?>> bestReviewChoice(@PathVariable("reviewId") Long reviewId){
 		CommonResponse<?> commonResponse = CommonResponse
 				.builder()
 				.codeEnum(CodeEnum.SUCCESS)

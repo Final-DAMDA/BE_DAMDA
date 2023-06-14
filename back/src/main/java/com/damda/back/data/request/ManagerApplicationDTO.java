@@ -19,6 +19,7 @@ public class ManagerApplicationDTO {
 
     private String name;
     private String phone;
+    private String address;
     private List<Boolean> activityDay;//(월~일 boolean만 보냄)
 
     private List<String> activityCity;
@@ -38,6 +39,7 @@ public class ManagerApplicationDTO {
         return Manager.builder()
                 .managerName(name)
                 .managerPhoneNumber(phone)
+                .managerAddress(address)
                 .certificateStatusEtc(certificateStatusEtc)
                 .certificateStatus(CertificateStatusEnum.valueOf(certificateStatus))
                 .vehicle(vehicle)

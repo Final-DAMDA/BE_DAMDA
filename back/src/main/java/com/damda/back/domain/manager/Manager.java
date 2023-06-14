@@ -33,6 +33,7 @@ public class Manager extends BaseEntity {
     private Member member;
     private String managerName;
     private String managerPhoneNumber;
+    private String managerAddress;
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "activity_day_id")
     private ActivityDay activityDay;
@@ -53,8 +54,6 @@ public class Manager extends BaseEntity {
     private String mainJobStatusEtc; //본업 기재
 
     private String memo;
-
-    private String phoneNumber;
 
     private ManagerStatusEnum prevManagerStatus;
 
