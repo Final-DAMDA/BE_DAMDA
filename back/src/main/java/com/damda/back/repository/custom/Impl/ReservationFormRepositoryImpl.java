@@ -183,7 +183,7 @@ public class ReservationFormRepositoryImpl implements ReservationFormCustomRepos
                 return PageableExecutionUtils.getPage(list,pageable,count::fetchOne);
         }
         @Override
-        public Optional<ReservationSubmitForm> serviceComplete(Long reservationId){
+        public Optional<ReservationSubmitForm> findByreservationId(Long reservationId){
                 QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
                 QReservationAnswer answer = QReservationAnswer.reservationAnswer;
 

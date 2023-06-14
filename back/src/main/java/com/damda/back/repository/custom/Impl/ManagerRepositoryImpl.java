@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -31,6 +32,29 @@ public class ManagerRepositoryImpl implements ManagerCustomRepository {
 
         return list;
 
+    }
+
+    @Override
+    public String findManagerName(Integer memberId) {
+        QManager manager = QManager.manager;
+
+        String managerName = queryFactory.selectDistinct(manager.managerName)
+                .from(manager)
+                .where(manager.member.id.eq(memberId).and(manager.currManagerStatus.eq(ManagerStatusEnum.ACTIVE)))
+                .fetchOne();
+        return managerName;
+    }
+
+    @Override
+    public Optional<Manager> findManager(Integer memberId) {
+        QManager manager = QManager.manager;
+
+        Manager manager1 = queryFactory.selectDistinct(manager)
+                .from(manager)
+                .where(manager.member.id.eq(memberId).and(manager.currManagerStatus.eq(ManagerStatusEnum.ACTIVE)))
+                .fetchOne();
+
+        return Optional.ofNullable(manager1);
     }
 
     // public List<DistrictEnum> districtEnumList(){

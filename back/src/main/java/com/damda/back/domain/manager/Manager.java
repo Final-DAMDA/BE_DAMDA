@@ -25,6 +25,12 @@ public class Manager extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    private String managerName;
+    
+    private String managerPhoneNumber;
+    
+    private String managerAddress;
+
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "activity_day_id")
     private ActivityDay activityDay;
@@ -44,7 +50,7 @@ public class Manager extends BaseEntity {
     private String fieldExperience;
 
     private Boolean mainJobStatus;
-
+    
     private String mainJobStatusEtc;
 
     private String memo;
@@ -52,10 +58,6 @@ public class Manager extends BaseEntity {
     private ManagerStatusEnum prevManagerStatus;
 
     private ManagerStatusEnum currManagerStatus;
-    
-    private String phoneNumber;
-
-    private String managerName;
 
     public void addActivityDay(ActivityDay activityDay){
         this.activityDay=activityDay;

@@ -19,6 +19,7 @@ public class ManagerApplicationDTO {
 
     private String name;
     private String phone;
+    private String address;
     private List<Boolean> activityDay;//(월~일 boolean만 보냄)
 
     private List<String> activityCity;
@@ -37,7 +38,8 @@ public class ManagerApplicationDTO {
     public Manager toManagerEntity(Member manager) { //TODO: 매니저 상태값 체크
         return Manager.builder()
                 .managerName(name)
-                .phoneNumber(phone)
+                .managerPhoneNumber(phone)
+                .managerAddress(address)
                 .certificateStatusEtc(certificateStatusEtc)
                 .certificateStatus(CertificateStatusEnum.valueOf(certificateStatus))
                 .vehicle(vehicle)

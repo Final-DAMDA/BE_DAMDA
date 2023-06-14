@@ -6,6 +6,7 @@ import com.damda.back.domain.manager.Manager;
 import com.damda.back.domain.manager.ManagerStatusEnum;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ManagerCustomRepository {
 
@@ -14,5 +15,8 @@ public interface ManagerCustomRepository {
     public List<Manager> managers(List<Long> ids);
     
     public List<Manager> managerList(ManagerStatusEnum managerStatusEnum);
+
+    String findManagerName(Integer memberId);
+    Optional<Manager> findManager(Integer memberId);
 
 }

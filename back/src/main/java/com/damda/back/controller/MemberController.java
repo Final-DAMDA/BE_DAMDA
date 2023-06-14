@@ -76,7 +76,6 @@ public class MemberController {
 
         MemberResponseDTO dto = memberService.detail(id);
 
-
         CommonResponse<?> commonResponse = CommonResponse
                 .builder()
                 .codeEnum(CodeEnum.SUCCESS)
