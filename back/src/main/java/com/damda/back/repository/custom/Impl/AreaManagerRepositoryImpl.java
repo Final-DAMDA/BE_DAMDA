@@ -35,4 +35,11 @@ public class AreaManagerRepositoryImpl implements AreaManagerCustomRepository {
 
 		return list;
 	}
+	
+	public List<AreaManager> findAreaManagerListByManagerId(Long managerId) {
+		
+		
+		return null; 
+		
+	}
 }

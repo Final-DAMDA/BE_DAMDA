@@ -1,5 +1,6 @@
 package com.damda.back.domain.manager;
 
+import com.damda.back.data.request.ManagerRegionUpdateRequestDTO;
 import com.damda.back.data.request.ManagerUpdateRequestDTO;
 import com.damda.back.domain.BaseEntity;
 import com.damda.back.domain.Member;
