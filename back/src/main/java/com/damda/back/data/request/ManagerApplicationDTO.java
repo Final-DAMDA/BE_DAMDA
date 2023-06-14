@@ -37,9 +37,9 @@ public class ManagerApplicationDTO {
 
     public Manager toManagerEntity(Member manager) { //TODO: 매니저 상태값 체크
         return Manager.builder()
-                .managerName(name)
-                .managerPhoneNumber(phone)
-                .managerAddress(address)
+                .name(name)
+                .phoneNumber(phone)
+                .address(address)
                 .certificateStatusEtc(certificateStatusEtc)
                 .certificateStatus(CertificateStatusEnum.valueOf(certificateStatus))
                 .vehicle(vehicle)

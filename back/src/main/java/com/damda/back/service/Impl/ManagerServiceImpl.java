@@ -7,6 +7,7 @@ import com.damda.back.domain.area.Area;
 import com.damda.back.domain.manager.ActivityDay;
 import com.damda.back.domain.manager.AreaManager;
 import com.damda.back.domain.manager.Manager;
+import com.damda.back.domain.manager.ManagerStatusEnum;
 import com.damda.back.exception.CommonException;
 import com.damda.back.exception.ErrorCode;
 import com.damda.back.repository.*;
@@ -73,7 +74,7 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ManagerResponseDTO> managerResponseDTOList() {
+    public List<ManagerResponseDTO> managerResponseDTOList(ManagerStatusEnum managerStatusEnum) {
 
         List<ManagerResponseDTO> managerResponseDTOList = new ArrayList<>();
 

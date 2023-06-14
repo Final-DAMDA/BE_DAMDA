@@ -27,8 +27,8 @@ public class MatchingListDTO {
 		this.matchingResponse = match.getMatchStatus().toString();
 		this.updateAt = match.getUpdatedAt().toString();
 		this.name = match.getManagerName();
-		this.phone = match.getManager().getManagerPhoneNumber();
-		this.address = match.getManager().getManagerAddress();
+		this.phone = match.getManager().getPhoneNumber();
+		this.address = match.getManager().getAddress();
 		this.driving = match.getManager().getVehicle();
 		this.certificate = match.getManager().getCertificateStatus().toString();
 	}
