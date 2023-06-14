@@ -5,10 +5,7 @@ import com.damda.back.data.common.QuestionIdentify;
 import com.damda.back.data.common.ReservationStatus;
 import com.damda.back.data.request.ReviewRequestDTO;
 import com.damda.back.data.request.ServiceCompleteRequestDTO;
-import com.damda.back.data.response.ReviewAutoResponseDTO;
-import com.damda.back.data.response.ReviewListAdminDTO;
-import com.damda.back.data.response.ReviewListUserDTO;
-import com.damda.back.data.response.ServiceCompleteInfoDTO;
+import com.damda.back.data.response.*;
 import com.damda.back.domain.*;
 import com.damda.back.exception.CommonException;
 import com.damda.back.exception.ErrorCode;
@@ -18,6 +15,9 @@ import com.damda.back.repository.ReviewRepository;
 import com.damda.back.service.ReviewService;
 import com.damda.back.service.S3Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,7 +42,9 @@ public class ReviewServiceImpl implements ReviewService {
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	@Override
 	public boolean uploadServiceComplete(Long reservationId, ServiceCompleteRequestDTO serviceCompleteRequestDTO){
-		ReservationSubmitForm reservationSubmitForm = checkServiceComplete(reservationId);
+		Optional<ReservationSubmitForm> reservation = reservationFormRepository.findByreservationId(reservationId);
+		nullCheck(reservation);
+		ReservationSubmitForm reservationSubmitForm =reservation.get();
 		reservationSubmitForm.setStatus(ReservationStatus.SERVICE_COMPLETED); //서비스 완료
 
 		Review serviceComplete = serviceCompleteRequestDTO.toEntity(reservationSubmitForm);
@@ -63,30 +65,41 @@ public class ReviewServiceImpl implements ReviewService {
 	 * @apiNote: 서비스 완료 폼 제출 체크
 	 */
 	@Override
-	public ReservationSubmitForm checkServiceComplete(Long reservationId){
-		Optional<ReservationSubmitForm> reservation = reservationFormRepository.findById(reservationId);
+	@Transactional(readOnly = true)
+	public ServiceCompleteResponseDTO checkServiceComplete(Long reservationId){
+		Optional<ReservationSubmitForm> reservation = reservationFormRepository.findByreservationId(reservationId);
 		nullCheck(reservation);
+
 		if(reviewRepository.existReservation(reservationId)){
 			throw new CommonException(ErrorCode.SUBMITTED_SERVICE_COMPLETE);
 		}
-		return reservation.get();
+		List<ReservationAnswer> answers =  reservation.get().getReservationAnswerList();
+		Map<QuestionIdentify, String> answerMap
+				= answers.stream().collect(Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
+
+		ServiceCompleteResponseDTO completeResponseDTO =
+				ServiceCompleteResponseDTO.builder()
+				.serviceDate(answerMap.get(QuestionIdentify.SERVICEDATE))
+				.serviceAddress(answerMap.get(QuestionIdentify.ADDRESS))
+				.build();
+
+		return completeResponseDTO;
 	}
 
 	/**
 	 * @apiNote: 서비스 완료 폼 리스트 조회
 	 */
 	@Override
-	public List<ServiceCompleteInfoDTO> listServiceComplete() {
-		List<ReservationSubmitForm> completeList = reservationFormRepository.serviceCompleteList();
-		List<ServiceCompleteInfoDTO> dtoList = new ArrayList<>();
-		for(ReservationSubmitForm submitForm : completeList){
+	@Transactional(readOnly = true)
+	public Page<ServiceCompleteInfoDTO> listServiceComplete(Pageable pageable) {
+		Page<ReservationSubmitForm> completeList = reservationFormRepository.serviceCompleteList(pageable);
 
+		List<ServiceCompleteInfoDTO> dtoList = completeList.stream().map(submitForm -> {
 			Member member = submitForm.getMember();
-			List<ReservationAnswer> answers =  submitForm.getReservationAnswerList();
-
-			Map<QuestionIdentify, String> answerMap
-					= answers.stream().collect(Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
-			ServiceCompleteInfoDTO dto =new ServiceCompleteInfoDTO();
+			List<ReservationAnswer> answers = submitForm.getReservationAnswerList();
+			Map<QuestionIdentify, String> answerMap = answers.stream()
+					.collect(Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
+			ServiceCompleteInfoDTO dto = new ServiceCompleteInfoDTO();
 			dto.setAddress(answerMap.get(QuestionIdentify.ADDRESS));
 			dto.setName(member.getUsername());
 			dto.setCreatedAt(submitForm.getCreatedAt().toString());
@@ -97,9 +110,11 @@ public class ReviewServiceImpl implements ReviewService {
 			dto.setPayMentStatus(submitForm.getPayMentStatus());
 			dto.setReservationDate(answerMap.get(QuestionIdentify.SERVICEDATE));
 			dto.setReservationId(submitForm.getId());
-			dtoList.add(dto);
-		}
-		return dtoList;
+			return dto;
+		}).collect(Collectors.toList());
+
+		Page<ServiceCompleteInfoDTO> resultPage = new PageImpl<>(dtoList, pageable, completeList.getTotalElements());
+		return resultPage;
 	}
 
 	/**
@@ -145,8 +160,8 @@ public class ReviewServiceImpl implements ReviewService {
 	 */
 	@Override
 	@Transactional(readOnly = true)
-	public List<ReviewListAdminDTO> listReviewAdmin() {
-		List<Review> reviews = reviewRepository.reviewList();
+	public Page<ReviewListAdminDTO> listReviewAdmin(Pageable pageable) {
+		Page<Review> reviews = reviewRepository.reviewList(pageable);
 		List<ReviewListAdminDTO> reviewListAdminDTOS=new ArrayList<>();
 		for(Review review:reviews){
 			ReservationSubmitForm reservation = review.getReservationSubmitForm();
@@ -165,7 +180,8 @@ public class ReviewServiceImpl implements ReviewService {
 					.build();
 			reviewListAdminDTOS.add(reviewListAdminDTO);
 		}
-		return reviewListAdminDTOS;
+		Page<ReviewListAdminDTO> resultPage = new PageImpl<>(reviewListAdminDTOS, pageable, reviews.getTotalElements());
+		return resultPage;
 	}
 
 	/***
@@ -174,7 +190,7 @@ public class ReviewServiceImpl implements ReviewService {
 	@Override
 	@Transactional(readOnly = true)
 	public List<ReviewListUserDTO> listReview() {
-		List<Review> reviews = reviewRepository.reviewList();
+		List<Review> reviews = reviewRepository.reviewListUser();
 		List<ReviewListUserDTO> reviewListUserDTOS=new ArrayList<>();
 		for(Review review:reviews){
 			ReservationSubmitForm reservation = review.getReservationSubmitForm();

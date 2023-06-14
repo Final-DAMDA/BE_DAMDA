@@ -22,6 +22,7 @@ import com.damda.back.repository.MatchRepository;
 import com.damda.back.repository.MemberRepository;
 import com.damda.back.repository.ReservationFormRepository;
 import com.damda.back.service.CodeService;
+import com.damda.back.service.MatchService;
 import com.damda.back.service.SubmitService;
 import com.damda.back.service.TalkSendService;
 import com.damda.back.utils.SolapiUtils;
@@ -63,6 +64,7 @@ public class SubmitServiceImpl implements SubmitService {
         private final TalkSendService talkSendService;
 
         private final MatchRepository matchRepository;
+        private final MatchService matchService;
 
         private final ManagerRepository managerRepository;
 
@@ -177,6 +179,7 @@ public class SubmitServiceImpl implements SubmitService {
 
     /**
      * 실질적으로 쓰는 insert 메소드
+     * 예약Insert시 실행되는 메소드
      */
     @TimeChecking
     @Transactional(isolation = Isolation.REPEATABLE_READ)
@@ -208,7 +211,8 @@ public class SubmitServiceImpl implements SubmitService {
                     });
 
                     ReservationSubmitForm form = reservationFormRepository.save(reservationSubmitForm);
-
+                    //TODO: 매칭로직 추가
+                    matchService.matchingListUp(reservationSubmitForm,dto.getAddressFront());
                     talkSendService.sendReservationSubmitAfter(form.getId(),dto.getAddressFront(),form.getReservationAnswerList(),dto.getTotalPrice());
 
                     return form.getId();
@@ -307,7 +311,7 @@ public class SubmitServiceImpl implements SubmitService {
                });
 
                managerRepository.managers(managerList).forEach(manager -> {
-                    log.info("수신자들 {} : {}",manager.getManagerName(),manager.getPhoneNumber());
+                    log.info("수신자들 {} : {}",manager.getName(),manager.getPhoneNumber());
                     phoneNumbers.add(manager.getPhoneNumber());
                });
                if(!phoneNumbers.isEmpty()) talkSendService.sendManagerWithCustomer(data,phoneNumbers);

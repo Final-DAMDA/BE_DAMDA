@@ -64,6 +64,7 @@ public class JwtManagerImpl implements JwtManager{
                     .withSubject(SUBJECT)
                     .withExpiresAt(new Date(System.currentTimeMillis() + EXP))
                     .withClaim("id", memberPE.getId())
+                    .withClaim("role",memberPE.getRole().name())
                     .withIssuedAt(new Date(System.currentTimeMillis()))
                     .sign(Algorithm.HMAC512(KEY));
 
@@ -76,11 +77,29 @@ public class JwtManagerImpl implements JwtManager{
                 .withSubject(SUBJECT)
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXP))
                 .withClaim("id", memberPE.getId())
+                .withClaim("role",memberPE.getRole().name())
                 .withIssuedAt(new Date(System.currentTimeMillis()))
                 .sign(Algorithm.HMAC512(KEY));
 
         return jwt;
     }
+
+    @Override
+    public String jwtTokenAdmin(Integer id,String role) {
+
+
+        String jwt = JWT.create()
+                .withSubject(SUBJECT)
+                .withExpiresAt(new Date(System.currentTimeMillis() + EXP))
+                .withClaim("id", id)
+                .withClaim("role",role)
+                .withIssuedAt(new Date(System.currentTimeMillis()))
+                .sign(Algorithm.HMAC512(KEY));
+
+
+        return jwt;
+    }
+
     public DecodedJWT verify(String jwt) throws SignatureVerificationException, TokenExpiredException {
 
         DecodedJWT decodedJWT = JWT

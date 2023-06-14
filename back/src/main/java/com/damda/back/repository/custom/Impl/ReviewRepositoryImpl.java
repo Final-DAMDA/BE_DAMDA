@@ -6,6 +6,9 @@ import com.damda.back.repository.custom.ReviewCustomRepository;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,19 +44,37 @@ public class ReviewRepositoryImpl implements ReviewCustomRepository {
 	}
 
 	@Override
-	public List<Review> reviewList(){
+	public Page<Review> reviewList(Pageable pageable){
 		QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
 		QReview review = QReview.review;
 		QImage image = QImage.image;
 
-		JPAQuery<Review> query1 =
+		List<Review> list =
 				queryFactory.selectDistinct(review)
 						.from(review)
 						.innerJoin(review.reservationSubmitForm,submitForm).fetchJoin()
 						.innerJoin(review.reviewImage,image).fetchJoin()
-						.where(review.status.eq(true));
+						.where(review.status.eq(true))
+						.fetch();
+		JPAQuery<Long> count = queryFactory.selectDistinct(review.count())
+				.from(review)
+				.where(review.status.eq(true));
+		return PageableExecutionUtils.getPage(list,pageable,count::fetchOne);
+	}
 
-		List<Review> list = query1.fetch();
+	@Override
+	public List<Review> reviewListUser(){
+		QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
+		QReview review = QReview.review;
+		QImage image = QImage.image;
+
+		List<Review> list =
+				queryFactory.selectDistinct(review)
+						.from(review)
+						.innerJoin(review.reservationSubmitForm,submitForm).fetchJoin()
+						.innerJoin(review.reviewImage,image).fetchJoin()
+						.where(review.status.eq(true))
+						.fetch();
 		return list;
 	}
 

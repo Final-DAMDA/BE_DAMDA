@@ -9,4 +9,6 @@ public interface AreaCustomRepository {
 	Optional<Area> searchArea(String city, String district);
 
 	public List<Area> searchActivityArea();
+
+	Optional<Area> searchArea(String district);
 }

@@ -7,5 +7,8 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 public interface JwtManager {
     public String jwtToken(String name,String gender,String phoneNumber,String profileImage);
 
+
+    public String jwtTokenAdmin(Integer id,String role);
+
     public DecodedJWT verify(String jwt) throws SignatureVerificationException, TokenExpiredException;
 }
