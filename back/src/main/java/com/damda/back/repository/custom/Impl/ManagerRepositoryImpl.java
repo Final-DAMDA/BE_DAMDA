@@ -47,6 +47,7 @@ public class ManagerRepositoryImpl implements ManagerCustomRepository {
                 .join(manager.areaManagers, areaManager).fetchJoin()
                 .join(areaManager.managerId.area, area).fetchJoin()
                 .where(area.district.eq(addressFront))
+                .where(manager.manager)
                 .fetch();
 
         return managers;
