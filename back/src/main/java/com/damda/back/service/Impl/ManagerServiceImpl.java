@@ -1,7 +1,9 @@
 package com.damda.back.service.Impl;
 
 import com.damda.back.data.request.ManagerApplicationDTO;
+import com.damda.back.data.request.ManagerUpdateRequestDTO;
 import com.damda.back.data.response.ManagerResponseDTO;
+import com.damda.back.data.response.ManagerUpdateResponseDTO;
 import com.damda.back.domain.Member;
 import com.damda.back.domain.area.Area;
 import com.damda.back.domain.manager.ActivityDay;
@@ -100,8 +102,20 @@ public class ManagerServiceImpl implements ManagerService {
 //        });
 
         return null;
+        
+    }
 
+    @Override
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public ManagerUpdateResponseDTO managerUpdate(ManagerUpdateRequestDTO dto, Long managerId) {
+        
+        Manager manager = managerRepository.findById(managerId).orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_MANAGER));
 
+        manager.updateManager(dto);
+
+        ManagerUpdateResponseDTO responseDTO = new ManagerUpdateResponseDTO(manager);
+        
+        return responseDTO;
     }
 
 }
