@@ -10,6 +10,7 @@ import com.damda.back.domain.*;
 import com.damda.back.exception.CommonException;
 import com.damda.back.exception.ErrorCode;
 import com.damda.back.repository.ImageRepository;
+import com.damda.back.repository.MatchRepository;
 import com.damda.back.repository.ReservationFormRepository;
 import com.damda.back.repository.ReviewRepository;
 import com.damda.back.service.ReviewService;
@@ -34,6 +35,7 @@ public class ReviewServiceImpl implements ReviewService {
 	private final S3Service s3Service;
 	private final ReservationFormRepository reservationFormRepository;
 	private final ReviewRepository reviewRepository;
+	private final MatchRepository matchRepository;
 
 
 	/**
@@ -67,21 +69,25 @@ public class ReviewServiceImpl implements ReviewService {
 	@Override
 	@Transactional(readOnly = true)
 	public ServiceCompleteResponseDTO checkServiceComplete(Long reservationId){
-		Optional<ReservationSubmitForm> reservation = reservationFormRepository.findByreservationId(reservationId);
-		nullCheck(reservation);
-
+		ReservationSubmitForm reservation = reservationFormRepository.findByreservationId(reservationId).orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_RESERIVATION));
 		if(reviewRepository.existReservation(reservationId)){
 			throw new CommonException(ErrorCode.SUBMITTED_SERVICE_COMPLETE);
 		}
-		List<ReservationAnswer> answers =  reservation.get().getReservationAnswerList();
+
+		List<ReservationAnswer> answers =  reservation.getReservationAnswerList();
 		Map<QuestionIdentify, String> answerMap
 				= answers.stream().collect(Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
+		List<String> managerName= matchRepository.matchListFindManager(reservation.getId());
+
+		//TODO: 신청시간, 투입인원추가 해야함
 
 		ServiceCompleteResponseDTO completeResponseDTO =
-				ServiceCompleteResponseDTO.builder()
-				.serviceDate(answerMap.get(QuestionIdentify.SERVICEDATE))
-				.serviceAddress(answerMap.get(QuestionIdentify.ADDRESS))
-				.build();
+						ServiceCompleteResponseDTO.builder()
+						.serviceDate(answerMap.get(QuestionIdentify.SERVICEDATE))
+						.serviceAddress(answerMap.get(QuestionIdentify.ADDRESS))
+						.reservationId(reservation.getId())
+						.managerNames(managerName)
+						.build();
 
 		return completeResponseDTO;
 	}

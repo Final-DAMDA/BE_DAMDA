@@ -16,5 +16,8 @@ public class ServiceCompleteResponseDTO {
 	private List<String> managerNames;
 	private String serviceDate;
 	private String serviceAddress;
+	private Integer managerAccount;
+	private String serviceTime;
+	private Long reservationId;
 
 }
