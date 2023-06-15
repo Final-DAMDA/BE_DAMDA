@@ -32,6 +32,8 @@ public class ReservationSubmitForm extends BaseEntity{
 
     private Integer totalPrice;
 
+    private Integer servicePerson; //투입인원
+
     private boolean deleted;
 
     @Enumerated(EnumType.STRING)

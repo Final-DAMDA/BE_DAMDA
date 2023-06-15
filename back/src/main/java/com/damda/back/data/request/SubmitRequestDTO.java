@@ -17,5 +17,7 @@ public class SubmitRequestDTO {
     private String addressFront;
     private Integer totalPrice;
 
+    private Integer servicePerson;
+
 }
 
