@@ -198,8 +198,8 @@ public class SubmitServiceImpl implements SubmitService {
                         .member(member)
                         .totalPrice(dto.getTotalPrice())
                         .status(ReservationStatus.WAITING_FOR_MANAGER_REQUEST)
+                        .servicePerson(dto.getServicePerson())
                         .build();
-
 
             //    try{
                     dto.getSubmit().forEach(submitSlice -> {
