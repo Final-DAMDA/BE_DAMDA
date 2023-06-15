@@ -18,6 +18,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
@@ -27,9 +28,21 @@ public class BackApplication {
 	 @Profile("dev")
 	 @Bean
 	 CommandLineRunner initData(
-	 		QuestionRepository questionRepository,MemberRepository memberRepository
+
+	 		QuestionRepository questionRepository,MemberRepository memberRepository,PasswordEncoder passwordEncoder
 	 ) {
 	 	return args -> {
+			memberRepository.save(Member.builder()
+					.gender("mail")
+					.address("어드민")
+					.profileImage("404.jpg")
+					.username("admin")
+					.status(MemberStatus.ACTIVATION)
+					.role(MemberRole.ADMIN)
+					.phoneNumber("01011111")
+					.password(passwordEncoder.encode("1234"))
+					.build());
+
 			 memberRepository.save(Member.builder()
 							 .gender("female")
 							 .address("경기도 시흥시")

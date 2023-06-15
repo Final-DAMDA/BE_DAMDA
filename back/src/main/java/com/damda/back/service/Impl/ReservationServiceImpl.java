@@ -12,6 +12,7 @@ import com.damda.back.data.response.ReservationResponseDTO;
 import com.damda.back.domain.Category;
 import com.damda.back.domain.Question;
 import com.damda.back.domain.QuestionStatus;
+import com.damda.back.domain.ReservationSubmitForm;
 import com.damda.back.exception.CommonException;
 import com.damda.back.exception.ErrorCode;
 import com.damda.back.repository.AreaRepository;
@@ -54,6 +55,8 @@ public class ReservationServiceImpl implements ReservationService {
             ReservationResponseDTO dto =  ReservationResponseDTO.builder()
                     .questionNumber(question.getQuestionNumber())
                     .questionTitle(question.getQuestionTitle())
+                    .page(question.getPage())
+                    .placeHolder(question.getPlaceHolder())
                     .questionIdentify(question.getQuestionIdentify())
                     .questionOrder(question.getOrder())
                     .questionType(question.getQuestionType())
@@ -89,6 +92,8 @@ public class ReservationServiceImpl implements ReservationService {
                     .questionTitle(question.getQuestionTitle())
                     .questionOrder(question.getOrder())
                     .questionIdentify(question.getQuestionIdentify())
+                    .page(question.getPage())
+                    .placeHolder(question.getPlaceHolder())
                     .questionType(question.getQuestionType())
                     .isDeleted(question.getStatus().equals(QuestionStatus.DEACTIVATION))
                     .required(question.isRequired())
@@ -111,35 +116,37 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public void reservationForm(ReservationFormRequestDTO dto){
+    public void reservationForm(List<ReservationFormRequestDTO> dto){
         List<Category> categoryList = new ArrayList<>();
 
-        Integer order = questionRepository.selectMax()+1;
-        order = dto.getQuestionIdentify().equals(QuestionIdentify.TITILE) ? 0 : order;
+        for (ReservationFormRequestDTO reservationFormRequestDTO : dto) {
 
-        Question question = Question.builder()
-                .questionType(dto.getQuestionType())
-                .questionTitle(dto.getQuestionTitle())
-                .questionIdentify(dto.getQuestionIdentify())
-                .order(order)
-                .status(QuestionStatus.ACTIVATION)
-                .required(dto.isRequired())
-                .build();
-
-
-        dto.getCategory().forEach((category, price) -> {
-            Category categoryData = Category.builder()
-                    .categoryPrice(price)
-                    .questionCategory(category)
+            Question question = Question.builder()
+                    .questionType(reservationFormRequestDTO.getQuestionType())
+                    .questionTitle(reservationFormRequestDTO.getQuestionTitle())
+                    .questionIdentify(reservationFormRequestDTO.getQuestionIdentify())
+                    .page(reservationFormRequestDTO.getPage())
+                    .order(reservationFormRequestDTO.getOrder())
+                    .status(QuestionStatus.ACTIVATION)
+                    .placeHolder(reservationFormRequestDTO.getPlaceHolder() != null ? reservationFormRequestDTO.getPlaceHolder() : "없음")
+                    .required(reservationFormRequestDTO.isRequired())
                     .build();
 
-            question.addCategory(categoryData);
-        });
 
-        try{
-            questionRepository.save(question);
-        }catch (Exception e){
-            throw new CommonException(ErrorCode.RESERVATION_FORM_SAVE_FAIL);
+            reservationFormRequestDTO.getCategory().forEach((category, price) -> {
+                Category categoryData = Category.builder()
+                        .categoryPrice(price)
+                        .questionCategory(category)
+                        .build();
+
+                question.addCategory(categoryData);
+            });
+
+            try{
+                questionRepository.save(question);
+            }catch (Exception e){
+                throw new CommonException(ErrorCode.RESERVATION_FORM_SAVE_FAIL);
+            }
         }
     }
 
@@ -161,6 +168,8 @@ public class ReservationServiceImpl implements ReservationService {
             question.changeQuestionTitle(dto.getQuestionTitle());
             question.changeRequired(dto.isRequired());
             question.changeOrder(dto.getOrder());
+            question.changePlaceHolder(dto.getPlaceHolder());
+            question.changePage(dto.getPage());
 
             //end
             Map<Long,CategoryMapDTO> modifyDTO = new HashMap<>();
@@ -175,7 +184,18 @@ public class ReservationServiceImpl implements ReservationService {
                 if(data != null){
                     category.changeCategory(data.getCategory());
                     category.changeCategoryPrice(data.getPrice());
-                }//TODO: 없는 카테고리가 들어올 경우 여기서 저장하기 만들예정
+                }
+
+            }
+            if(question.getCategoryList().isEmpty()){
+                modifyDTO.forEach((aLong, categoryMapDTO) -> {
+                    Category categoryPOJO = Category.builder()
+                            .questionCategory(categoryMapDTO.getCategory())
+                            .categoryPrice(categoryMapDTO.getPrice())
+                            .build();
+
+                    question.addCategory(categoryPOJO);
+                });
             }
         }else {
             throw new CommonException(ErrorCode.NOT_FOUND_QUESTION_MODIFIED);
@@ -186,18 +206,21 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void reArrangeQuestion(List<RearrangeRequestDTO> dto) {
-        Map<Long,Integer> map = new HashMap<>();
+        Map<Long,RearrangeRequestDTO> map = new HashMap<>();
         List<Question> list = questionRepository.selectWhereACTIVATION();
+
+
         try{
             for(RearrangeRequestDTO dtoData : dto){
-                map.put(dtoData.getQuestionNumber(),dtoData.getOrder());
+                map.put(dtoData.getQuestionNumber(),dtoData);
             }
 
             for (Question question : list){
-                Integer orderNumber = map.get(question.getQuestionNumber());
+                RearrangeRequestDTO reArrangeData = map.get(question.getQuestionNumber());
 
-                if(orderNumber != null){
-                    question.changeOrder(orderNumber);
+                if(reArrangeData != null){
+                    question.changeOrder(reArrangeData.getOrder());
+                    question.changePage(reArrangeData.getPage());
                 }
             }
         }catch (Exception e){

@@ -17,5 +17,12 @@ public class KakaoAccountDTO {
     private boolean genderNeedsAgreement;
     private String gender;
 
+
+    public void nullCheck(){
+        if(this.name == null){this.name = "조회되지않음";}
+        if(this.phoneNumber == null){this.phoneNumber = "조회되지않음";}
+        if(this.gender == null){this.gender = "조회되지않음";}
+    }
+
 }
 

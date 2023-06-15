@@ -30,9 +30,9 @@ public class ReservationResponseDTO {
 
     private boolean required;
 
-    @Builder.Default
-    private List<DistrictEnum> locations=  new ArrayList<>();
+    private Integer page;
 
+    private String placeHolder;
 
 
     @Builder.Default

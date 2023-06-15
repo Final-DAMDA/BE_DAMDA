@@ -175,7 +175,7 @@ public class SolapiUtils {
         KakaoOption kakaoOption = new KakaoOption();
 
         kakaoOption.setPfId(mainCh);
-        kakaoOption.setTemplateId("KA01TP2306100607150398Gs50ssTUnD"); //템플릿 ID 수정해야함
+        kakaoOption.setTemplateId("KA01TP2306100607150398Gs50ssTUnD");
 
         String domainQuery = domain + "?id="+formId;
 

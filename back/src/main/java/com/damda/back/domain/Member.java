@@ -3,10 +3,7 @@ package com.damda.back.domain;
 
 import com.damda.back.data.common.MemberRole;
 import com.damda.back.data.common.MemberStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.aspectj.apache.bcel.classfile.Code;
 
 import javax.persistence.*;
