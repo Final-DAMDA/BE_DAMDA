@@ -38,8 +38,8 @@ public class MemberController {
         ResponseCookie cookie = ResponseCookie.from("access_token", tokenWithImageDTO.getToken())
                 .maxAge(24 * 60 * 60)
                 .path("/")
-                .secure(false)// https 환경에서만 쿠키가 발동합니다.
-                .sameSite("Strict")// 동일 사이트과 크로스 사이트에 모두 쿠키 전송이 가능합니다
+                .secure(true)// https 환경에서만 쿠키가 발동합니다.
+                .sameSite("None")// 동일 사이트과 크로스 사이트에 모두 쿠키 전송이 가능합니다
                 //HTTPS 환경에서 None으로 변경예정
          //       .httpOnly(true)// 브라우저에서 쿠키에 접근할 수 없도록 제한
                 .build();

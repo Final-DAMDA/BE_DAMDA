@@ -29,9 +29,20 @@ public class BackApplication {
 	 @Bean
 	 CommandLineRunner initData(
 
-	 		QuestionRepository questionRepository,MemberRepository memberRepository
+	 		QuestionRepository questionRepository,MemberRepository memberRepository,PasswordEncoder passwordEncoder
 	 ) {
 	 	return args -> {
+			memberRepository.save(Member.builder()
+					.gender("mail")
+					.address("어드민")
+					.profileImage("404.jpg")
+					.username("admin")
+					.status(MemberStatus.ACTIVATION)
+					.role(MemberRole.ADMIN)
+					.phoneNumber("01011111111")
+					.password(passwordEncoder.encode("1234"))
+					.build());
+
 			 memberRepository.save(Member.builder()
 							 .gender("female")
 							 .address("경기도 시흥시")
