@@ -37,6 +37,8 @@ public class KaKaoMemberServiceImpl implements KaKaoService {
             KaKaoAccessDTO kaKaoAccessDTO = infoResponse(accessTokenResponse.getAccessToken());
             KakaoAccountDTO accountDTO = kaKaoAccessDTO.getKakaoAccount();
 
+            accountDTO.nullCheck();
+
             String profileImage = kaKaoAccessDTO.getProperties().getThumbnailImage() != null ? kaKaoAccessDTO.getProperties().getThumbnailImage() : "404.jpg" ;
             String token = jwtManager.jwtToken(accountDTO.getName(),accountDTO.getGender(),accountDTO.getPhoneNumber(),profileImage);
 
@@ -44,6 +46,7 @@ public class KaKaoMemberServiceImpl implements KaKaoService {
                     .token(token)
                     .profileImage(profileImage)
                     .build();
+
             return dto;
 //        }catch (Exception e){
 //            throw new CommonException(ErrorCode.KAKAO_LOGIN_FALIE);

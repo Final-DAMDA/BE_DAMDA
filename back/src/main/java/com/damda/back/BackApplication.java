@@ -18,6 +18,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
@@ -27,6 +28,7 @@ public class BackApplication {
 	 @Profile("dev")
 	 @Bean
 	 CommandLineRunner initData(
+
 	 		QuestionRepository questionRepository,MemberRepository memberRepository
 	 ) {
 	 	return args -> {

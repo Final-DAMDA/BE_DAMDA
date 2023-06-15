@@ -66,24 +66,8 @@ class BackApplicationTests {
 	@Transactional
 	@Commit
 	void contextLoads() {
-		//managerRepository.managerWithArea("하남시").forEach(System.out::println);
+		managerRepository.managerWithArea("하남시").forEach(System.out::println);
 
-		Area area = entityManager
-				.createQuery("SELECT a FROM Area  a WHERE a.district = '하남시'", Area.class).getSingleResult();
-		ReservationSubmitForm submitForm = reservationFormRepository.findById(3L).get();
-
-		Manager manager = managerRepository.findById(3L).get();
-
-
-		Match match = Match.builder()
-				.matching(true)
-				.reservationForm(submitForm)
-				.managerName(manager.getManagerName())
-				.manager(manager)
-				.build();
-
-
-		entityManager.persist(match);
 
 	}
 	@Test

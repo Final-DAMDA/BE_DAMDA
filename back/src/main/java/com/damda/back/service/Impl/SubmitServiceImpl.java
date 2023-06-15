@@ -243,7 +243,7 @@ public class SubmitServiceImpl implements SubmitService {
         * 순번(이건프론트), 신청일자, 사용자 이름, 연락처, 주소, 예약일자, 가격 ,소요시간, 매니저 인원
         *  ,매니저 매칭(누가지원했는지), 서비스 상태(ReservationStatus),  결제상태
         * */
-       @Transactional(isolation = Isolation.REPEATABLE_READ)
+       @Transactional(isolation = Isolation.REPEATABLE_READ,readOnly = true)
        public FormResultDTO submitTotalResponse(int page,String startDate,String endDate){
             //TODO: 통계함수랑 매니저 조인해서 가져온 데이터 짬뽕해서 DTO 반환예쩡 통계함수 완성함
 

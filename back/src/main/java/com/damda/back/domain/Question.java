@@ -37,8 +37,11 @@ public class Question {
     @Enumerated(EnumType.STRING)
     private QuestionStatus status;
 
+    private Integer page;
 
     private boolean required;
+
+    private String placeHolder;
 
 
     @BatchSize(size = 100)
@@ -60,6 +63,10 @@ public class Question {
     public void changeQuestionType(QuestionType questionType){this.questionType = questionType;}
     public void changeQuestionTitle(String questionTitle){this.questionTitle = questionTitle;}
     public void changeOrder(Integer order){this.order = order;}
+
+    public void changePage(Integer page){this.page = page;}
+
+    public void changePlaceHolder(String placeHolder){this.placeHolder = placeHolder;}
 
     public void changeRequired(boolean required){this.required = required;}
     public void changeStatus(QuestionStatus status){this.status = status;}
