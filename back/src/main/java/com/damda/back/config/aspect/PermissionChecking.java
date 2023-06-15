@@ -39,7 +39,7 @@ public class PermissionChecking {
         if(temp != null) role = temp.toString();
 
         log.info(" 해당 사용자 권한 ===> {}",role);
-        if(role != null && (role.equals("\"ADMIN\""))){
+        if(role != null && (role.equals("ADMIN"))){
             return proceedingJoinPoint.proceed();
         }else {
             HttpServletResponse response =

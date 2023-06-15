@@ -38,9 +38,11 @@ public class MemberRepositoryImpl implements MemberCustomRepository {
     @Override
     public Optional<Member> findByIdWhereActive(Integer id) {
         QMember member = QMember.member;
+        QDiscountCode discountCode = QDiscountCode.discountCode;
 
         Member memberEntity = queryFactory.select(member)
                 .from(member)
+                .leftJoin(member.discountCode,discountCode).fetchJoin()
                 .where(member.id.eq(id))
                 .where(member.status.eq(MemberStatus.ACTIVATION))
                 .fetchOne();
@@ -66,10 +68,11 @@ public class MemberRepositoryImpl implements MemberCustomRepository {
     public Optional<Member> findByAdmin(String username) {
 
         QMember member = QMember.member;
-
+        QDiscountCode discountCode = QDiscountCode.discountCode;
         Member memberEntity  =  queryFactory
                 .selectDistinct(member)
                 .from(member)
+                .leftJoin(member.discountCode,discountCode).fetchJoin()
                 .where(member.status.eq(MemberStatus.ACTIVATION))
                 .where(member.role.eq(MemberRole.ADMIN))
                 .where(member.username.eq(username))
