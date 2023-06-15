@@ -39,7 +39,7 @@ public class BackApplication {
 					.username("admin")
 					.status(MemberStatus.ACTIVATION)
 					.role(MemberRole.ADMIN)
-					.phoneNumber("01011111111")
+					.phoneNumber("01011111")
 					.password(passwordEncoder.encode("1234"))
 					.build());
 
