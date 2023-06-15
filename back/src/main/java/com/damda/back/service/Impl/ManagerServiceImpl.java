@@ -81,28 +81,29 @@ public class ManagerServiceImpl implements ManagerService {
 
         List<ManagerResponseDTO> managerResponseDTOList = new ArrayList<>();
 
-        //        managerRepository.managerList().forEach(manager -> {
-        //
-        //            ManagerResponseDTO dto = ManagerResponseDTO.builder()
-        //                    .id(manager.getId())
-        //                    .managerName(manager.getManagerName())
-        //                    .managerPhoneNumber(manager.getManagerPhoneNumber())
-        //                    .address(manager.getMember().getAddress())
-        //                    .level(manager.getLevel())
-        //                    .certificateStatus(manager.getCertificateStatus())
-        //                    .certificateStatusEtc(manager.getCertificateStatusEtc())
-        //                    .vehicle(manager.getVehicle())
-        //                    .prevManagerStatus(manager.getPrevManagerStatus())
-        //                    .currManagerStatus(manager.getCurrManagerStatus())
-        //                    .build();
-        //
-        //            List<AreaManager> managers = manager.getAreaManagers();
-        //
-        //            managerResponseDTOList.add(dto);
-        //
-        //        });
+        managerRepository.managerList(managerStatusEnum).forEach(manager -> {
 
-        return null;
+            ManagerResponseDTO dto = ManagerResponseDTO
+                    .builder()
+                    .id(manager.getId())
+                    .managerName(manager.getName())
+                    .managerPhoneNumber(manager.getPhoneNumber())
+                    .address(manager.getMember().getAddress())
+                    .level(manager.getLevel())
+                    .certificateStatus(manager.getCertificateStatus().toString())
+                    .certificateStatusEtc(manager.getCertificateStatusEtc())
+                    .vehicle(manager.getVehicle())
+                    .prevManagerStatus(manager.getPrevManagerStatus().toString())
+                    .currManagerStatus(manager.getCurrManagerStatus().toString())
+                    .build();
+
+            List<AreaManager> managers = manager.getAreaManagers();
+
+            managerResponseDTOList.add(dto);
+
+        });
+
+        return managerResponseDTOList;
 
     }
 
