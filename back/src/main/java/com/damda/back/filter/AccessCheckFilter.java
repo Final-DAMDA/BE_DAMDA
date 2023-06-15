@@ -20,7 +20,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -28,11 +31,18 @@ public class AccessCheckFilter extends OncePerRequestFilter {
 
     private final JwtManager jwtManager;
 
+    private static final Set<String> ALLOWED_PATHS = new HashSet<>(Arrays.asList(
+            "/api/v1/member/code",
+            "/api/v1/test/login",
+            "/h2-console",
+            "/api/v1/admin/login"
+    ));
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String path = request.getRequestURI();
-        if(path.startsWith("/api/v1/member/code") || path.startsWith("/api/v1/test/login") || path.startsWith("/h2-console")
-                || path.startsWith("/api/v1/admin/login")){
+
+        if(isAllowedPath(path)){
             log.info("TOKEN PASS");
             filterChain.doFilter(request,response);
             return;
@@ -48,10 +58,11 @@ public class AccessCheckFilter extends OncePerRequestFilter {
           }
 
           String id = claimMap.get("id").toString();
-          String role = claimMap.get("role").toString();
+          String role = claimMap.get("role").asString();
 
           log.info("로그인한 번호 {}",id);
           log.info("로그인한 권한 {}",role);
+
           request.setAttribute("id",id);
           request.setAttribute("role",role);
 
@@ -93,5 +104,14 @@ public class AccessCheckFilter extends OncePerRequestFilter {
         }
 
         return null;
+    }
+
+    private boolean isAllowedPath(String path) {
+        for (String allowedPath : ALLOWED_PATHS) {
+            if (path.startsWith(allowedPath)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

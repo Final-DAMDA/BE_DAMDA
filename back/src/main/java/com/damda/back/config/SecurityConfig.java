@@ -2,6 +2,7 @@ package com.damda.back.config;
 
 
 import com.damda.back.filter.AccessCheckFilter;
+import com.damda.back.filter.AdminCheckFilter;
 import com.damda.back.utils.JwtManager;
 import com.damda.back.utils.JwtManagerImpl;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,7 @@ public class SecurityConfig {
         });
 
         http.addFilterBefore(new AccessCheckFilter(jwtManager), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAfter(new AdminCheckFilter(),UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

@@ -1,7 +1,11 @@
 package com.damda.back.service.Impl;
 
 import com.damda.back.data.request.ManagerApplicationDTO;
+import com.damda.back.data.request.ManagerRegionUpdateRequestDTO;
+import com.damda.back.data.request.ManagerUpdateRequestDTO;
+import com.damda.back.data.response.ManagerRegionUpdateResponseDTO;
 import com.damda.back.data.response.ManagerResponseDTO;
+import com.damda.back.data.response.ManagerUpdateResponseDTO;
 import com.damda.back.domain.Member;
 import com.damda.back.domain.area.Area;
 import com.damda.back.domain.manager.ActivityDay;
@@ -38,35 +42,34 @@ public class ManagerServiceImpl implements ManagerService {
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public boolean managerCreate(ManagerApplicationDTO dto, Integer memberId) {
 
-        Member member = memberRepository.findById(memberId).orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_MEMBER));
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_MEMBER));
         Manager manager = dto.toManagerEntity(member);
         ActivityDay activityDay = dto.toDayEntity();
         manager.addActivityDay(activityDay);
-        try{
+        try {
             managerRepository.save(manager);
             activityDayRepository.save(activityDay);
-        }catch (Exception e){
-            //TODO:
+        } catch (Exception e) {
+            // TODO:
         }
 
 
-        List<Area> areas = IntStream.range(0,dto.getActivityDistrict().size())
-                .mapToObj(i->{
+        List<Area> areas = IntStream.range(0, dto.getActivityDistrict().size())
+                .mapToObj(i -> {
                     String city = dto.getActivityCity().get(i);
                     String district = dto.getActivityDistrict().get(i);
-                    Area area2=areaRepository.searchArea(city,district).orElseThrow(()-> new CommonException(ErrorCode.NOT_FOUND_AREA));
+                    Area area2 = areaRepository.searchArea(city, district).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_AREA));
                     return area2;
                 }).collect(Collectors.toList());
 
-        for(Area a : areas){
+        for (Area a : areas) {
             AreaManager areaManager = AreaManager.builder()
-                    .areaManagerKey(new AreaManager.AreaManagerKey(a,manager))
-                    .status(false)
+                    .areaManagerKey(new AreaManager.AreaManagerKey(a, manager))
                     .build();
-            try{
+            try {
                 areaManagerRepository.save(areaManager);
-            }catch (Exception e){
-                //TODO:
+            } catch (Exception e) {
+                // TODO:
             }
         }
         return false;
@@ -78,30 +81,54 @@ public class ManagerServiceImpl implements ManagerService {
 
         List<ManagerResponseDTO> managerResponseDTOList = new ArrayList<>();
 
-//        managerRepository.managerList().forEach(manager -> {
-//
-//            ManagerResponseDTO dto = ManagerResponseDTO.builder()
-//                    .id(manager.getId())
-//                    .managerName(manager.getManagerName())
-//                    .managerPhoneNumber(manager.getManagerPhoneNumber())
-//                    .address(manager.getMember().getAddress())
-//                    .level(manager.getLevel())
-//                    .certificateStatus(manager.getCertificateStatus())
-//                    .certificateStatusEtc(manager.getCertificateStatusEtc())
-//                    .vehicle(manager.getVehicle())
-//                    .prevManagerStatus(manager.getPrevManagerStatus())
-//                    .currManagerStatus(manager.getCurrManagerStatus())
-//                    .build();
-//
-//            List<AreaManager> managers = manager.getAreaManagers();
-//
-//            managerResponseDTOList.add(dto);
-//
-//        });
+        //        managerRepository.managerList().forEach(manager -> {
+        //
+        //            ManagerResponseDTO dto = ManagerResponseDTO.builder()
+        //                    .id(manager.getId())
+        //                    .managerName(manager.getManagerName())
+        //                    .managerPhoneNumber(manager.getManagerPhoneNumber())
+        //                    .address(manager.getMember().getAddress())
+        //                    .level(manager.getLevel())
+        //                    .certificateStatus(manager.getCertificateStatus())
+        //                    .certificateStatusEtc(manager.getCertificateStatusEtc())
+        //                    .vehicle(manager.getVehicle())
+        //                    .prevManagerStatus(manager.getPrevManagerStatus())
+        //                    .currManagerStatus(manager.getCurrManagerStatus())
+        //                    .build();
+        //
+        //            List<AreaManager> managers = manager.getAreaManagers();
+        //
+        //            managerResponseDTOList.add(dto);
+        //
+        //        });
 
         return null;
 
+    }
 
+    @Override
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public ManagerUpdateResponseDTO managerUpdate(ManagerUpdateRequestDTO dto, Long managerId) {
+
+        Manager manager = managerRepository.findById(managerId).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_MANAGER));
+
+        manager.updateManager(dto);
+
+        ManagerUpdateResponseDTO responseDTO = new ManagerUpdateResponseDTO(manager);
+
+        return responseDTO;
+    }
+
+    @Override
+    public ManagerRegionUpdateResponseDTO managerRegionUpdate(ManagerRegionUpdateRequestDTO dto, Long managerId) {
+
+        Manager manager = managerRepository.findById(managerId).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_MANAGER));
+
+        List<AreaManager> areaManagerList = areaManagerRepository.findAreaManagerListByManagerId(managerId);
+        
+        
+
+        return null;
     }
 
 }

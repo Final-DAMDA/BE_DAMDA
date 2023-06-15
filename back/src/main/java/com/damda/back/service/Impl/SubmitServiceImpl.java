@@ -80,16 +80,16 @@ public class SubmitServiceImpl implements SubmitService {
         @PostConstruct
         private void questionIdentifyInit(){
             identifies.add(QuestionIdentify.AFEWSERVINGS);
-            identifies.add(QuestionIdentify.SERVICEDURATION);
-            identifies.add(QuestionIdentify.ADDRESS);
-            identifies.add(QuestionIdentify.SERVICEDATE);
-            identifies.add(QuestionIdentify.PARKINGAVAILABLE);
-            identifies.add(QuestionIdentify.APPLICANTNAME);
-            identifies.add(QuestionIdentify.APPLICANTCONACTINFO);
-            identifies.add(QuestionIdentify.LEARNEDROUTE);
-            identifies.add(QuestionIdentify.RESERVATIONENTER);
-            identifies.add(QuestionIdentify.RESERVATIONOTE);
-            identifies.add(QuestionIdentify.RESERVATIONREQUEST);
+//            identifies.add(QuestionIdentify.SERVICEDURATION);
+//            identifies.add(QuestionIdentify.ADDRESS);
+//            identifies.add(QuestionIdentify.SERVICEDATE);
+//            identifies.add(QuestionIdentify.PARKINGAVAILABLE);
+//            identifies.add(QuestionIdentify.APPLICANTNAME);
+//            identifies.add(QuestionIdentify.APPLICANTCONACTINFO);
+//            identifies.add(QuestionIdentify.LEARNEDROUTE);
+//            identifies.add(QuestionIdentify.RESERVATIONENTER);
+//            identifies.add(QuestionIdentify.RESERVATIONOTE);
+//            identifies.add(QuestionIdentify.RESERVATIONREQUEST);
         }
 
 
@@ -213,7 +213,7 @@ public class SubmitServiceImpl implements SubmitService {
                     ReservationSubmitForm form = reservationFormRepository.save(reservationSubmitForm);
                     //TODO: 매칭로직 추가
                     matchService.matchingListUp(reservationSubmitForm,dto.getAddressFront());
-                    talkSendService.sendReservationSubmitAfter(form.getId(),dto.getAddressFront(),form.getReservationAnswerList(),dto.getTotalPrice());
+                    //talkSendService.sendReservationSubmitAfter(form.getId(),dto.getAddressFront(),form.getReservationAnswerList(),dto.getTotalPrice());
 
                     return form.getId();
 //                }catch (Exception e){

@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MatchingListDTO {
+	private Long matchId;
 	private String matchingResponse;
 	private String updateAt;
 	private String name;
@@ -24,12 +25,13 @@ public class MatchingListDTO {
 	private Boolean driving;
 
 	public MatchingListDTO(Match match){
-		this.matchingResponse = match.getMatchStatus().toString();
+		this.matchId = match.getId();
+		this.matchingResponse = match.getMatchStatus().name();
 		this.updateAt = match.getUpdatedAt().toString();
 		this.name = match.getManagerName();
 		this.phone = match.getManager().getPhoneNumber();
 		this.address = match.getManager().getAddress();
 		this.driving = match.getManager().getVehicle();
-		this.certificate = match.getManager().getCertificateStatus().toString();
+		this.certificate = match.getManager().getCertificateStatus().name();
 	}
 }

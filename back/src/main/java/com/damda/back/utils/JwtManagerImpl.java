@@ -92,7 +92,7 @@ public class JwtManagerImpl implements JwtManager{
                 .withSubject(SUBJECT)
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXP))
                 .withClaim("id", id)
-                .withClaim("role",role)
+                .withClaim("role","ADMIN")
                 .withIssuedAt(new Date(System.currentTimeMillis()))
                 .sign(Algorithm.HMAC512(KEY));
 

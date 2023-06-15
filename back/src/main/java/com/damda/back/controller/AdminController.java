@@ -48,6 +48,7 @@ public class AdminController {
 
 
         response.setHeader("Set-Cookie",cookie.toString());
+        response.setContentType("application/json");
         response.getWriter().println(new ObjectMapper().writeValueAsString(commonResponse));
     }
 
