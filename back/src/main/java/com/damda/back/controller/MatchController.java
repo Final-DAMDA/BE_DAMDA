@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -63,12 +64,26 @@ public class MatchController {
 	 * @return
 	 */
 	@GetMapping("/api/v1/matching/list/{id}")
-	public ResponseEntity<CommonResponse<?>> matchingAccept( @PathVariable("id") Long reservationId){//reservationID 임
+	public ResponseEntity<CommonResponse<?>> matchingAcceptList( @PathVariable("id") Long reservationId){//reservationID 임
 
 		CommonResponse<?> commonResponse = CommonResponse
 				.builder()
 				.codeEnum(CodeEnum.SUCCESS)
 				.data(matchService.matchingList(reservationId))
+				.build();
+		return ResponseEntity.ok(commonResponse);
+	}
+
+	/**
+	 * @apiNote : Admin수락 (매칭 완료)
+	 */
+	@PostMapping("/api/v1/matching/order")
+	public ResponseEntity<CommonResponse<?>> matchingAccept(@RequestParam List<Long> matchIds){//reservationID 임
+		matchService.matchingOrder(matchIds);
+		CommonResponse<?> commonResponse = CommonResponse
+				.builder()
+				.codeEnum(CodeEnum.SUCCESS)
+				.data(true)
 				.build();
 		return ResponseEntity.ok(commonResponse);
 	}

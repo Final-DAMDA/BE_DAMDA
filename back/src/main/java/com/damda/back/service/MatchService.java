@@ -15,5 +15,5 @@ public interface MatchService {
 
 	void matchingAccept(Long reservationId, Integer memberId, MatchResponseStatus matchResponseStatus);
 	List<MatchingListDTO> matchingList(Long reservationId);
-
+	void matchingOrder(List<Long> matchIds);
 }
