@@ -3,6 +3,7 @@ package com.damda.back.domain.manager;
 import com.damda.back.data.request.ManagerRegionUpdateRequestDTO;
 import com.damda.back.data.request.ManagerUpdateRequestDTO;
 import com.damda.back.domain.BaseEntity;
+import com.damda.back.domain.Match;
 import com.damda.back.domain.Member;
 import com.damda.back.domain.area.DistrictEnum;
 import lombok.*;
@@ -60,6 +61,9 @@ public class Manager extends BaseEntity {
     private ManagerStatusEnum prevManagerStatus;
 
     private ManagerStatusEnum currManagerStatus;
+
+    @OneToMany(mappedBy = "manager", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Match> matches=new ArrayList<>();
 
     public void addActivityDay(ActivityDay activityDay){
         this.activityDay=activityDay;

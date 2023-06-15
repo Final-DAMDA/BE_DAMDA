@@ -65,7 +65,6 @@ public class ManagerServiceImpl implements ManagerService {
         for (Area a : areas) {
             AreaManager areaManager = AreaManager.builder()
                     .areaManagerKey(new AreaManager.AreaManagerKey(a, manager))
-                    .status(false)
                     .build();
             try {
                 areaManagerRepository.save(areaManager);

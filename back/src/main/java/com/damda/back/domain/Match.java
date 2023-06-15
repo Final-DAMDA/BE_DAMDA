@@ -35,7 +35,7 @@ public class Match extends BaseEntity{
 	@JoinColumn(name = "form_id")
 	private ReservationSubmitForm reservationForm;
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "manager_id",insertable = false,updatable = false)
 	private Manager manager;
 

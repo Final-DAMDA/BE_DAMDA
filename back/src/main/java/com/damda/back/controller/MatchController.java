@@ -44,8 +44,8 @@ public class MatchController {
 	 * @param reservationId
 	 * @return
 	 */
-	@PostMapping("/api/v1") //status=YES OR NO
-	public ResponseEntity<CommonResponse<?>> matchingAccept(HttpServletRequest request, @RequestParam Long reservationId, @RequestParam String status){//reservationID 임
+	@PostMapping("/api/v1/{id}") //status=YES OR NO
+	public ResponseEntity<CommonResponse<?>> matchingAccept(HttpServletRequest request, @PathVariable("id") Long reservationId, @RequestParam String status){//reservationID 임
 
 		Integer memberId =  Integer.parseInt(request.getAttribute("id").toString());
 		matchService.matchingAccept(reservationId,memberId, MatchResponseStatus.valueOf(status));
@@ -68,7 +68,7 @@ public class MatchController {
 		CommonResponse<?> commonResponse = CommonResponse
 				.builder()
 				.codeEnum(CodeEnum.SUCCESS)
-				.data("")
+				.data(matchService.matchingList(reservationId))
 				.build();
 		return ResponseEntity.ok(commonResponse);
 	}

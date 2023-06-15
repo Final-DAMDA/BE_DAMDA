@@ -15,13 +15,13 @@ import java.util.List;
 @AllArgsConstructor
 public class ManagerRegionUpdateResponseDTO {
 
-    // private List<String> activityCity;
-    //
-    // private List<String> activityDistrict;
-    //
-    // public ManagerRegionUpdateResponseDTO(/* List<AreaManager> areaManagerList */) {
-    //     this.activityCity = areaManagerList;
-    //     this.activityDistrict = areaManagerList;
-    // }
-    
+     private List<String> activityCity;
+
+     private List<String> activityDistrict;
+
+//     public ManagerRegionUpdateResponseDTO(/* List<AreaManager> areaManagerList */) {
+//         this.activityCity = areaManagerList;
+//         this.activityDistrict = areaManagerList;
+//     }
+
 }

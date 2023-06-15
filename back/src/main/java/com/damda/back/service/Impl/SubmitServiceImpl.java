@@ -213,7 +213,7 @@ public class SubmitServiceImpl implements SubmitService {
                     ReservationSubmitForm form = reservationFormRepository.save(reservationSubmitForm);
                     //TODO: 매칭로직 추가
                     matchService.matchingListUp(reservationSubmitForm,dto.getAddressFront());
-                    talkSendService.sendReservationSubmitAfter(form.getId(),dto.getAddressFront(),form.getReservationAnswerList(),dto.getTotalPrice());
+                    //talkSendService.sendReservationSubmitAfter(form.getId(),dto.getAddressFront(),form.getReservationAnswerList(),dto.getTotalPrice());
 
                     return form.getId();
 //                }catch (Exception e){
