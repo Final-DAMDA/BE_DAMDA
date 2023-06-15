@@ -63,8 +63,8 @@ public class MatchRepositoryImpl implements MatchCustomRepository {
         List<Match> match1 = queryFactory
                 .selectDistinct(match)
                 .from(match)
-                .join(match.reservationForm,submitForm).fetchJoin()
-                .join(match.manager,manager).fetchJoin()
+                .innerJoin(match.reservationForm,submitForm).fetchJoin()
+                .innerJoin(match.manager,manager).fetchJoin()
                 .where(match.reservationForm.id.eq(reservationId))
                 .fetch();
 

@@ -117,12 +117,19 @@ public class MatchServiceImpl implements MatchService {
 	public List<MatchingListDTO> matchingList(Long reservationId) {
 		List<Match> matchList = matchRepository.matchList(reservationId);
 		List<MatchingListDTO> matchingListDTOS = new ArrayList<>();
+
 		for(Match m: matchList){
 			MatchingListDTO dto = new MatchingListDTO(m);
-			//TODO: 매니저 활동지역 리스트 DTO에 추가
+			List<AreaManager> aa= areaManagerRepository.findAreaByManagerId(m.getManagerId());
+			List<String> managerActivity = new ArrayList<>();
+			for(AreaManager a: aa){
+				managerActivity.add(a.getAreaManagerKey().getArea().getDistrict());
+			}
+			dto.setActivityArea(managerActivity);
 
+			matchingListDTOS.add(dto);
 		}
-		return null;
+		return matchingListDTOS;
 	}
 
 
