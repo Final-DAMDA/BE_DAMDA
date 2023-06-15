@@ -64,5 +64,11 @@ public class AreaRepositoryImpl implements AreaCustomRepository {
 
         return Optional.ofNullable(result);
     }
+    
+    public void addManagerCount() {
+        QArea area = QArea.area;
+
+        
+    }
 
 }
