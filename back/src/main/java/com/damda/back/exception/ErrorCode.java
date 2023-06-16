@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ErrorCode {
 
+    RESERVATION_FORM_MISSING_VALUE(HttpStatus.BAD_REQUEST,"제출된 데이터 중 누락된 데이터가 있습니다."),
     ADMIN_NOT_FOUND(HttpStatus.BAD_REQUEST,"해당 username에 대항 어드민을 찾지 못함"),
 
     ADMIBN_PASSWORD_FAIL(HttpStatus.UNAUTHORIZED,"비밀번호가 틀립니다"),

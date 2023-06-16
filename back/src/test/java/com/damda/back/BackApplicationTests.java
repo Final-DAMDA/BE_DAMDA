@@ -2,9 +2,7 @@ package com.damda.back;
 
 import com.damda.back.domain.area.Area;
 import com.damda.back.domain.area.DistrictEnum;
-import com.damda.back.domain.manager.AreaManager;
-import com.damda.back.domain.manager.CertificateStatusEnum;
-import com.damda.back.domain.manager.Manager;
+import com.damda.back.domain.manager.*;
 import com.damda.back.repository.*;
 import com.damda.back.service.SubmitService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -13,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.damda.back.config.SecurityConfig;
 import com.damda.back.data.common.*;
 import com.damda.back.domain.*;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.DisplayName;
 
 import org.junit.jupiter.api.Test;
@@ -61,12 +60,29 @@ class BackApplicationTests {
 	@Autowired
 	private MatchRepository matchRepository;
 
+	@Autowired
+	private JPAQueryFactory queryFactory;
+
 
 	@Test
 	@Transactional
 	@Commit
 	void contextLoads() {
-		managerRepository.managerWithArea("하남시").forEach(System.out::println);
+		//managerRepository.managerWithArea("하남시").forEach(System.out::println);
+
+		QManager manager = QManager.manager;
+		QAreaManager areaManager = QAreaManager.areaManager;
+
+		Manager manager1 = queryFactory.selectDistinct(manager)
+				.join(manager.areaManagers, areaManager).fetchJoin()
+				.where(manager.id.eq(1L)).fetchOne();
+
+		manager1.removeAll();
+
+		manager1.ad
+
+
+
 
 
 	}

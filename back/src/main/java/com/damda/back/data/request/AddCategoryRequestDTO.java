@@ -1,19 +1,17 @@
 package com.damda.back.data.request;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Getter
+@Setter
 public class AddCategoryRequestDTO {
 
-        @Builder.Default
-        private HashMap<String,Integer> data = new HashMap<>();
+        private List<String> data = new ArrayList<>();
 }
