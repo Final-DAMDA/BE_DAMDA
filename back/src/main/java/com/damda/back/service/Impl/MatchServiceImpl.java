@@ -137,14 +137,17 @@ public class MatchServiceImpl implements MatchService {
 
 	@Override
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
-	public void matchingOrder(List<Long> matchIds) {
+	public void matchingOrder(Long reservationId, List<Long> matchIds) {
 		if(matchIds.isEmpty()){
 			throw new CommonException(ErrorCode.NOT_FOUND_MATCH_ID);
 		}
 		for(Long matchId:matchIds){
 			Match match = matchRepository.findById(matchId).orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_MATCH));
 			match.matchingOrder();
-		}
+		} //TODO: 해당 매치에서 예약 ID 가져와서 매칭 실패된 매니저와 매칭성공 매니저, 유저한테 알림톡 보내야 함
+		List<String> matchSuccessList = new ArrayList<>();
+		List<String> matchFailList = new ArrayList<>();
+		String matchUser ="";
 	}
 
 }
