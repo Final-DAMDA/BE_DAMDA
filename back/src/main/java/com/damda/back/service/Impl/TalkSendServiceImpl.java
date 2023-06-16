@@ -47,7 +47,7 @@ public class TalkSendServiceImpl implements TalkSendService {
      * @apiNote 고객이 예약완료시 매니저에게 알람톡을 보낸 후 확인차 고객한테도 알림톡을 보낸다.
      * */
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public void sendReservationSubmitAfter(Long formId, String addressFront,List<ReservationAnswer> answers,Integer totalPrice){
+    public void sendReservationSubmitAfter(Long formId, String addressFront,List<ReservationAnswer> answers,Integer totalPrice,Integer servicePerson){
 
         if(answers.isEmpty()) throw new CommonException(ErrorCode.FORM_NOT_FOUND);
         List<Manager> managerList = managerRepository.managerWithArea(addressFront);
@@ -65,7 +65,7 @@ public class TalkSendServiceImpl implements TalkSendService {
         ResCompleteRequestDTO resCompleteRequestDTO = ResCompleteRequestDTO.builder()
                 .reservationDate(answerMap.get(QuestionIdentify.SERVICEDATE))
                 .reservationHour(answerMap.get(QuestionIdentify.SERVICEDATE).substring(11))
-                .managerAmount(answerMap.get(QuestionIdentify.AFEWSERVINGS))
+                .managerAmount(servicePerson.toString())
                 .userAddressCity(answerMap.get(QuestionIdentify.ADDRESS))
                 .reservationParking(answerMap.get(QuestionIdentify.PARKINGAVAILABLE))
                 .reservationEnter(answerMap.get(QuestionIdentify.RESERVATIONENTER))
@@ -99,8 +99,8 @@ public class TalkSendServiceImpl implements TalkSendService {
                 .requiredTime(answerMap.get(QuestionIdentify.SERVICEDURATION))
                 .estimate(totalPrice.toString())
                 .build();
-
-        solapiUtils.reservationCompletedSendCustomer(dto,answerMap.get(QuestionIdentify.APPLICANTCONACTINFO));
+        log.info("알림톡 발송");
+        //solapiUtils.reservationCompletedSendCustomer(dto,answerMap.get(QuestionIdentify.APPLICANTCONACTINFO));
 
 
     }

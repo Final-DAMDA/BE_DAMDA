@@ -14,6 +14,7 @@ import com.damda.back.data.response.FormSliceDTO;
 import com.damda.back.data.response.Statistical;
 import com.damda.back.data.response.SubmitTotalResponse;
 import com.damda.back.domain.*;
+import com.damda.back.domain.manager.AreaManager;
 import com.damda.back.domain.manager.Manager;
 import com.damda.back.exception.CommonException;
 import com.damda.back.exception.ErrorCode;
@@ -217,8 +218,12 @@ public class SubmitServiceImpl implements SubmitService {
 
                     ReservationSubmitForm form = reservationFormRepository.save(reservationSubmitForm);
                     //TODO: 매칭로직 추가
-                    matchService.matchingListUp(reservationSubmitForm,dto.getAddressFront());
-                    //talkSendService.sendReservationSubmitAfter(form.getId(),dto.getAddressFront(),form.getReservationAnswerList(),dto.getTotalPrice());
+
+                    log.info("{} 지역 매니저들을 조회 시도",dto.getAddressFront());
+                    List<Manager> managerList = managerRepository.managerWithArea(dto.getAddressFront());
+                    log.info("해당 지역에 활동가능한 매니저 {}",managerList);
+                    matchService.matchingListUp(reservationSubmitForm,managerList);
+                    talkSendService.sendReservationSubmitAfter(form.getId(),dto.getAddressFront(),form.getReservationAnswerList(),dto.getTotalPrice(),dto.getServicePerson());
 
                     return form.getId();
 //                }catch (Exception e){

@@ -8,9 +8,11 @@ import com.damda.back.domain.Category;
 import com.damda.back.domain.Member;
 import com.damda.back.domain.Question;
 import com.damda.back.domain.QuestionStatus;
-import com.damda.back.repository.MemberRepository;
-
-import com.damda.back.repository.QuestionRepository;
+import com.damda.back.domain.area.Area;
+import com.damda.back.domain.manager.AreaManager;
+import com.damda.back.domain.manager.Manager;
+import com.damda.back.domain.manager.ManagerStatusEnum;
+import com.damda.back.repository.*;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -19,6 +21,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 @SpringBootApplication
@@ -27,9 +30,21 @@ public class BackApplication {
 	 @Profile("dev")
 	 @Bean
 	 CommandLineRunner initData(
-	 		QuestionRepository questionRepository,MemberRepository memberRepository,PasswordEncoder passwordEncoder
+	 		QuestionRepository questionRepository,
+			MemberRepository memberRepository,
+			PasswordEncoder passwordEncoder,
+			ManagerRepository managerRepository,
+			EntityManager entityManager,
+			AreaRepository areaRepository,
+			AreaManagerRepository areaManagerRepository
 	 ) {
-	 	return args -> insertQuery(questionRepository,memberRepository,passwordEncoder);
+	 	return args -> insertQuery(questionRepository,
+				memberRepository,
+				passwordEncoder,
+				managerRepository,
+				entityManager,
+				areaRepository,
+				areaManagerRepository);
 	 }
 
 	public static void main(String[] args) {
@@ -40,7 +55,13 @@ public class BackApplication {
 
 	public void insertQuery(QuestionRepository questionRepository,
 							MemberRepository memberRepository,
-							PasswordEncoder passwordEncoder){
+							PasswordEncoder passwordEncoder,
+							ManagerRepository managerRepository,
+							EntityManager em,
+							AreaRepository areaRepository,
+							AreaManagerRepository areaManagerRepository){
+
+
 		 memberRepository.save(Member.builder()
 						 .username("admin")
 						 .password(passwordEncoder.encode("1234"))
@@ -52,6 +73,8 @@ public class BackApplication {
 
 
 		 //--------------Question Insert
+
+
 		questionRepository.save(
 				Question.builder()
 						.page(1)
@@ -242,6 +265,29 @@ public class BackApplication {
 						.required(true)
 						.build()
 		);
+
+		Manager manager = managerRepository.save(Manager.builder()
+						.phoneNumber("01040783843")
+						.name("김재우")
+						.currManagerStatus(ManagerStatusEnum.ACTIVE)
+				.build());
+
+
+		Area area = Area.builder()
+				.city("경기도")
+				.district("하남시")
+				.managerCount(1)
+				.build();
+
+		areaRepository.save(area);
+		AreaManager.AreaManagerKey key = new AreaManager.AreaManagerKey(area,manager);
+
+		AreaManager areaManager = AreaManager.builder()
+				.areaManagerKey(key)
+				.build();
+
+		areaManagerRepository.save(areaManager);
+
 
 
 	}

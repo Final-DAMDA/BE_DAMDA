@@ -36,13 +36,12 @@ public class MatchServiceImpl implements MatchService {
 
 	@Override
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
-	public void matchingListUp(ReservationSubmitForm reservationSubmitForm, String district) {
-		List<AreaManager> areaManagerList = areaManagerRepository.findAreaManagerList(district);
-		for (AreaManager areaManager : areaManagerList) {
+	public void matchingListUp(ReservationSubmitForm reservationSubmitForm, List<Manager> managerList) {
+		for (Manager manager : managerList) {
 			Match match = Match.builder()
-					.managerId(areaManager.getAreaManagerKey().getManager().getId())
-					.managerName(areaManager.getAreaManagerKey().getManager().getName())
-					.manager(areaManager.getAreaManagerKey().getManager())
+					.managerId(manager.getId())
+					.managerName(manager.getName())
+					.manager(manager)
 					.matchStatus(MatchResponseStatus.WAITING)
 					.reservationForm(reservationSubmitForm)
 					.build();
