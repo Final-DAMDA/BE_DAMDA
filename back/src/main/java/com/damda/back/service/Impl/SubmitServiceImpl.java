@@ -223,7 +223,7 @@ public class SubmitServiceImpl implements SubmitService {
                     List<Manager> managerList = managerRepository.managerWithArea(dto.getAddressFront());
                     log.info("해당 지역에 활동가능한 매니저 {}",managerList);
                     matchService.matchingListUp(reservationSubmitForm,managerList);
-                    talkSendService.sendReservationSubmitAfter(form.getId(),dto.getAddressFront(),form.getReservationAnswerList(),dto.getTotalPrice(),dto.getServicePerson());
+                //    talkSendService.sendReservationSubmitAfter(form.getId(),dto.getAddressFront(),form.getReservationAnswerList(),dto.getTotalPrice(),dto.getServicePerson());
 
                     return form.getId();
 //                }catch (Exception e){
