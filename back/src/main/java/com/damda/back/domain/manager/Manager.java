@@ -81,4 +81,9 @@ public class Manager extends BaseEntity {
         this.memo = dto.getMemo();       
     }
 
+
+    public void removeAll(){
+        this.areaManagers.clear();
+    }
+
 }

@@ -95,6 +95,7 @@ public class JwtManagerImpl implements JwtManager{
                 .withClaim("role","ADMIN")
                 .withIssuedAt(new Date(System.currentTimeMillis()))
                 .sign(Algorithm.HMAC512(KEY));
+        System.out.println(jwt);
 
 
         return jwt;

@@ -22,7 +22,7 @@ public class ReviewController {
 	private final ReviewService reviewService;
 
 	/**
-	 * @apiNote: GET 서비스 완료 폼 제출여부 판단
+	 * @apiNote: GET 서비스 완료 폼
 	 */
 	@GetMapping("/service/complete/{reservationId}") //id는 예약 id
 	public ResponseEntity<CommonResponse<?>> serviceCompleteCheck(@PathVariable("reservationId") Long reservationId){

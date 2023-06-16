@@ -14,5 +14,4 @@ public class CategoryMapDTO {
     private Long id;
     private String category;
 
-    private Integer price;
 }

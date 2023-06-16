@@ -35,17 +35,7 @@ public class ManagerController {
                 .body(commonResponse);
 
     }
-
-    /**
-     * @param managerApplicationDTO
-     * @return
-     * @apiNote : 매니저 추가
-     */
-    // @GetMapping("/api/v1/member/manager/waitlist")
-
-    // @GetMapping("/api/v1/member/manager/pending")
-
-    // @GetMapping("/api/v1/member/manager/inactive")
+    
     @PostMapping("/api/v1/manager/form/submit")
     public ResponseEntity<CommonResponse<?>> managerCreate(HttpServletRequest request, @RequestBody ManagerApplicationDTO managerApplicationDTO) {
 

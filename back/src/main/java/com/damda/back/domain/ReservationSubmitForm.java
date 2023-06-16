@@ -32,6 +32,8 @@ public class ReservationSubmitForm extends BaseEntity{
 
     private Integer totalPrice;
 
+    private Integer servicePerson; //투입인원
+
     private boolean deleted;
 
     @Enumerated(EnumType.STRING)
@@ -60,8 +62,9 @@ public class ReservationSubmitForm extends BaseEntity{
         answer.changeForm(this);
         this.reservationAnswerList.add(answer);
     }
-    public void setStatus(ReservationStatus reservationStatus){
-        this.status = reservationStatus;
+    public void statusServiceComplete(){
+
+        this.status = ReservationStatus.SERVICE_COMPLETED;
     }
 
 

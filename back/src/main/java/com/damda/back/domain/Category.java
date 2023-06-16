@@ -19,7 +19,6 @@ public class Category {
 
     private String questionCategory;
 
-    private Integer categoryPrice;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_number")
@@ -32,5 +31,4 @@ public class Category {
 
     public void changeCategory(String questionCategory){this.questionCategory = questionCategory;}
 
-    public void changeCategoryPrice(Integer price){this.categoryPrice = price;}
 }

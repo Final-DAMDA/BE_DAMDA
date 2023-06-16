@@ -14,6 +14,7 @@ import com.damda.back.data.response.FormSliceDTO;
 import com.damda.back.data.response.Statistical;
 import com.damda.back.data.response.SubmitTotalResponse;
 import com.damda.back.domain.*;
+import com.damda.back.domain.manager.AreaManager;
 import com.damda.back.domain.manager.Manager;
 import com.damda.back.exception.CommonException;
 import com.damda.back.exception.ErrorCode;
@@ -39,6 +40,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
@@ -79,17 +81,18 @@ public class SubmitServiceImpl implements SubmitService {
 
         @PostConstruct
         private void questionIdentifyInit(){
-            identifies.add(QuestionIdentify.AFEWSERVINGS);
-//            identifies.add(QuestionIdentify.SERVICEDURATION);
-//            identifies.add(QuestionIdentify.ADDRESS);
-//            identifies.add(QuestionIdentify.SERVICEDATE);
-//            identifies.add(QuestionIdentify.PARKINGAVAILABLE);
-//            identifies.add(QuestionIdentify.APPLICANTNAME);
-//            identifies.add(QuestionIdentify.APPLICANTCONACTINFO);
-//            identifies.add(QuestionIdentify.LEARNEDROUTE);
-//            identifies.add(QuestionIdentify.RESERVATIONENTER);
-//            identifies.add(QuestionIdentify.RESERVATIONOTE);
-//            identifies.add(QuestionIdentify.RESERVATIONREQUEST);
+            identifies.add(QuestionIdentify.AFEWSERVINGS); //몇인분량의 옷 (투입인원아님)
+            identifies.add(QuestionIdentify.SERVICEDURATION); //서비스 사용시간=
+            identifies.add(QuestionIdentify.ADDRESS); //서비스 주소=
+            identifies.add(QuestionIdentify.SERVICEDATE); //서비스 날짜와 시간=
+            identifies.add(QuestionIdentify.PARKINGAVAILABLE); //주차 가능여부=
+            identifies.add(QuestionIdentify.APPLICANTNAME); //신청인 이름
+            identifies.add(QuestionIdentify.APPLICANTCONACTINFO); //신청인 전화번호
+            identifies.add(QuestionIdentify.LEARNEDROUTE); // 알게된 경로
+            identifies.add(QuestionIdentify.RESERVATIONENTER); //들어가기 위해 필요한 자료=
+            identifies.add(QuestionIdentify.RESERVATIONOTE); // 알아야 할 사항=
+            identifies.add(QuestionIdentify.RESERVATIONREQUEST); // 요청사항=
+            identifies.add(QuestionIdentify.SALEAGENT); //판매대행
         }
 
 
@@ -198,11 +201,14 @@ public class SubmitServiceImpl implements SubmitService {
                         .member(member)
                         .totalPrice(dto.getTotalPrice())
                         .status(ReservationStatus.WAITING_FOR_MANAGER_REQUEST)
+                        .payMentStatus(PayMentStatus.NOT_PAID_FOR_ANYTHING)
+                        .servicePerson(dto.getServicePerson())
                         .build();
-
 
             //    try{
                     dto.getSubmit().forEach(submitSlice -> {
+                        if(!StringUtils.hasText(submitSlice.getAnswer())) throw new CommonException(ErrorCode.RESERVATION_FORM_MISSING_VALUE);
+
                         reservationSubmitForm.addAnswer(ReservationAnswer.builder()
                                 .questionIdentify(submitSlice.getQuestionIdentify())
                                 .answer(submitSlice.getAnswer())
@@ -212,8 +218,12 @@ public class SubmitServiceImpl implements SubmitService {
 
                     ReservationSubmitForm form = reservationFormRepository.save(reservationSubmitForm);
                     //TODO: 매칭로직 추가
-                    matchService.matchingListUp(reservationSubmitForm,dto.getAddressFront());
-                    //talkSendService.sendReservationSubmitAfter(form.getId(),dto.getAddressFront(),form.getReservationAnswerList(),dto.getTotalPrice());
+
+                    log.info("{} 지역 매니저들을 조회 시도",dto.getAddressFront());
+                    List<Manager> managerList = managerRepository.managerWithArea(dto.getAddressFront());
+                    log.info("해당 지역에 활동가능한 매니저 {}",managerList);
+                    matchService.matchingListUp(reservationSubmitForm,managerList);
+                    talkSendService.sendReservationSubmitAfter(form.getId(),dto.getAddressFront(),form.getReservationAnswerList(),dto.getTotalPrice(),dto.getServicePerson());
 
                     return form.getId();
 //                }catch (Exception e){
@@ -368,6 +378,9 @@ public class SubmitServiceImpl implements SubmitService {
             Map<QuestionIdentify, String> answerMap
                     = answers.stream().collect(Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
 
+
+
+            dto.setId(submitForm.getId());
             dto.setAddress(answerMap.get(QuestionIdentify.ADDRESS));
             dto.setName(member.getUsername());
             dto.setCreatedAt(submitForm.getCreatedAt().toString());

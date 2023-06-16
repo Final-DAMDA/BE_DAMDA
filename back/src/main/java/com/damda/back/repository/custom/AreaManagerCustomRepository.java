@@ -9,6 +9,7 @@ public interface AreaManagerCustomRepository {
 
 	List<AreaManager> findAreaManagerList(String district);
 
-	public List<AreaManager> findAreaManagerListByManagerId(Long managerId);
+	List<AreaManager> findAreaManagerListByManagerId(Long managerId);
 	List<AreaManager> findAreaByManagerId(Long managerId);
+	
 }

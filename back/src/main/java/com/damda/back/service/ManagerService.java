@@ -12,11 +12,11 @@ import java.util.List;
 
 public interface ManagerService {
     
-    public boolean managerCreate(ManagerApplicationDTO dto, Integer memberId);
+    boolean managerCreate(ManagerApplicationDTO dto, Integer memberId);
 
-    public List<ManagerResponseDTO> managerResponseDTOList(ManagerStatusEnum managerStatusEnum);
+    List<ManagerResponseDTO> managerResponseDTOList(ManagerStatusEnum managerStatusEnum);
     
     ManagerUpdateResponseDTO managerUpdate(ManagerUpdateRequestDTO dto, Long managerId);
 
-    ManagerRegionUpdateResponseDTO managerRegionUpdate(ManagerRegionUpdateRequestDTO dto, Long managerId);
+    boolean managerRegionUpdate(ManagerRegionUpdateRequestDTO dto, Long managerId);
 }
