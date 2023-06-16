@@ -3,6 +3,7 @@ package com.damda.back.repository.custom.Impl;
 import com.damda.back.data.common.MatchResponseStatus;
 import com.damda.back.domain.Match;
 import com.damda.back.domain.QMatch;
+import com.damda.back.domain.QReservationAnswer;
 import com.damda.back.domain.QReservationSubmitForm;
 import com.damda.back.domain.manager.Manager;
 import com.damda.back.domain.manager.QManager;
@@ -59,12 +60,13 @@ public class MatchRepositoryImpl implements MatchCustomRepository {
         QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
         QMatch match = QMatch.match;
         QManager manager = QManager.manager;
-
+        QReservationAnswer reservationAnswer = QReservationAnswer.reservationAnswer;
         List<Match> match1 = queryFactory
                 .selectDistinct(match)
                 .from(match)
-                .innerJoin(match.reservationForm,submitForm).fetchJoin()
-                .innerJoin(match.manager,manager).fetchJoin()
+                .join(match.reservationForm,submitForm).fetchJoin()
+                .join(submitForm.reservationAnswerList,reservationAnswer).fetchJoin()
+                .join(match.manager,manager).fetchJoin()
                 .where(match.reservationForm.id.eq(reservationId))
                 .fetch();
 

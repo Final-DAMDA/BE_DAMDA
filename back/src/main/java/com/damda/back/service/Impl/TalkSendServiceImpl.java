@@ -120,4 +120,9 @@ public class TalkSendServiceImpl implements TalkSendService {
         solapiUtils.serviceCompletedSendTalk(toPhoneNumber,formId);
     }
 
+    @Override
+    public void sendManagerMatchingSuccess(Long reservationId) {
+
+    }
+
 }

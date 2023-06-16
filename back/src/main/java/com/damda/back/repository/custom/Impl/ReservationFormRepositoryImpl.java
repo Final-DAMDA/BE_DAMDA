@@ -197,5 +197,20 @@ public class ReservationFormRepositoryImpl implements ReservationFormCustomRepos
                 return Optional.ofNullable(reservationSubmitForm);
         }
 
+        @Override
+        public Optional<ReservationSubmitForm> findByreservationId2(Long reservationId) {
+                QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
+                QReservationAnswer answer = QReservationAnswer.reservationAnswer;
+                QMatch match = QMatch.match;
+                ReservationSubmitForm reservationSubmitForm =
+                        queryFactory.selectDistinct(submitForm)
+                                .from(submitForm)
+                                .innerJoin(submitForm.matches,match).fetchJoin()
+                                .where(submitForm.id.eq(reservationId))
+                                .fetchOne();
+
+                return Optional.ofNullable(reservationSubmitForm);
+        }
+
 
 }

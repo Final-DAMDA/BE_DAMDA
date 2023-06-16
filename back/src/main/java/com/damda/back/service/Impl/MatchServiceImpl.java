@@ -2,6 +2,7 @@ package com.damda.back.service.Impl;
 
 import com.damda.back.data.common.MatchResponseStatus;
 import com.damda.back.data.common.QuestionIdentify;
+import com.damda.back.data.request.MatchingSuccessToManagerDTO;
 import com.damda.back.data.response.MatchingAcceptGetDTO;
 import com.damda.back.data.response.MatchingListDTO;
 import com.damda.back.domain.Match;
@@ -14,6 +15,7 @@ import com.damda.back.exception.CommonException;
 import com.damda.back.exception.ErrorCode;
 import com.damda.back.repository.*;
 import com.damda.back.service.MatchService;
+import com.damda.back.utils.SolapiUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -32,6 +34,7 @@ public class MatchServiceImpl implements MatchService {
 	private final ManagerRepository managerRepository;
 	private final MatchRepository matchRepository;
 	private final ReservationFormRepository reservationFormRepository;
+	private final SolapiUtils solapiUtils;
 
 
 	@Override
@@ -144,9 +147,23 @@ public class MatchServiceImpl implements MatchService {
 			Match match = matchRepository.findById(matchId).orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_MATCH));
 			match.matchingOrder();
 		} //TODO: 해당 매치에서 예약 ID 가져와서 매칭 실패된 매니저와 매칭성공 매니저, 유저한테 알림톡 보내야 함
-		List<String> matchSuccessList = new ArrayList<>();
-		List<String> matchFailList = new ArrayList<>();
-		String matchUser ="";
+
+
+		// 매칭 성공한 매니저들에게 알림톡 보내기
+		List<Match> matches = matchRepository.matchList(reservationId);
+		if(matches.isEmpty()){
+			throw new CommonException(ErrorCode.NOT_FOUND_MATCH);
+		}
+		List<ReservationAnswer> answers =matches.get(0).getReservationForm().getReservationAnswerList();
+		Map<QuestionIdentify, String> answerMap
+				= answers.stream().collect(Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
+		List<String> managerPhoneNumbers = matches.stream()
+				.filter(match -> match.isMatching())
+				.map(match -> match.getManager().getPhoneNumber())
+				.collect(Collectors.toList());
+
+		MatchingSuccessToManagerDTO matchingSuccessToManagerDTO = new MatchingSuccessToManagerDTO(answerMap,managerPhoneNumbers);
+		solapiUtils.managerMatchingSuccess(matchingSuccessToManagerDTO);
 	}
 
 }

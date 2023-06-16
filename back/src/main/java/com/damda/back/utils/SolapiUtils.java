@@ -3,6 +3,7 @@ package com.damda.back.utils;
 
 import com.damda.back.data.request.CustomerTalkDTO;
 import com.damda.back.data.request.MatchingCompletedDTO;
+import com.damda.back.data.request.MatchingSuccessToManagerDTO;
 import com.damda.back.data.request.ResCompleteRequestDTO;
 import com.damda.back.exception.CommonException;
 import com.damda.back.exception.ErrorCode;
@@ -193,6 +194,52 @@ public class SolapiUtils {
 
         SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
 
+    }
+
+    public void managerMatchingSuccess(MatchingSuccessToManagerDTO dto){
+
+
+        ArrayList<Message> messageList = new ArrayList<>();
+
+
+        dto.getPhoneNumber().forEach(phoneNumber -> {
+            KakaoOption kakaoOption = new KakaoOption();
+            kakaoOption.setPfId(OfPartner);
+            // 등록하신 카카오 알림톡 템플릿의 templateId를 입력해주세요.
+            kakaoOption.setTemplateId("KA01TP230612051326414qMmEGl08iVx");
+
+            HashMap<String, String> variables = new HashMap<>();
+            variables.put("#{reservationDate}", dto.getReservationDate());
+            variables.put("#{reservationAddress}", dto.getReservationAddress());
+            variables.put("#{reservationHour}", dto.getReservationHour());
+
+            kakaoOption.setVariables(variables);
+
+            Message message = new Message();
+            // 발신번호 및 수신번호는 반드시 01012345678 형태로 입력되어야 합니다.
+
+            message.setFrom("01099636287");
+            message.setTo(phoneNumber);
+            message.setKakaoOptions(kakaoOption);
+
+            messageList.add(message);
+        });
+
+        try {
+            // send 메소드로 단일 Message 객체를 넣어도 동작합니다!
+            MultipleDetailMessageSentResponse response = this.messageService.send(messageList);
+
+            // 중복 수신번호를 허용하고 싶으실 경우 위 코드 대신 아래코드로 대체해 사용해보세요!
+            //MultipleDetailMessageSentResponse response = this.messageService.send(messageList, true);
+
+            System.out.println(response);
+
+        } catch (NurigoMessageNotReceivedException exception) {
+            System.out.println(exception.getFailedMessageList());
+            System.out.println(exception.getMessage());
+        } catch (Exception exception) {
+            System.out.println(exception.getMessage());
+        }
     }
 
 }

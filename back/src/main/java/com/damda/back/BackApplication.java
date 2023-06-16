@@ -10,6 +10,7 @@ import com.damda.back.domain.Question;
 import com.damda.back.domain.QuestionStatus;
 import com.damda.back.domain.area.Area;
 import com.damda.back.domain.manager.AreaManager;
+import com.damda.back.domain.manager.CertificateStatusEnum;
 import com.damda.back.domain.manager.Manager;
 import com.damda.back.domain.manager.ManagerStatusEnum;
 import com.damda.back.repository.*;
@@ -294,18 +295,21 @@ public class BackApplication {
 		Manager manager = managerRepository.save(Manager.builder()
 						.phoneNumber("01040783843")
 						.name("김재우")
+						.certificateStatus(CertificateStatusEnum.NONE)
 						.currManagerStatus(ManagerStatusEnum.ACTIVE)
 				.build());
 
 		Manager manager2 = managerRepository.save(Manager.builder()
 				.phoneNumber("01039041094")
 				.name("고예림")
+				.certificateStatus(CertificateStatusEnum.NONE)
 				.currManagerStatus(ManagerStatusEnum.ACTIVE)
 				.build());
 
 		Manager manager3 = managerRepository.save(Manager.builder()
 				.phoneNumber("01082535890")
 				.name("김형준")
+				.certificateStatus(CertificateStatusEnum.NONE)
 				.currManagerStatus(ManagerStatusEnum.ACTIVE)
 				.build());
 

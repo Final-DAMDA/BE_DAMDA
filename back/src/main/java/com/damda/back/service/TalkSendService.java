@@ -13,4 +13,5 @@ public interface TalkSendService {
 
 
     public void sendCustomenrCompleted(String toPhoneNumber,Long formId);
+    void sendManagerMatchingSuccess(Long reservationId);
 }

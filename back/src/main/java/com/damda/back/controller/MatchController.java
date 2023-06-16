@@ -4,6 +4,8 @@ import com.damda.back.data.common.CodeEnum;
 import com.damda.back.data.common.CommonResponse;
 import com.damda.back.data.common.MatchResponseStatus;
 import com.damda.back.data.response.MemberResponseDTO;
+import com.damda.back.domain.ReservationSubmitForm;
+import com.damda.back.repository.ReservationFormRepository;
 import com.damda.back.service.MatchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MatchController {
 	private final MatchService matchService;
+	private final ReservationFormRepository reservationFormRepository;
 
 	/**
 	 * @apiNote : 매칭 수락 폼 - 매니저한테 예약 수락/거절 GET정보 보내주기
@@ -78,7 +81,7 @@ public class MatchController {
 	 * @apiNote : Admin수락 (매칭 완료)
 	 */
 	@PostMapping("/api/v1/matching/order/{id}")
-	public ResponseEntity<CommonResponse<?>> matchingAccept(@PathVariable("id") Long reservationId,@RequestParam List<Long> matchIds){//reservationID 임
+	public ResponseEntity<CommonResponse<?>> matchingAccept(@PathVariable("id") Long reservationId, @RequestParam List<Long> matchIds){//reservationID 임
 		matchService.matchingOrder(reservationId,matchIds);
 		CommonResponse<?> commonResponse = CommonResponse
 				.builder()
@@ -87,6 +90,9 @@ public class MatchController {
 				.build();
 		return ResponseEntity.ok(commonResponse);
 	}
+
+
+
 
 
 }
