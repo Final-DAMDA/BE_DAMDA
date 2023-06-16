@@ -10,6 +10,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,18 +22,27 @@ import java.util.Map;
 @AllArgsConstructor
 @Builder
 public class FormModifyDTO {
+
+
+    @NotNull
     private QuestionIdentify questionIdentify;
 
+    @NotNull
     private QuestionType questionType;
 
+    @NotEmpty
     private String questionTitle;
 
+    @NotNull
     private Integer order;
 
+    @NotNull
     private boolean required;
 
+    @NotNull
     private Integer page;
 
+    @NotEmpty
     private String placeHolder;
 
     @Builder.Default

@@ -1,9 +1,13 @@
 package com.damda.back.config.advice;
 
 
+import com.damda.back.data.common.CodeEnum;
 import com.damda.back.data.common.CommonResponse;
 import com.damda.back.exception.CommonException;
+import org.apache.coyote.Response;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -17,5 +21,18 @@ public class GlobalRestAdvice {
 
             return ResponseEntity.status(e.getErrorCode().getHttpStatus())
                     .body(commonResponse);
+        }
+
+        @ExceptionHandler(MethodArgumentNotValidException.class)
+        public ResponseEntity<CommonResponse<?>> methodArgumentNotValidException(MethodArgumentNotValidException e){
+            CommonResponse<?> commonResponse =
+                    CommonResponse.builder()
+                            .data(e.getParameter() +"이(가) 이상한 값으로 들어왔습니다")
+                            .codeEnum(CodeEnum.BAD_REQUEST)
+                            .build();
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(commonResponse);
+
         }
 }

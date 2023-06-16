@@ -80,14 +80,14 @@ public class BackApplication {
 						.page(1)
 						.order(0)
 						.placeHolder("없음")
-						.questionIdentify(QuestionIdentify.TITILE)
+						.questionIdentify(QuestionIdentify.TITLE)
 						.questionType(QuestionType.SELECT)
 						.required(true)
 						.status(QuestionStatus.ACTIVATION)
 						.questionTitle("담다컴퍼니 입니다.")
 						.build()
 		);
-		questionRepository.save(
+		Question question1 = questionRepository.save(
 				Question.builder()
 						.page(1)
 						.order(1)
@@ -97,14 +97,22 @@ public class BackApplication {
 						.required(true)
 						.questionTitle("정리가 필요한 옷들이 몇 인 분량인가요?")
 						.status(QuestionStatus.ACTIVATION)
-						.categoryList(List.of(
-								Category.builder().questionCategory("1인").build(),
-								Category.builder().questionCategory("2인").build(),
-								Category.builder().questionCategory("3인").build(),
-								Category.builder().questionCategory("4인").build()))
+
 						.build()
 		);
-		questionRepository.save(
+
+		List<Category> categoryList = List.of(
+				Category.builder().questionCategory("1인").build(),
+				Category.builder().questionCategory("2인").build(),
+				Category.builder().questionCategory("3인").build(),
+				Category.builder().questionCategory("4인").build());
+
+		categoryList.forEach(question1::addCategory);
+
+		questionRepository.save(question1);
+
+
+		Question question2 = questionRepository.save(
 				Question.builder()
 						.page(1)
 						.order(2)
@@ -114,13 +122,21 @@ public class BackApplication {
 						.status(QuestionStatus.ACTIVATION)
 						.required(true)
 						.questionTitle("필요한 서비스 시간을 선택해주세요")
-						.categoryList(List.of(
-								Category.builder().questionCategory("4시간").build(),
-								Category.builder().questionCategory("5시간").build(),
-								Category.builder().questionCategory("6시간").build()
-						)).build()
+						.build()
 		);
-		questionRepository.save(
+
+		List<Category> categories = List.of(
+				Category.builder().questionCategory("4시간").build(),
+				Category.builder().questionCategory("5시간").build(),
+				Category.builder().questionCategory("6시간").build());
+
+		categories.forEach(question2::addCategory);
+
+		questionRepository.save(question2);
+
+
+
+		Question question3 = questionRepository.save(
 				Question.builder()
 						.page(1)
 						.order(3)
@@ -130,12 +146,17 @@ public class BackApplication {
 						.status(QuestionStatus.ACTIVATION)
 						.required(true)
 						.questionTitle("판매 대행 옵션을 선택해주세요.")
-						.categoryList(List.of(
-								Category.builder().questionCategory("O").build(),
-								Category.builder().questionCategory("X").build()
-						))
 						.build()
 		);
+
+		List<Category> categories1 = List.of(
+				Category.builder().questionCategory("O").build(),
+				Category.builder().questionCategory("X").build()
+		);
+
+		categories1.forEach(question3::addCategory);
+
+
 		questionRepository.save(
 				Question.builder()
 						.page(2)
@@ -245,7 +266,7 @@ public class BackApplication {
 						.required(false)
 						.build()
 		);
-		questionRepository.save(
+		Question question4 = questionRepository.save(
 				Question.builder()
 						.page(2)
 						.order(10)
@@ -254,17 +275,21 @@ public class BackApplication {
 						.questionType(QuestionType.STRING)
 						.status(QuestionStatus.ACTIVATION)
 						.questionTitle("열다 서비스를 알게 된 경로를 알려주세요.")
-						.categoryList(List.of(
-								Category.builder().questionCategory("인터넷 검색").build(),
-								Category.builder().questionCategory("프로모션").build(),
-								Category.builder().questionCategory("SNS 유료광고").build(),
-								Category.builder().questionCategory("열다 인스타그램 계정").build(),
-								Category.builder().questionCategory("지인추천").build(),
-								Category.builder().questionCategory("기타").build()
-						))
 						.required(true)
 						.build()
 		);
+
+		List<Category> categories2 = List.of(
+				Category.builder().questionCategory("인터넷 검색").build(),
+				Category.builder().questionCategory("프로모션").build(),
+				Category.builder().questionCategory("SNS 유료광고").build(),
+				Category.builder().questionCategory("열다 인스타그램 계정").build(),
+				Category.builder().questionCategory("지인추천").build(),
+				Category.builder().questionCategory("기타").build()
+		);
+
+		categories2.forEach(question4::addCategory);
+		questionRepository.save(question4);
 
 		Manager manager = managerRepository.save(Manager.builder()
 						.phoneNumber("01040783843")
@@ -272,6 +297,30 @@ public class BackApplication {
 						.currManagerStatus(ManagerStatusEnum.ACTIVE)
 				.build());
 
+		Manager manager2 = managerRepository.save(Manager.builder()
+				.phoneNumber("01039041094")
+				.name("고예림")
+				.currManagerStatus(ManagerStatusEnum.ACTIVE)
+				.build());
+
+		Manager manager3 = managerRepository.save(Manager.builder()
+				.phoneNumber("01082535890")
+				.name("김형준")
+				.currManagerStatus(ManagerStatusEnum.ACTIVE)
+				.build());
+
+
+		Area area1 = Area.builder()
+				.city("서울특별시")
+				.district("강남구")
+				.managerCount(1)
+				.build();
+
+		Area area2 = Area.builder()
+				.city("강북구")
+				.district("하남시")
+				.managerCount(1)
+				.build();
 
 		Area area = Area.builder()
 				.city("경기도")
@@ -279,16 +328,28 @@ public class BackApplication {
 				.managerCount(1)
 				.build();
 
+		areaRepository.save(area1);
+		areaRepository.save(area2);
 		areaRepository.save(area);
+
 		AreaManager.AreaManagerKey key = new AreaManager.AreaManagerKey(area,manager);
+		AreaManager.AreaManagerKey key2 = new AreaManager.AreaManagerKey(area1,manager2);
+		AreaManager.AreaManagerKey key3 = new AreaManager.AreaManagerKey(area2,manager3);
+
 
 		AreaManager areaManager = AreaManager.builder()
 				.areaManagerKey(key)
 				.build();
+		AreaManager areaManager2 = AreaManager.builder()
+				.areaManagerKey(key2)
+				.build();
+		AreaManager areaManager3 = AreaManager.builder()
+				.areaManagerKey(key3)
+				.build();
 
 		areaManagerRepository.save(areaManager);
-
-
+		areaManagerRepository.save(areaManager2);
+		areaManagerRepository.save(areaManager3);
 
 	}
 }

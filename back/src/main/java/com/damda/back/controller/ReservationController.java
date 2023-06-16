@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -126,7 +127,7 @@ public class ReservationController {
          * */
         @PutMapping("/api/v1/admin/form/{id}")
         public ResponseEntity<CommonResponse<?>> reservationFormModify(
-                @RequestBody FormModifyDTO dto,
+                @Valid @RequestBody FormModifyDTO dto,
                 @PathVariable Long id){
 
             reservationService.formModify(id,dto);
