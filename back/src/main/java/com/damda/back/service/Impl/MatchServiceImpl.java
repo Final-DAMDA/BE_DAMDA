@@ -65,8 +65,8 @@ public class MatchServiceImpl implements MatchService {
 				.orElseThrow(()->new CommonException(ErrorCode.FORM_NOT_FOUND));
 
 		String managerName = managerRepository.findManagerName(memberId);
-		if(managerName.isEmpty()){
-			throw new CommonException(ErrorCode.ACTIVITY_MANAGER_NOT_FOUND);
+		if(managerName==null){
+			throw new CommonException(ErrorCode.NOT_FOUND_LOGIN_MANAGER);
 		}
 
 		List<ReservationAnswer> answers =  reservation.getReservationAnswerList();
@@ -112,6 +112,9 @@ public class MatchServiceImpl implements MatchService {
 
 	}
 
+	/**
+	 * @apiNote: 매칭리스트(현황)
+	 */
 	@Override
 	@Transactional(readOnly = true)
 	public List<MatchingListDTO> matchingList(Long reservationId) {
@@ -132,5 +135,16 @@ public class MatchServiceImpl implements MatchService {
 		return matchingListDTOS;
 	}
 
+	@Override
+	@Transactional(isolation = Isolation.REPEATABLE_READ)
+	public void matchingOrder(List<Long> matchIds) {
+		if(matchIds.isEmpty()){
+			throw new CommonException(ErrorCode.NOT_FOUND_MATCH_ID);
+		}
+		for(Long matchId:matchIds){
+			Match match = matchRepository.findById(matchId).orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_MATCH));
+			match.matchingOrder();
+		}
+	}
 
 }

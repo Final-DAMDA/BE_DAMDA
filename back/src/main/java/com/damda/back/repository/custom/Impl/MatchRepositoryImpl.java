@@ -70,6 +70,20 @@ public class MatchRepositoryImpl implements MatchCustomRepository {
 
         return match1;
     }
+    @Override
+    public List<String> matchListFindManager(Long reservationId) {
+        QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
+        QMatch match = QMatch.match;
+        QManager manager = QManager.manager;
+
+        List<String> match1 = queryFactory
+                .selectDistinct(match.managerName)
+                .from(match)
+                .where(match.reservationForm.id.eq(reservationId).and(match.matching.eq(true)))
+                .fetch();
+
+        return match1;
+    }
 
 
 }

@@ -16,17 +16,12 @@ import java.util.List;
 @AllArgsConstructor
 public class ServiceCompleteInfoDTO {
 
-	private Long reservationId;
-	private String createdAt;
+	private Long reservationId; //
 	private String name;
 	private String phoneNumber;
 	private String address;
 	private Integer totalPrice;
-	private String estimate;
-	private Integer manageAmount;
 	private String reservationDate;
 	private List<String> managerNames;
-	private ReservationStatus reservationStatus;
-	private PayMentStatus payMentStatus;
 
 }

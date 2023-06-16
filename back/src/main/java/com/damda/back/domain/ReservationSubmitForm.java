@@ -62,8 +62,9 @@ public class ReservationSubmitForm extends BaseEntity{
         answer.changeForm(this);
         this.reservationAnswerList.add(answer);
     }
-    public void setStatus(ReservationStatus reservationStatus){
-        this.status = reservationStatus;
+    public void statusServiceComplete(){
+
+        this.status = ReservationStatus.SERVICE_COMPLETED;
     }
 
 
