@@ -25,8 +25,8 @@ public class MatchController {
 	 * @param reservationId
 	 * @return
 	 */
-	@GetMapping("/api/v1")
-	public ResponseEntity<CommonResponse<?>> matchingInfoGET(HttpServletRequest request, @RequestParam Long reservationId){//reservationID 임 PathVariable로 바꿔도 될
+	@GetMapping("/api/v1/matching/accept/{id}")
+	public ResponseEntity<CommonResponse<?>> matchingInfoGET(HttpServletRequest request, @PathVariable("id") Long reservationId){//reservationID 임 PathVariable로 바꿔도 될
 
 		Integer memberId =  Integer.parseInt(request.getAttribute("id").toString());
 
@@ -45,7 +45,7 @@ public class MatchController {
 	 * @param reservationId
 	 * @return
 	 */
-	@PostMapping("/api/v1/{id}") //status=YES OR NO
+	@PostMapping("/api/v1/matching/accept/{id}") //status=YES OR NO
 	public ResponseEntity<CommonResponse<?>> matchingAccept(HttpServletRequest request, @PathVariable("id") Long reservationId, @RequestParam String status){//reservationID 임
 
 		Integer memberId =  Integer.parseInt(request.getAttribute("id").toString());

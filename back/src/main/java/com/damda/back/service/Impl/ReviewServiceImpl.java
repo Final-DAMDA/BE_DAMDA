@@ -44,12 +44,14 @@ public class ReviewServiceImpl implements ReviewService {
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	@Override
 	public boolean uploadServiceComplete(Long reservationId, ServiceCompleteRequestDTO serviceCompleteRequestDTO){
-		Optional<ReservationSubmitForm> reservation = reservationFormRepository.findByreservationId(reservationId);
-		nullCheck(reservation);
-		ReservationSubmitForm reservationSubmitForm =reservation.get();
-		reservationSubmitForm.setStatus(ReservationStatus.SERVICE_COMPLETED); //서비스 완료
+		ReservationSubmitForm reservationSubmitForm = reservationFormRepository.findByreservationId(reservationId).orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_RESERIVATION));
+		if(reviewRepository.existReservation(reservationId)){
+			throw new CommonException(ErrorCode.SUBMITTED_SERVICE_COMPLETE);
+		}
+		reservationSubmitForm.statusServiceComplete(); //서비스 완료
 
 		Review serviceComplete = serviceCompleteRequestDTO.toEntity(reservationSubmitForm);
+
 		try{
 			reservationFormRepository.save(reservationSubmitForm);
 			reviewRepository.save(serviceComplete);
@@ -79,11 +81,12 @@ public class ReviewServiceImpl implements ReviewService {
 				= answers.stream().collect(Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
 		List<String> managerName= matchRepository.matchListFindManager(reservation.getId());
 
-		//TODO: 신청시간, 투입인원추가 해야함
 
 		ServiceCompleteResponseDTO completeResponseDTO =
 						ServiceCompleteResponseDTO.builder()
 						.serviceDate(answerMap.get(QuestionIdentify.SERVICEDATE))
+						.serviceUsageTime(answerMap.get(QuestionIdentify.SERVICEDURATION))
+						.managerCount(reservation.getServicePerson())
 						.serviceAddress(answerMap.get(QuestionIdentify.ADDRESS))
 						.reservationId(reservation.getId())
 						.managerNames(managerName)
@@ -105,17 +108,18 @@ public class ReviewServiceImpl implements ReviewService {
 			List<ReservationAnswer> answers = submitForm.getReservationAnswerList();
 			Map<QuestionIdentify, String> answerMap = answers.stream()
 					.collect(Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
+
+			List<String>managerNames = submitForm.getMatches().stream()
+					.filter(match -> match.isMatching()).map(Match::getManagerName).collect(Collectors.toList());
+
 			ServiceCompleteInfoDTO dto = new ServiceCompleteInfoDTO();
 			dto.setAddress(answerMap.get(QuestionIdentify.ADDRESS));
 			dto.setName(member.getUsername());
-			dto.setCreatedAt(submitForm.getCreatedAt().toString());
 			dto.setTotalPrice(submitForm.getTotalPrice());
-			dto.setEstimate(answerMap.get(QuestionIdentify.SERVICEDURATION));
 			dto.setPhoneNumber(answerMap.get(QuestionIdentify.APPLICANTCONACTINFO));
-			dto.setReservationStatus(submitForm.getStatus());
-			dto.setPayMentStatus(submitForm.getPayMentStatus());
 			dto.setReservationDate(answerMap.get(QuestionIdentify.SERVICEDATE));
 			dto.setReservationId(submitForm.getId());
+			dto.setManagerNames(managerNames);
 			return dto;
 		}).collect(Collectors.toList());
 

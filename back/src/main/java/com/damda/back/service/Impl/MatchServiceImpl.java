@@ -65,8 +65,8 @@ public class MatchServiceImpl implements MatchService {
 				.orElseThrow(()->new CommonException(ErrorCode.FORM_NOT_FOUND));
 
 		String managerName = managerRepository.findManagerName(memberId);
-		if(managerName.isEmpty()){
-			throw new CommonException(ErrorCode.ACTIVITY_MANAGER_NOT_FOUND);
+		if(managerName==null){
+			throw new CommonException(ErrorCode.NOT_FOUND_LOGIN_MANAGER);
 		}
 
 		List<ReservationAnswer> answers =  reservation.getReservationAnswerList();

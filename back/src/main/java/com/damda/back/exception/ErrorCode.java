@@ -21,6 +21,7 @@ public enum ErrorCode {
     KAKAO_LOGIN_FALIE(HttpStatus.INTERNAL_SERVER_ERROR,"카카오 로그인중 에러 - 인가코드 또는 액세스 토큰이 잘못됨"),
     NOT_FOUND_MEMBER(HttpStatus.BAD_REQUEST,"조회하려는 유저가 데이터 상에 존재하지 않습니다."),
     NOT_FOUND_MANAGER(HttpStatus.BAD_REQUEST, "없는 매니저에 대한 수정을 요청하였습니다"),
+    NOT_FOUND_LOGIN_MANAGER(HttpStatus.BAD_REQUEST, "로그인한 사용자가 활동중인 매니저가 아닙니다"),
     NOT_FOUND_QUESTION(HttpStatus.BAD_REQUEST,"없는 데이터를 조회했습니다."),
     NOT_FOUND_CATEGORY(HttpStatus.BAD_REQUEST,"없는 카테고리를 조회했습니다."),
     NOT_FOUND_QUESTION_MODIFIED(HttpStatus.BAD_REQUEST,"없는 데이터를 수정요청했습니다"),
