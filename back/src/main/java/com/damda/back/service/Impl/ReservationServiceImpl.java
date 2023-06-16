@@ -49,7 +49,7 @@ public class ReservationServiceImpl implements ReservationService {
             List<CategoryMapDTO> list = new ArrayList<>();
 
             if(question.getQuestionIdentify().equals(QuestionIdentify.ADDRESS)){
-                    //메서드 실행해서 DistrictEnum 리스트 가져온다.
+
             }
 
             ReservationResponseDTO dto =  ReservationResponseDTO.builder()
@@ -67,7 +67,6 @@ public class ReservationServiceImpl implements ReservationService {
                 CategoryMapDTO dtoData = CategoryMapDTO.builder()
                         .id(category.getId())
                         .category(category.getQuestionCategory())
-                        .price(category.getCategoryPrice())
                         .build();
 
                 list.add(dtoData);
@@ -103,7 +102,6 @@ public class ReservationServiceImpl implements ReservationService {
                 CategoryMapDTO dtoData = CategoryMapDTO.builder()
                         .id(category.getId())
                         .category(category.getQuestionCategory())
-                        .price(category.getCategoryPrice())
                         .build();
 
                 list.add(dtoData);
@@ -135,7 +133,6 @@ public class ReservationServiceImpl implements ReservationService {
 
             reservationFormRequestDTO.getCategory().forEach((category, price) -> {
                 Category categoryData = Category.builder()
-                        .categoryPrice(price)
                         .questionCategory(category)
                         .build();
 
@@ -153,7 +150,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     /**
      * @apiNote questionTitle, questionType,order,required,questionIUdentify 수정가능함
-     *
+     *      Category에 Price 빠지고 검증완료
      * */
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void formModify(Long id, FormModifyDTO dto){
@@ -183,7 +180,6 @@ public class ReservationServiceImpl implements ReservationService {
 
                 if(data != null){
                     category.changeCategory(data.getCategory());
-                    category.changeCategoryPrice(data.getPrice());
                 }
 
             }
@@ -191,7 +187,6 @@ public class ReservationServiceImpl implements ReservationService {
                 modifyDTO.forEach((aLong, categoryMapDTO) -> {
                     Category categoryPOJO = Category.builder()
                             .questionCategory(categoryMapDTO.getCategory())
-                            .categoryPrice(categoryMapDTO.getPrice())
                             .build();
 
                     question.addCategory(categoryPOJO);
@@ -264,12 +259,10 @@ public class ReservationServiceImpl implements ReservationService {
         if(optional.isPresent()){
             Question question = optional.get();
 
-            dto.getData().forEach((s, integer) -> {
+            dto.getData().forEach((string) -> {
                 Category category = Category.builder()
-                        .questionCategory(s)
-                        .categoryPrice(integer)
+                        .questionCategory(string)
                         .build();
-
 
                 log.info("MAP 카테고리 데이터 +> {}",dto);
                 question.addCategory(category);

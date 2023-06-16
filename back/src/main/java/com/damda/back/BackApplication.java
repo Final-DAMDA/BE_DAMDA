@@ -2,16 +2,17 @@ package com.damda.back;
 
 import com.damda.back.data.common.MemberRole;
 import com.damda.back.data.common.MemberStatus;
-import com.damda.back.domain.Member;
-import com.damda.back.repository.MemberRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.damda.back.data.common.QuestionIdentify;
 import com.damda.back.data.common.QuestionType;
 import com.damda.back.domain.Category;
+import com.damda.back.domain.Member;
 import com.damda.back.domain.Question;
 import com.damda.back.domain.QuestionStatus;
-import com.damda.back.repository.QuestionRepository;
+import com.damda.back.domain.area.Area;
+import com.damda.back.domain.manager.AreaManager;
+import com.damda.back.domain.manager.Manager;
+import com.damda.back.domain.manager.ManagerStatusEnum;
+import com.damda.back.repository.*;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -20,6 +21,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 @SpringBootApplication
@@ -28,215 +30,326 @@ public class BackApplication {
 	 @Profile("dev")
 	 @Bean
 	 CommandLineRunner initData(
-
-	 		QuestionRepository questionRepository,MemberRepository memberRepository,PasswordEncoder passwordEncoder
+	 		QuestionRepository questionRepository,
+			MemberRepository memberRepository,
+			PasswordEncoder passwordEncoder,
+			ManagerRepository managerRepository,
+			EntityManager entityManager,
+			AreaRepository areaRepository,
+			AreaManagerRepository areaManagerRepository
 	 ) {
-	 	return args -> {
-			memberRepository.save(Member.builder()
-					.gender("mail")
-					.address("어드민")
-					.profileImage("404.jpg")
-					.username("admin")
-					.status(MemberStatus.ACTIVATION)
-					.role(MemberRole.ADMIN)
-					.phoneNumber("01011111")
-					.password(passwordEncoder.encode("1234"))
-					.build());
-
-			 memberRepository.save(Member.builder()
-							 .gender("female")
-							 .address("경기도 시흥시")
-							 .profileImage("ㅁㅁㅁ")
-							 .username("고예림")
-							 .status(MemberStatus.ACTIVATION)
-							 .role(MemberRole.USER)
-							 .phoneNumber("01011111111")
-							 .password("111")
-							 .build());
-	 		questionRepository.save(
-	 				Question.builder()
-	 						.questionIdentify(QuestionIdentify.TITILE)
-	 						.questionTitle("옷장 정리 서비스 예약 - 대제목")
-	 						.order(0)
-	 						.status(QuestionStatus.ACTIVATION)
-	 						.questionType(QuestionType.TITLE)
-	 						.required(false)
-	 						.build()
-	 		);
-	 		Question questionTest = Question.builder()
-	 				.questionIdentify(QuestionIdentify.AFEWSERVINGS)
-	 				.questionTitle("정리가 필요한 옷들이 몇 인 분량인가요?")
-	 				.order(1)
-	 				.status(QuestionStatus.ACTIVATION)
-	 				.questionType(QuestionType.SELECT)
-	 				.required(true)
-	 				.build();
-
-	 		questionTest.addCategory(Category.builder()
-	 				.questionCategory("1 인분")
-	 				.categoryPrice(40000)
-	 				.build());
-
-	 		questionTest.addCategory(Category.builder()
-	 				.questionCategory("2 인분")
-	 				.categoryPrice(80000)
-	 				.build());
-	 		questionTest.addCategory(Category.builder()
-	 				.questionCategory("3 인분")
-	 				.categoryPrice(120000)
-	 				.build());
-	 		questionRepository.save(
-	 				questionTest
-	 		);
-
-	 		Question questionTest2 = Question.builder()
-	 				.questionIdentify(QuestionIdentify.SERVICEDURATION)
-	 				.questionTitle("필요한 서비스 시간을 선택해주세요")
-	 				.order(2)
-	 				.questionType(QuestionType.RADIO)
-	 				.status(QuestionStatus.ACTIVATION)
-	 				.required(true)
-	 				.build();
-
-	 		questionTest2.addCategory(Category.builder()
-	 				.questionCategory("3시간")
-	 				.categoryPrice(20000)
-	 				.build());
-
-	 		questionTest2.addCategory(Category.builder()
-	 				.questionCategory("4시간")
-	 				.categoryPrice(30000)
-	 				.build());
-
-	 		questionTest2.addCategory(Category.builder()
-	 				.questionCategory("5시간")
-	 				.categoryPrice(50000)
-	 				.build());
-
-
-	 		questionRepository.save(
-	 				questionTest2
-	 		);
-	 		questionRepository.save(
-	 				Question.builder()
-	 						.questionIdentify(QuestionIdentify.ADDRESS)
-	 						.questionTitle("서비스를 받으실 주소를 알려주세요")
-	 						.questionType(QuestionType.ADDRESS)
-	 						.order(3)
-	 						.status(QuestionStatus.ACTIVATION)
-	 						.required(true)
-	 						.build()
-	 		);
-	 		questionRepository.save(
-	 				Question.builder()
-	 						.questionIdentify(QuestionIdentify.SERVICEDATE)
-	 						.questionTitle("서비스를 희망하시는 날짜와 시작시간을 알려주세요")
-	 						.order(4)
-	 						.questionType(QuestionType.DATE)
-	 						.status(QuestionStatus.ACTIVATION)
-	 						.required(true)
-	 						.build()
-	 		);
-	 		questionRepository.save(
-	 				Question.builder()
-	 						.questionIdentify(QuestionIdentify.PARKINGAVAILABLE)
-	 						.questionTitle("서비스 장소에 주차가 가능한가요?")
-	 						.questionType(QuestionType.STRING)
-	 						.order(5)
-	 						.status(QuestionStatus.ACTIVATION)
-	 						.required(true)
-	 						.build()
-	 		);
-	 		questionRepository.save(
-	 				Question.builder()
-	 						.questionIdentify(QuestionIdentify.APPLICANTNAME)
-	 						.questionTitle("신청인의 이름을 알려주세요")
-	 						.order(6)
-	 						.questionType(QuestionType.STRING)
-	 						.status(QuestionStatus.ACTIVATION)
-	 						.required(true)
-	 						.build()
-	 		);
-	 		questionRepository.save(
-	 				Question.builder()
-	 						.questionIdentify(QuestionIdentify.APPLICANTCONACTINFO)
-	 						.questionTitle("신청인의 연락처를 알려주세요")
-	 						.order(7)
-	 						.questionType(QuestionType.STRING)
-	 						.status(QuestionStatus.ACTIVATION)
-	 						.required(true)
-	 						.build()
-	 		);
-
-	 		questionRepository.save(
-	 				Question.builder()
-	 						.questionIdentify(QuestionIdentify.OPTIONAL)
-	 						.questionTitle("열다 매니저가 출입하기 위해 피룡한 정보가 있다면 알려주세요")
-	 						.order(8)
-	 						.questionType(QuestionType.STRING)
-	 						.status(QuestionStatus.ACTIVATION)
-	 						.required(false)
-	 						.build()
-	 		);
-
-	 		questionRepository.save(
-	 				Question.builder()
-	 						.questionIdentify(QuestionIdentify.SERVICEDATE)
-	 						.questionTitle("추천인 코드 또는 프로모션 코드가 있다면 입력해주세요")
-	 						.order(9)
-	 						.questionType(QuestionType.STRING)
-	 						.status(QuestionStatus.ACTIVATION)
-	 						.required(false)
-	 						.build()
-	 		);
-	 		questionRepository.save(
-	 				Question.builder()
-	 						.questionIdentify(QuestionIdentify.OPTIONAL)
-	 						.questionTitle("매니저가 알아야 할 정보가 있다면 입력해주세요")
-	 						.order(10)
-	 						.questionType(QuestionType.STRING)
-	 						.status(QuestionStatus.ACTIVATION)
-	 						.required(false)
-	 						.build()
-	 		);
-	 		questionRepository.save(
-	 				Question.builder()
-	 						.questionIdentify(QuestionIdentify.OPTIONAL)
-	 						.questionTitle("요청 또는 문의사항이 있다면 자유롭게 입력해주세요")
-	 						.order(11)
-	 						.questionType(QuestionType.STRING)
-	 						.status(QuestionStatus.ACTIVATION)
-	 						.required(false)
-	 						.build()
-	 		);
-	 		questionRepository.save(
-	 				Question.builder()
-	 						.questionIdentify(QuestionIdentify.LEARNEDROUTE)
-	 						.questionTitle("열다 서비스를 알게 된 경로를 알려주세요")
-	 						.order(12)
-	 						.questionType(QuestionType.STRING)
-	 						.status(QuestionStatus.ACTIVATION)
-	 						.required(true)
-	 						.build()
-	 		);
-
-	 		questionRepository.save(
-	 				Question.builder() //선택시 응답 true 같은 값보내면됨
-	 						.questionIdentify(QuestionIdentify.OPTIONAL)
-	 						.questionTitle("필수 안내사항")
-	 						.order(12)
-	 						.questionType(QuestionType.SELECT)
-	 						.status(QuestionStatus.ACTIVATION)
-	 						.required(true)
-	 						.build()
-	 		);
-
-	 	};
-
+	 	return args -> insertQuery(questionRepository,
+				memberRepository,
+				passwordEncoder,
+				managerRepository,
+				entityManager,
+				areaRepository,
+				areaManagerRepository);
 	 }
 
 	public static void main(String[] args) {
 		SpringApplication.run(BackApplication.class, args);
 	}
-	
+
+
+
+	public void insertQuery(QuestionRepository questionRepository,
+							MemberRepository memberRepository,
+							PasswordEncoder passwordEncoder,
+							ManagerRepository managerRepository,
+							EntityManager em,
+							AreaRepository areaRepository,
+							AreaManagerRepository areaManagerRepository){
+
+
+		 memberRepository.save(Member.builder()
+						 .username("admin")
+						 .password(passwordEncoder.encode("1234"))
+						 .phoneNumber("01012341234")
+						 .status(MemberStatus.ACTIVATION)
+						 .role(MemberRole.ADMIN)
+						 .profileImage("404.jpg")
+				 .build());
+
+
+		 //--------------Question Insert
+
+
+		questionRepository.save(
+				Question.builder()
+						.page(1)
+						.order(0)
+						.placeHolder("없음")
+						.questionIdentify(QuestionIdentify.TITLE)
+						.questionType(QuestionType.SELECT)
+						.required(true)
+						.status(QuestionStatus.ACTIVATION)
+						.questionTitle("담다컴퍼니 입니다.")
+						.build()
+		);
+		Question question1 = questionRepository.save(
+				Question.builder()
+						.page(1)
+						.order(1)
+						.placeHolder("없음")
+						.questionIdentify(QuestionIdentify.AFEWSERVINGS)
+						.questionType(QuestionType.SELECT)
+						.required(true)
+						.questionTitle("정리가 필요한 옷들이 몇 인 분량인가요?")
+						.status(QuestionStatus.ACTIVATION)
+
+						.build()
+		);
+
+		List<Category> categoryList = List.of(
+				Category.builder().questionCategory("1인").build(),
+				Category.builder().questionCategory("2인").build(),
+				Category.builder().questionCategory("3인").build(),
+				Category.builder().questionCategory("4인").build());
+
+		categoryList.forEach(question1::addCategory);
+
+		questionRepository.save(question1);
+
+
+		Question question2 = questionRepository.save(
+				Question.builder()
+						.page(1)
+						.order(2)
+						.placeHolder("없음")
+						.questionIdentify(QuestionIdentify.SERVICEDURATION)
+						.questionType(QuestionType.RADIO)
+						.status(QuestionStatus.ACTIVATION)
+						.required(true)
+						.questionTitle("필요한 서비스 시간을 선택해주세요")
+						.build()
+		);
+
+		List<Category> categories = List.of(
+				Category.builder().questionCategory("4시간").build(),
+				Category.builder().questionCategory("5시간").build(),
+				Category.builder().questionCategory("6시간").build());
+
+		categories.forEach(question2::addCategory);
+
+		questionRepository.save(question2);
+
+
+
+		Question question3 = questionRepository.save(
+				Question.builder()
+						.page(1)
+						.order(3)
+						.placeHolder("없음")
+						.questionIdentify(QuestionIdentify.SALEAGENT)
+						.questionType(QuestionType.SELECT)
+						.status(QuestionStatus.ACTIVATION)
+						.required(true)
+						.questionTitle("판매 대행 옵션을 선택해주세요.")
+						.build()
+		);
+
+		List<Category> categories1 = List.of(
+				Category.builder().questionCategory("O").build(),
+				Category.builder().questionCategory("X").build()
+		);
+
+		categories1.forEach(question3::addCategory);
+
+
+		questionRepository.save(
+				Question.builder()
+						.page(2)
+						.order(1)
+						.placeHolder("서울 마포구 백범로31 길 21 서울창업허브")
+						.questionIdentify(QuestionIdentify.ADDRESS)
+						.questionType(QuestionType.STRING)
+						.status(QuestionStatus.ACTIVATION)
+						.required(true)
+						.questionTitle("서비스 받으실 주소를 알려주세요")
+						.build()
+		);
+		questionRepository.save(
+				Question.builder()
+						.page(2)
+						.order(2)
+						.placeHolder("없음")
+						.questionIdentify(QuestionIdentify.SERVICEDATE)
+						.questionType(QuestionType.DATE)
+						.status(QuestionStatus.ACTIVATION)
+						.required(true)
+						.questionTitle("서비스를 희망하시는 날짜와 시작 시간을 알려주세요.")
+						.build()
+		);
+		questionRepository.save(
+				Question.builder()
+						.page(2)
+						.order(3)
+						.placeHolder("차량 두 대까지 3시간 주차 가능")
+						.questionIdentify(QuestionIdentify.PARKINGAVAILABLE)
+						.questionType(QuestionType.STRING)
+						.status(QuestionStatus.ACTIVATION)
+						.required(true)
+						.questionTitle("서비스 장소에 주차가 가능한가요?")
+						.build()
+		);
+		questionRepository.save(
+				Question.builder()
+						.page(2)
+						.order(4)
+						.placeHolder("홍길동")
+						.questionIdentify(QuestionIdentify.APPLICANTNAME)
+						.questionType(QuestionType.STRING)
+						.status(QuestionStatus.ACTIVATION)
+						.required(true)
+						.questionTitle("신청인의 연락처를 알려주세요")
+						.build()
+		);
+		questionRepository.save(
+				Question.builder()
+						.page(2)
+						.order(5)
+						.placeHolder("01012341234")
+						.questionIdentify(QuestionIdentify.APPLICANTCONACTINFO)
+						.questionType(QuestionType.STRING)
+						.status(QuestionStatus.ACTIVATION)
+						.required(true)
+						.questionTitle("신청인의 연락처를 알려주세요.")
+						.build()
+		);
+		questionRepository.save(
+				Question.builder()
+						.page(2)
+						.order(6)
+						.placeHolder("공용 현관 비밀번호 0000")
+						.questionIdentify(QuestionIdentify.RESERVATIONENTER)
+						.questionType(QuestionType.STRING)
+						.status(QuestionStatus.ACTIVATION)
+						.required(false)
+						.questionTitle("열다 매니저가 출입하기 위해 필요한 정보가 있다면 알려주세요.")
+						.build()
+		);
+		questionRepository.save(
+				Question.builder()
+						.page(2)
+						.order(7)
+						.placeHolder("영문과 숫자로 구성되어 있는 코드 입력")
+						.questionIdentify(QuestionIdentify.SALECODE)
+						.questionType(QuestionType.STRING)
+						.status(QuestionStatus.ACTIVATION)
+						.questionTitle(" 추천인 코드 또는 프로모션 코드가 있다면 입력해주세요.")
+						.required(false)
+						.build()
+		);
+
+		questionRepository.save(
+				Question.builder()
+						.page(2)
+						.order(8)
+						.placeHolder("고양이랑 강아지가 있어요.")
+						.questionIdentify(QuestionIdentify.RESERVATIONOTE)
+						.questionType(QuestionType.STRING)
+						.status(QuestionStatus.ACTIVATION)
+						.questionTitle(" 매니저가 알아야 할 정보가 있다면 알려주세요.")
+						.required(false)
+						.build()
+		);
+		questionRepository.save(
+				Question.builder()
+						.page(2)
+						.order(9)
+						.placeHolder("바지걸이가 많이 필요할 것 같아요")
+						.questionIdentify(QuestionIdentify.RESERVATIONREQUEST)
+						.questionType(QuestionType.STRING)
+						.status(QuestionStatus.ACTIVATION)
+						.questionTitle(" 매니저가 알아야 할 정보가 있다면 알려주세요.")
+						.required(false)
+						.build()
+		);
+		Question question4 = questionRepository.save(
+				Question.builder()
+						.page(2)
+						.order(10)
+						.placeHolder("없음")
+						.questionIdentify(QuestionIdentify.LEARNEDROUTE)
+						.questionType(QuestionType.STRING)
+						.status(QuestionStatus.ACTIVATION)
+						.questionTitle("열다 서비스를 알게 된 경로를 알려주세요.")
+						.required(true)
+						.build()
+		);
+
+		List<Category> categories2 = List.of(
+				Category.builder().questionCategory("인터넷 검색").build(),
+				Category.builder().questionCategory("프로모션").build(),
+				Category.builder().questionCategory("SNS 유료광고").build(),
+				Category.builder().questionCategory("열다 인스타그램 계정").build(),
+				Category.builder().questionCategory("지인추천").build(),
+				Category.builder().questionCategory("기타").build()
+		);
+
+		categories2.forEach(question4::addCategory);
+		questionRepository.save(question4);
+
+		Manager manager = managerRepository.save(Manager.builder()
+						.phoneNumber("01040783843")
+						.name("김재우")
+						.currManagerStatus(ManagerStatusEnum.ACTIVE)
+				.build());
+
+		Manager manager2 = managerRepository.save(Manager.builder()
+				.phoneNumber("01039041094")
+				.name("고예림")
+				.currManagerStatus(ManagerStatusEnum.ACTIVE)
+				.build());
+
+		Manager manager3 = managerRepository.save(Manager.builder()
+				.phoneNumber("01082535890")
+				.name("김형준")
+				.currManagerStatus(ManagerStatusEnum.ACTIVE)
+				.build());
+
+
+		Area area1 = Area.builder()
+				.city("서울특별시")
+				.district("강남구")
+				.managerCount(1)
+				.build();
+
+		Area area2 = Area.builder()
+				.city("서울특별시")
+				.district("강북구")
+				.managerCount(1)
+				.build();
+
+		Area area = Area.builder()
+				.city("경기도")
+				.district("하남시")
+				.managerCount(1)
+				.build();
+
+		areaRepository.save(area1);
+		areaRepository.save(area2);
+		areaRepository.save(area);
+
+		AreaManager.AreaManagerKey key = new AreaManager.AreaManagerKey(area,manager);
+		AreaManager.AreaManagerKey key2 = new AreaManager.AreaManagerKey(area1,manager2);
+		AreaManager.AreaManagerKey key3 = new AreaManager.AreaManagerKey(area2,manager3);
+
+
+		AreaManager areaManager = AreaManager.builder()
+				.areaManagerKey(key)
+				.build();
+		AreaManager areaManager2 = AreaManager.builder()
+				.areaManagerKey(key2)
+				.build();
+		AreaManager areaManager3 = AreaManager.builder()
+				.areaManagerKey(key3)
+				.build();
+
+		areaManagerRepository.save(areaManager);
+		areaManagerRepository.save(areaManager2);
+		areaManagerRepository.save(areaManager3);
+
+	}
 }

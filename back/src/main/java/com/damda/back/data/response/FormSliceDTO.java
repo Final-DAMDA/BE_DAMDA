@@ -57,6 +57,9 @@ public class FormSliceDTO {
 
     private PayMentStatus payMentStatus;
 
+    public void setId(Long id){
+        this.id = id;
+    }
 
     public void setCreatedAt(String entitiyCreatedAt) {
 

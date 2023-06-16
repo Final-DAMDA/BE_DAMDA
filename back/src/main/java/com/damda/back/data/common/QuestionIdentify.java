@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum QuestionIdentify {
 
-    TITILE("대제목"),
+    TITLE("대제목"),
     AFEWSERVINGS("몇인분"),
     SERVICEDURATION("서비스 사용시간"),
     ADDRESS("서비스 주소"),
@@ -20,6 +20,7 @@ public enum QuestionIdentify {
     RESERVATIONOTE("알아야 할 사항"),
     RESERVATIONREQUEST("요청사항"),
     SALEAGENT("판매대행"),
+    SALECODE("할인코드"),
 
     OPTIONAL("추가적인 자료");
 

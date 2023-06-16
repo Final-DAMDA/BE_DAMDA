@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -27,7 +28,7 @@ public class ReservationController {
 
 
         /**
-         * @apiNote 서비스 가능지역 Map으로 리턴함
+         * @apiNote 서비스 가능지역 Map으로 리턴함 -> Area 테이블에 managerCount가 0이 아닌거 다 가져옴
          *
          * */
         @GetMapping("/api/v1/activity/locations")
@@ -84,6 +85,8 @@ public class ReservationController {
 
     /**
      * @apiNote 어드민이 예약폼 데이터를 저장한다.
+     *
+     * @deprecated 기획에서 빠짐
      * */
         @PostMapping("/api/v1/admin/form/save")
         public ResponseEntity<CommonResponse<?>> reservationFormSave(
@@ -124,7 +127,7 @@ public class ReservationController {
          * */
         @PutMapping("/api/v1/admin/form/{id}")
         public ResponseEntity<CommonResponse<?>> reservationFormModify(
-                @RequestBody FormModifyDTO dto,
+                @Valid @RequestBody FormModifyDTO dto,
                 @PathVariable Long id){
 
             reservationService.formModify(id,dto);
