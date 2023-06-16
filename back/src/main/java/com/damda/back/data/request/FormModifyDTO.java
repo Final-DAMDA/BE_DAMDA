@@ -24,10 +24,9 @@ import java.util.Map;
 public class FormModifyDTO {
 
 
-    @NotNull
     private QuestionIdentify questionIdentify;
 
-    @NotNull
+
     private QuestionType questionType;
 
     @NotEmpty

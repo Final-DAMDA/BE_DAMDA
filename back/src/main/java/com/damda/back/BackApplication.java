@@ -317,8 +317,8 @@ public class BackApplication {
 				.build();
 
 		Area area2 = Area.builder()
-				.city("강북구")
-				.district("하남시")
+				.city("서울특별시")
+				.district("강북구")
 				.managerCount(1)
 				.build();
 
