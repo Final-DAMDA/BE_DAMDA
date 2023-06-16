@@ -186,7 +186,7 @@ public class ReservationFormRepositoryImpl implements ReservationFormCustomRepos
         public Optional<ReservationSubmitForm> findByreservationId(Long reservationId){
                 QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
                 QReservationAnswer answer = QReservationAnswer.reservationAnswer;
-
+                QMatch match = QMatch.match;
                 ReservationSubmitForm reservationSubmitForm =
                         queryFactory.selectDistinct(submitForm)
                                 .from(submitForm)

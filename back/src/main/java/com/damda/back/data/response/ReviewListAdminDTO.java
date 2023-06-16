@@ -17,4 +17,5 @@ public class ReviewListAdminDTO {
 	private String content;
 	private String createAt;
 	private boolean best;
+
 }

@@ -15,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class MatchingListDTO {
 	private Long matchId;
+	private Long managerId;
 	private String matchingResponse;
 	private String updateAt;
 	private String name;
@@ -26,6 +27,7 @@ public class MatchingListDTO {
 
 	public MatchingListDTO(Match match){
 		this.matchId = match.getId();
+		this.managerId=match.getManagerId();
 		this.matchingResponse = match.getMatchStatus().name();
 		this.updateAt = match.getUpdatedAt().toString();
 		this.name = match.getManagerName();

@@ -10,6 +10,7 @@ import com.damda.back.domain.*;
 import com.damda.back.exception.CommonException;
 import com.damda.back.exception.ErrorCode;
 import com.damda.back.repository.ImageRepository;
+import com.damda.back.repository.MatchRepository;
 import com.damda.back.repository.ReservationFormRepository;
 import com.damda.back.repository.ReviewRepository;
 import com.damda.back.service.ReviewService;
@@ -34,6 +35,7 @@ public class ReviewServiceImpl implements ReviewService {
 	private final S3Service s3Service;
 	private final ReservationFormRepository reservationFormRepository;
 	private final ReviewRepository reviewRepository;
+	private final MatchRepository matchRepository;
 
 
 	/**
@@ -42,12 +44,14 @@ public class ReviewServiceImpl implements ReviewService {
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	@Override
 	public boolean uploadServiceComplete(Long reservationId, ServiceCompleteRequestDTO serviceCompleteRequestDTO){
-		Optional<ReservationSubmitForm> reservation = reservationFormRepository.findByreservationId(reservationId);
-		nullCheck(reservation);
-		ReservationSubmitForm reservationSubmitForm =reservation.get();
-		reservationSubmitForm.setStatus(ReservationStatus.SERVICE_COMPLETED); //서비스 완료
+		ReservationSubmitForm reservationSubmitForm = reservationFormRepository.findByreservationId(reservationId).orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_RESERIVATION));
+		if(reviewRepository.existReservation(reservationId)){
+			throw new CommonException(ErrorCode.SUBMITTED_SERVICE_COMPLETE);
+		}
+		reservationSubmitForm.statusServiceComplete(); //서비스 완료
 
 		Review serviceComplete = serviceCompleteRequestDTO.toEntity(reservationSubmitForm);
+
 		try{
 			reservationFormRepository.save(reservationSubmitForm);
 			reviewRepository.save(serviceComplete);
@@ -67,21 +71,26 @@ public class ReviewServiceImpl implements ReviewService {
 	@Override
 	@Transactional(readOnly = true)
 	public ServiceCompleteResponseDTO checkServiceComplete(Long reservationId){
-		Optional<ReservationSubmitForm> reservation = reservationFormRepository.findByreservationId(reservationId);
-		nullCheck(reservation);
-
+		ReservationSubmitForm reservation = reservationFormRepository.findByreservationId(reservationId).orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_RESERIVATION));
 		if(reviewRepository.existReservation(reservationId)){
 			throw new CommonException(ErrorCode.SUBMITTED_SERVICE_COMPLETE);
 		}
-		List<ReservationAnswer> answers =  reservation.get().getReservationAnswerList();
+
+		List<ReservationAnswer> answers =  reservation.getReservationAnswerList();
 		Map<QuestionIdentify, String> answerMap
 				= answers.stream().collect(Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
+		List<String> managerName= matchRepository.matchListFindManager(reservation.getId());
+
 
 		ServiceCompleteResponseDTO completeResponseDTO =
-				ServiceCompleteResponseDTO.builder()
-				.serviceDate(answerMap.get(QuestionIdentify.SERVICEDATE))
-				.serviceAddress(answerMap.get(QuestionIdentify.ADDRESS))
-				.build();
+						ServiceCompleteResponseDTO.builder()
+						.serviceDate(answerMap.get(QuestionIdentify.SERVICEDATE))
+						.serviceUsageTime(answerMap.get(QuestionIdentify.SERVICEDURATION))
+						.managerCount(reservation.getServicePerson())
+						.serviceAddress(answerMap.get(QuestionIdentify.ADDRESS))
+						.reservationId(reservation.getId())
+						.managerNames(managerName)
+						.build();
 
 		return completeResponseDTO;
 	}
@@ -99,17 +108,18 @@ public class ReviewServiceImpl implements ReviewService {
 			List<ReservationAnswer> answers = submitForm.getReservationAnswerList();
 			Map<QuestionIdentify, String> answerMap = answers.stream()
 					.collect(Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
+
+			List<String>managerNames = submitForm.getMatches().stream()
+					.filter(match -> match.isMatching()).map(Match::getManagerName).collect(Collectors.toList());
+
 			ServiceCompleteInfoDTO dto = new ServiceCompleteInfoDTO();
 			dto.setAddress(answerMap.get(QuestionIdentify.ADDRESS));
 			dto.setName(member.getUsername());
-			dto.setCreatedAt(submitForm.getCreatedAt().toString());
 			dto.setTotalPrice(submitForm.getTotalPrice());
-			dto.setEstimate(answerMap.get(QuestionIdentify.SERVICEDURATION));
 			dto.setPhoneNumber(answerMap.get(QuestionIdentify.APPLICANTCONACTINFO));
-			dto.setReservationStatus(submitForm.getStatus());
-			dto.setPayMentStatus(submitForm.getPayMentStatus());
 			dto.setReservationDate(answerMap.get(QuestionIdentify.SERVICEDATE));
 			dto.setReservationId(submitForm.getId());
+			dto.setManagerNames(managerNames);
 			return dto;
 		}).collect(Collectors.toList());
 
