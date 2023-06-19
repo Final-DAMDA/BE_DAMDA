@@ -76,6 +76,9 @@ public class ManagerController {
         
     }
 
+    /**
+     * API: 매니저 정보 변경(활동지역 외)
+     */
     @PostMapping("/api/v1/admin/manager/{id}/info")
     public ResponseEntity<CommonResponse<?>> managerUpdate(@PathVariable("id") Long managerId, @RequestBody ManagerUpdateRequestDTO managerUpdateRequestDTO) {
 

@@ -40,6 +40,7 @@ public class ManagerApplicationDTO {
                 .name(name)
                 .phoneNumber(phone)
                 .address(address)
+                .level(1)
                 .certificateStatusEtc(certificateStatusEtc)
                 .certificateStatus(CertificateStatusEnum.valueOf(certificateStatus))
                 .vehicle(vehicle)
