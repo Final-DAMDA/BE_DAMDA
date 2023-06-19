@@ -72,11 +72,11 @@ public class ManagerServiceImpl implements ManagerService {
         }
         return true;
     }
-    
+
     @Override
     @Transactional(readOnly = true)
     public ManagerResponseDTO managerResponseDTO(Long managerId) {
-        
+
         Manager manager = managerRepository.findById(managerId).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_MANAGER));
 
         ManagerResponseDTO dto = ManagerResponseDTO

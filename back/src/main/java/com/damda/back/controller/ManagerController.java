@@ -39,7 +39,7 @@ public class ManagerController {
                 .status(commonResponse.getStatus())
                 .body(commonResponse);
     }
-    
+
     /**
      * API: 매니저 가져오기(상태별)
      */
@@ -73,7 +73,7 @@ public class ManagerController {
         return ResponseEntity
                 .status(commonResponse.getStatus())
                 .body(commonResponse);
-        
+
     }
 
     /**
@@ -93,6 +93,9 @@ public class ManagerController {
                 .body(commonResponse);
     }
 
+    /**
+     * API: 매니저 활동지역 변경
+     */
     @PostMapping("/api/v1/admin/manager/{id}/region")
     public ResponseEntity<CommonResponse<?>> managerRegionUpdate(@PathVariable("id") Long managerId, @RequestBody ManagerRegionUpdateRequestDTO managerRegionUpdateRequestDTO) {
 

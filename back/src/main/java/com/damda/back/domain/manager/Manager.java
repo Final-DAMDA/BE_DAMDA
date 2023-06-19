@@ -7,6 +7,7 @@ import com.damda.back.domain.Match;
 import com.damda.back.domain.Member;
 import com.damda.back.domain.area.DistrictEnum;
 import lombok.*;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,9 +30,9 @@ public class Manager extends BaseEntity {
     private Member member;
 
     private String name;
-    
+
     private String phoneNumber;
-    
+
     private String address;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -53,20 +54,20 @@ public class Manager extends BaseEntity {
     private String fieldExperience;
 
     private Boolean mainJobStatus;
-    
+
     private String mainJobStatusEtc;
 
     private String memo;
-    
+
     private ManagerStatusEnum prevManagerStatus;
 
     private ManagerStatusEnum currManagerStatus;
 
     @OneToMany(mappedBy = "manager", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Match> matches=new ArrayList<>();
+    private List<Match> matches = new ArrayList<>();
 
-    public void addActivityDay(ActivityDay activityDay){
-        this.activityDay=activityDay;
+    public void addActivityDay(ActivityDay activityDay) {
+        this.activityDay = activityDay;
     }
 
     public void updateManager(ManagerUpdateRequestDTO dto) {
@@ -78,11 +79,11 @@ public class Manager extends BaseEntity {
         this.vehicle = dto.getVehicle();
         this.prevManagerStatus = this.currManagerStatus;
         this.currManagerStatus = ManagerStatusEnum.valueOf(dto.getManagerStatus());
-        this.memo = dto.getMemo();       
+        this.memo = dto.getMemo();
     }
 
 
-    public void removeAll(){
+    public void removeAll() {
         this.areaManagers.clear();
     }
 
