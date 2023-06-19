@@ -39,12 +39,7 @@ public class ManagerController {
                 .status(commonResponse.getStatus())
                 .body(commonResponse);
     }
-
-    /**
-     * API: 매니저 지원 폼 가져오기
-     */
-
-
+    
     /**
      * API: 매니저 가져오기(상태별)
      */
@@ -61,6 +56,24 @@ public class ManagerController {
                 .status(commonResponse.getStatus())
                 .body(commonResponse);
 
+    }
+
+    /**
+     * API: 매니저 지원 폼 가져오기
+     */
+    @GetMapping("/api/v1/admin/manager/{id}")
+    public ResponseEntity<CommonResponse<?>> managerApplicationForm(@PathVariable("id") Long managerId) {
+
+        CommonResponse<Object> commonResponse = CommonResponse
+                .builder()
+                .codeEnum(CodeEnum.SUCCESS)
+                .data(managerService.managerResponseDTO(managerId))
+                .build();
+
+        return ResponseEntity
+                .status(commonResponse.getStatus())
+                .body(commonResponse);
+        
     }
 
     @PostMapping("/api/v1/admin/manager/{id}/info")

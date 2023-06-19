@@ -7,12 +7,16 @@ import com.damda.back.data.response.ManagerRegionUpdateResponseDTO;
 import com.damda.back.data.response.ManagerResponseDTO;
 import com.damda.back.data.response.ManagerUpdateResponseDTO;
 import com.damda.back.domain.manager.ManagerStatusEnum;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 public interface ManagerService {
     
     boolean managerCreate(ManagerApplicationDTO dto, Integer memberId);
+
+    @Transactional(readOnly = true)
+    ManagerResponseDTO managerResponseDTO(Long managerId);
 
     List<ManagerResponseDTO> managerResponseDTOList(ManagerStatusEnum managerStatusEnum);
     

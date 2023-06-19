@@ -3,7 +3,6 @@ package com.damda.back.service.Impl;
 import com.damda.back.data.request.ManagerApplicationDTO;
 import com.damda.back.data.request.ManagerRegionUpdateRequestDTO;
 import com.damda.back.data.request.ManagerUpdateRequestDTO;
-import com.damda.back.data.response.ManagerRegionUpdateResponseDTO;
 import com.damda.back.data.response.ManagerResponseDTO;
 import com.damda.back.data.response.ManagerUpdateResponseDTO;
 import com.damda.back.domain.Member;
@@ -73,6 +72,31 @@ public class ManagerServiceImpl implements ManagerService {
             }
         }
         return true;
+    }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public ManagerResponseDTO managerResponseDTO(Long managerId) {
+        
+        Manager manager = managerRepository.findById(managerId).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_MANAGER));
+
+        ManagerResponseDTO dto = ManagerResponseDTO
+                .builder()
+                .id(manager.getId())
+                .managerName(manager.getName())
+                .managerPhoneNumber(manager.getPhoneNumber())
+                .address(manager.getMember().getAddress())
+                .level(manager.getLevel())
+                .certificateStatus(manager.getCertificateStatus().toString())
+                .certificateStatusEtc(manager.getCertificateStatusEtc())
+                .vehicle(manager.getVehicle())
+                .prevManagerStatus(manager.getPrevManagerStatus().toString())
+                .currManagerStatus(manager.getCurrManagerStatus().toString())
+                .build();
+
+        List<AreaManager> managers = manager.getAreaManagers();
+
+        return dto;
     }
 
     @Override
