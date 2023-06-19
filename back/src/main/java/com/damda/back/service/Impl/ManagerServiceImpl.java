@@ -3,9 +3,7 @@ package com.damda.back.service.Impl;
 import com.damda.back.data.request.ManagerApplicationDTO;
 import com.damda.back.data.request.ManagerRegionUpdateRequestDTO;
 import com.damda.back.data.request.ManagerUpdateRequestDTO;
-import com.damda.back.data.response.ManagerRegionUpdateResponseDTO;
 import com.damda.back.data.response.ManagerResponseDTO;
-import com.damda.back.data.response.ManagerUpdateResponseDTO;
 import com.damda.back.domain.Member;
 import com.damda.back.domain.area.Area;
 import com.damda.back.domain.manager.ActivityDay;
@@ -77,6 +75,31 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     @Transactional(readOnly = true)
+    public ManagerResponseDTO managerResponseDTO(Long managerId) {
+
+        Manager manager = managerRepository.findById(managerId).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_MANAGER));
+
+        ManagerResponseDTO dto = ManagerResponseDTO
+                .builder()
+                .id(manager.getId())
+                .managerName(manager.getName())
+                .managerPhoneNumber(manager.getPhoneNumber())
+                .address(manager.getMember().getAddress())
+                .level(manager.getLevel())
+                .certificateStatus(manager.getCertificateStatus().toString())
+                .certificateStatusEtc(manager.getCertificateStatusEtc())
+                .vehicle(manager.getVehicle())
+                .prevManagerStatus(manager.getPrevManagerStatus().toString())
+                .currManagerStatus(manager.getCurrManagerStatus().toString())
+                .build();
+
+        List<AreaManager> managers = manager.getAreaManagers();
+
+        return dto;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<ManagerResponseDTO> managerResponseDTOList(ManagerStatusEnum managerStatusEnum) {
 
         List<ManagerResponseDTO> managerResponseDTOList = new ArrayList<>();
@@ -109,15 +132,13 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public ManagerUpdateResponseDTO managerUpdate(ManagerUpdateRequestDTO dto, Long managerId) {
+    public boolean managerUpdate(ManagerUpdateRequestDTO dto, Long managerId) {
 
         Manager manager = managerRepository.findById(managerId).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_MANAGER));
 
         manager.updateManager(dto);
 
-        ManagerUpdateResponseDTO responseDTO = new ManagerUpdateResponseDTO(manager);
-
-        return responseDTO;
+        return true;
     }
 
     @Override
