@@ -35,11 +35,12 @@ public class ManagerApplicationDTO {
 
     private String mainJobStatusEtc;
 
-    public Manager toManagerEntity(Member manager) { //TODO: 매니저 상태값 체크
+    public Manager toManagerEntity(Member manager) { // TODO: 매니저 상태값 체크
         return Manager.builder()
                 .name(name)
                 .phoneNumber(phone)
                 .address(address)
+                .level(1)
                 .certificateStatusEtc(certificateStatusEtc)
                 .certificateStatus(CertificateStatusEnum.valueOf(certificateStatus))
                 .vehicle(vehicle)
@@ -52,8 +53,7 @@ public class ManagerApplicationDTO {
     }
 
 
-
-    public ActivityDay toDayEntity(){
+    public ActivityDay toDayEntity() {
         return ActivityDay.builder()
                 .isOkMonday(activityDay.get(0))
                 .isOkTuesday(activityDay.get(1))
