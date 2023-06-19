@@ -149,6 +149,13 @@ public class ManagerServiceImpl implements ManagerService {
 
         List<AreaManager> areaManagerList = areaManagerRepository.findAreaManagerListByManagerId(managerId);
 
+        // 먼저 areaManager에서 입력받은 managerId와 일치하는 area들의 managerCount를 -1 하고
+        // 아래 쪽에서 다 managerCount +1 해주기.
+        for (AreaManager areaManager : areaManagerList) {
+            // areaManager의 area_id를 get한다
+            // area_id와 일치하는 area의 managerCount를 -1 한다.
+        }
+        
         try {
             areaManagerRepository.deleteAll(areaManagerList);
         } catch (Exception e) {
@@ -167,6 +174,10 @@ public class ManagerServiceImpl implements ManagerService {
                 }).collect(Collectors.toList());
 
         for (Area a : areas) {
+            // area 마다 managerCount를 +1 한다.
+            // 지금은 setter가 없는데, Area.java에 plusOneManagerCount() 이런 함수를 만들어서 쓰면 되는건지?
+            // .getManagerCount()를 이용해서 값 변화 가능?
+            
             AreaManager areaManager = AreaManager.builder()
                     .areaManagerKey(new AreaManager.AreaManagerKey(a, manager))
                     .build();
