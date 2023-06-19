@@ -2,6 +2,7 @@ package com.damda.back.service;
 
 
 import com.damda.back.data.request.MatchingCompletedDTO;
+import com.damda.back.domain.Match;
 import com.damda.back.domain.ReservationAnswer;
 
 import java.util.List;
@@ -14,4 +15,5 @@ public interface TalkSendService {
 
     public void sendCustomenrCompleted(String toPhoneNumber,Long formId);
     void sendManagerMatchingSuccess(Long reservationId);
+    void sendReservationCompleted(List<Match> matches);
 }

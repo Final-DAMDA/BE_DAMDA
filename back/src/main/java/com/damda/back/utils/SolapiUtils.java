@@ -1,10 +1,7 @@
 package com.damda.back.utils;
 
 
-import com.damda.back.data.request.CustomerTalkDTO;
-import com.damda.back.data.request.MatchingCompletedDTO;
-import com.damda.back.data.request.MatchingSuccessToManagerDTO;
-import com.damda.back.data.request.ResCompleteRequestDTO;
+import com.damda.back.data.request.*;
 import com.damda.back.exception.CommonException;
 import com.damda.back.exception.ErrorCode;
 import lombok.Builder;
@@ -240,6 +237,82 @@ public class SolapiUtils {
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
         }
+    }
+
+    /**
+     * @apiNote : 매칭 실패한 매니저들에게 실패메시지
+     */
+    public void managerMatchingFail(MatchingFailToManagerDTO dto){
+
+        ArrayList<Message> messageList = new ArrayList<>();
+
+        dto.getPhoneNumber().forEach(phoneNumber -> {
+            KakaoOption kakaoOption = new KakaoOption();
+            kakaoOption.setPfId(OfPartner);
+            // 등록하신 카카오 알림톡 템플릿의 templateId를 입력해주세요.
+            kakaoOption.setTemplateId("KA01TP230612051510650KTBOVkfqHyw");
+
+            HashMap<String, String> variables = new HashMap<>();
+            variables.put("#{reservationDate}", dto.getReservationDate());
+            variables.put("#{reservationAddress}", dto.getReservationAddress());
+            variables.put("#{reservationHour}", dto.getReservationHour());
+            variables.put("#{managerAmount}",dto.getManagerAmount().toString());
+
+            kakaoOption.setVariables(variables);
+
+            Message message = new Message();
+            // 발신번호 및 수신번호는 반드시 01012345678 형태로 입력되어야 합니다.
+
+            message.setFrom("01099636287");
+            message.setTo(phoneNumber);
+            message.setKakaoOptions(kakaoOption);
+
+            messageList.add(message);
+        });
+
+        try {
+            // send 메소드로 단일 Message 객체를 넣어도 동작합니다!
+            MultipleDetailMessageSentResponse response = this.messageService.send(messageList);
+
+            // 중복 수신번호를 허용하고 싶으실 경우 위 코드 대신 아래코드로 대체해 사용해보세요!
+            //MultipleDetailMessageSentResponse response = this.messageService.send(messageList, true);
+
+            System.out.println(response);
+
+        } catch (NurigoMessageNotReceivedException exception) {
+            System.out.println(exception.getFailedMessageList());
+            System.out.println(exception.getMessage());
+        } catch (Exception exception) {
+            System.out.println(exception.getMessage());
+        }
+    }
+
+    /**
+     * @apiNote : 예약 확정시 유저에게 보내는 알림톡
+     */
+    public void userMatchingSuccess(MatchingSuccessToUserDTO dto) {
+        KakaoOption kakaoOption = new KakaoOption();
+
+        kakaoOption.setPfId(mainCh);
+        kakaoOption.setTemplateId("KA01TP230612085654132vRJHPdo6507");
+
+
+        HashMap<String, String> variables = new HashMap<>();
+        variables.put("#{reservationDate}", dto.getReservationDate());
+        variables.put("#{reserveAddress}", dto.getReservationAddress());
+        variables.put("#{managerAmount}", dto.getManagerAmount().toString());
+        variables.put("#{reservationHour}", dto.getReservationHour());
+        variables.put("#{totalPrice}", dto.getTotalPrice().toString());
+
+        kakaoOption.setVariables(variables);
+
+        Message message = new Message();
+        // 발신번호 및 수신번호는 반드시 01012345678 형태로 입력되어야 합니다.
+        message.setFrom("01099636287");
+        message.setTo(dto.getPhoneNumber());
+        message.setKakaoOptions(kakaoOption);
+
+        SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
     }
 
 }

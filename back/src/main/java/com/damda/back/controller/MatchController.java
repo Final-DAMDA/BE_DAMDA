@@ -81,7 +81,7 @@ public class MatchController {
 	 * @apiNote : Admin수락 (매칭 완료)
 	 */
 	@PostMapping("/api/v1/matching/order/{id}")
-	public ResponseEntity<CommonResponse<?>> matchingAccept(@PathVariable("id") Long reservationId, @RequestParam List<Long> matchIds){//reservationID 임
+	public ResponseEntity<CommonResponse<?>> matchingOrder(@PathVariable("id") Long reservationId, @RequestParam List<Long> matchIds){//reservationID 임
 		matchService.matchingOrder(reservationId,matchIds);
 		CommonResponse<?> commonResponse = CommonResponse
 				.builder()
