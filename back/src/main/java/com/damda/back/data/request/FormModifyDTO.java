@@ -33,7 +33,7 @@ public class FormModifyDTO {
     private String questionTitle;
 
     @NotNull
-    private Integer order;
+    private Integer questionOrder;
 
     @NotNull
     private boolean required;
@@ -44,7 +44,5 @@ public class FormModifyDTO {
     @NotEmpty
     private String placeHolder;
 
-    @Builder.Default
-    private List<CategoryMapDTO> categoryList = new ArrayList<>();
 
 }

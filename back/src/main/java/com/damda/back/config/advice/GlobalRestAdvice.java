@@ -17,7 +17,8 @@ public class GlobalRestAdvice {
         @ExceptionHandler(CommonException.class)
         public ResponseEntity<CommonResponse<?>> commonExceptionResponseEntity(CommonException e){
 
-            CommonResponse<?> commonResponse = new CommonResponse<>(e.getErrorCode());
+            CommonResponse<?> commonResponse = new CommonResponse<>(e.getErrorCode())
+                    .data(false);
 
             return ResponseEntity.status(e.getErrorCode().getHttpStatus())
                     .body(commonResponse);
@@ -27,7 +28,7 @@ public class GlobalRestAdvice {
         public ResponseEntity<CommonResponse<?>> methodArgumentNotValidException(MethodArgumentNotValidException e){
             CommonResponse<?> commonResponse =
                     CommonResponse.builder()
-                            .data(e.getParameter() +"이(가) 이상한 값으로 들어왔습니다")
+                            .data(e.getFieldError().getField() +"이(가) 이상한 값으로 들어왔습니다")
                             .codeEnum(CodeEnum.BAD_REQUEST)
                             .build();
 

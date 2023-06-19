@@ -73,6 +73,13 @@ public class ReservationSubmitForm extends BaseEntity{
 
     }
 
+    public void paymentCompleted(){
+        this.payMentStatus = PayMentStatus.PAYMENT_COMPLETED;
+    }
+
+    public void cancellation(){
+        this.status = ReservationStatus.RESERVATION_CANCELLATION;
+    }
 
 
 }
