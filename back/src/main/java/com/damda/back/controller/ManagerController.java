@@ -21,21 +21,9 @@ public class ManagerController {
 
     private final ManagerService managerService;
 
-    @GetMapping("/api/v1/admin/manager") // ../api/v1/admin/manager?status=ACTIVE
-    public ResponseEntity<CommonResponse<?>> activeManagerList(@RequestParam String status) {
-
-        CommonResponse<Object> commonResponse = CommonResponse
-                .builder()
-                .codeEnum(CodeEnum.SUCCESS)
-                .data(managerService.managerResponseDTOList(ManagerStatusEnum.valueOf(status)))
-                .build();
-
-        return ResponseEntity
-                .status(commonResponse.getStatus())
-                .body(commonResponse);
-
-    }
-    
+    /**
+     * API: 매니저 생성하기
+     */
     @PostMapping("/api/v1/manager/form/submit")
     public ResponseEntity<CommonResponse<?>> managerCreate(HttpServletRequest request, @RequestBody ManagerApplicationDTO managerApplicationDTO) {
 
@@ -50,6 +38,29 @@ public class ManagerController {
         return ResponseEntity
                 .status(commonResponse.getStatus())
                 .body(commonResponse);
+    }
+
+    /**
+     * API: 매니저 지원 폼 가져오기
+     */
+
+
+    /**
+     * API: 매니저 가져오기(상태별)
+     */
+    @GetMapping("/api/v1/admin/manager") // ../api/v1/admin/manager?status=ACTIVE
+    public ResponseEntity<CommonResponse<?>> activeManagerList(@RequestParam String status) {
+
+        CommonResponse<Object> commonResponse = CommonResponse
+                .builder()
+                .codeEnum(CodeEnum.SUCCESS)
+                .data(managerService.managerResponseDTOList(ManagerStatusEnum.valueOf(status)))
+                .build();
+
+        return ResponseEntity
+                .status(commonResponse.getStatus())
+                .body(commonResponse);
+
     }
 
     @PostMapping("/api/v1/admin/manager/{id}/info")

@@ -1,7 +1,6 @@
 package com.damda.back.data.request;
 
 import com.damda.back.domain.Member;
-import com.damda.back.domain.area.Area;
 import com.damda.back.domain.manager.ActivityDay;
 import com.damda.back.domain.manager.CertificateStatusEnum;
 import com.damda.back.domain.manager.Manager;
@@ -9,7 +8,6 @@ import com.damda.back.domain.manager.ManagerStatusEnum;
 import lombok.*;
 
 import java.util.List;
-import java.util.Map;
 
 @Data
 @Builder
@@ -17,9 +15,8 @@ import java.util.Map;
 @AllArgsConstructor
 public class ManagerApplicationDTO {
 
-    private String name;
-    private String phone;
-    private String address;
+    private String managerName;
+    private String managerPhone;
     private List<Boolean> activityDay;//(월~일 boolean만 보냄)
 
     private List<String> activityCity;
@@ -31,21 +28,20 @@ public class ManagerApplicationDTO {
 
     private String fieldExperience;
 
-    private Boolean mainJobStatus;
+    private Boolean mainJob;
 
-    private String mainJobStatusEtc;
+    private String mainJobEtc;
 
     public Manager toManagerEntity(Member manager) { //TODO: 매니저 상태값 체크
         return Manager.builder()
-                .name(name)
-                .phoneNumber(phone)
-                .address(address)
+                .name(managerName)
+                .phoneNumber(managerPhone)
                 .certificateStatusEtc(certificateStatusEtc)
                 .certificateStatus(CertificateStatusEnum.valueOf(certificateStatus))
                 .vehicle(vehicle)
                 .fieldExperience(fieldExperience)
-                .mainJobStatus(mainJobStatus)
-                .mainJobStatusEtc(mainJobStatusEtc)
+                .mainJobStatus(mainJob)
+                .mainJobStatusEtc(mainJobEtc)
                 .member(manager)
                 .currManagerStatus(ManagerStatusEnum.WAITING)
                 .build();
