@@ -44,4 +44,13 @@ public class Area {
     @Builder.Default
     private List<AreaManager> areaManagerList = new ArrayList<>();
 
+
+    public void minusCount(){
+        this.managerCount = this.managerCount - 1;
+    }
+
+    public void plusCount(){
+        this.managerCount = this.managerCount + 1;
+
+    }
 }

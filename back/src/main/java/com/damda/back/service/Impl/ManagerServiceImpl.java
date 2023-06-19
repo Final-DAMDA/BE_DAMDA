@@ -16,6 +16,7 @@ import com.damda.back.repository.*;
 import com.damda.back.service.ManagerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.engine.internal.Collections;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -145,48 +146,44 @@ public class ManagerServiceImpl implements ManagerService {
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public boolean managerRegionUpdate(ManagerRegionUpdateRequestDTO dto, Long managerId) {
 
-        Manager manager = managerRepository.findById(managerId).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_MANAGER));
+        Manager manager = managerRepository.findMangerWithAreaManger(managerId).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_MANAGER));
 
-        List<AreaManager> areaManagerList = areaManagerRepository.findAreaManagerListByManagerId(managerId);
+        List<AreaManager> areaManagerList =manager.getAreaManagers();
+        List<Area> areaList = areaManagerList.stream().map(areaManager ->
+                areaManager.getAreaManagerKey().getArea())
+                .collect(Collectors.toList());
 
-        // 먼저 areaManager에서 입력받은 managerId와 일치하는 area들의 managerCount를 -1 하고
-        // 아래 쪽에서 다 managerCount +1 해주기.
-        for (AreaManager areaManager : areaManagerList) {
-            // areaManager의 area_id를 get한다
-            // area_id와 일치하는 area의 managerCount를 -1 한다.
+
+        List<String> areaDistricts = areaList.stream().map(Area::getDistrict).collect(Collectors.toList());
+        Map<String,List<String>> map = dto.getCity();
+
+        List<String> seoul =  map.get("서울특별시");
+        List<String> gyeonggi = map.get("경기도");
+
+        //서울특별시일 경우
+        List<String> entitiesToRemove = areaDistricts.stream()  //DB에 원래 있었는데 없어진 것들 삭제해야함
+                .filter(entity -> !seoul.contains(entity))
+                .collect(Collectors.toList());
+
+        List<String> entitiesToInsert =  seoul.stream()    //DB에 저장해야하는 값들 저장해야함
+                .filter(dtoString -> !areaDistricts.contains(dtoString))
+                .collect(Collectors.toList());
+
+        for (String str : entitiesToRemove) {
+            Area area = managerRepository.findByAreaManager(str);
+            area.minusCount();
+
+            //AreaManager를 조회해서 삭제하는 로직 +1
         }
-        
-        try {
-            areaManagerRepository.deleteAll(areaManagerList);
-        } catch (Exception e) {
-            // TODO:
+
+        for(String str2 : entitiesToInsert){
+            Area area = managerRepository.findByAreaManager(str2);
+            area.plusCount();
+            //AreaManager를 생성하는 로직 - 1
         }
 
+        //경기도일 경우
 
-        List<Area> areas = IntStream.range(0, dto.getActivityDistrict().size())
-                .mapToObj(i -> {
-                    String city = dto.getActivityCity().get(i);
-                    String district = dto.getActivityDistrict().get(i);
-                    Area area2 = areaRepository
-                            .searchArea(city, district)
-                            .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_AREA));
-                    return area2;
-                }).collect(Collectors.toList());
-
-        for (Area a : areas) {
-            // area 마다 managerCount를 +1 한다.
-            // 지금은 setter가 없는데, Area.java에 plusOneManagerCount() 이런 함수를 만들어서 쓰면 되는건지?
-            // .getManagerCount()를 이용해서 값 변화 가능?
-            
-            AreaManager areaManager = AreaManager.builder()
-                    .areaManagerKey(new AreaManager.AreaManagerKey(a, manager))
-                    .build();
-            try {
-                areaManagerRepository.save(areaManager);
-            } catch (Exception e) {
-                // TODO:
-            }
-        }
 
         return true;
     }

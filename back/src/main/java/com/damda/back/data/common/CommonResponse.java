@@ -37,6 +37,7 @@ public class CommonResponse<T> {
     }
 
 
+
     public CommonResponse(ErrorCode errorCode){
         setStatus(errorCode.getHttpStatus().value());
         setMessage(errorCode.getMessage());

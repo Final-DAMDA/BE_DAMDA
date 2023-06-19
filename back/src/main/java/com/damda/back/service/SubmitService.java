@@ -15,4 +15,8 @@ public interface SubmitService {
 
     public void statusModify(FormStatusModifyRequestDTO dto);
 
+    public void payMentCompleted(Long id);
+
+    public void cancellation(Long id);
+
 }
