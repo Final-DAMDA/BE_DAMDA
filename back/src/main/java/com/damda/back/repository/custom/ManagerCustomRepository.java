@@ -1,5 +1,6 @@
 package com.damda.back.repository.custom;
 
+import com.damda.back.domain.Member;
 import com.damda.back.domain.area.Area;
 import com.damda.back.domain.manager.AreaManager;
 import com.damda.back.domain.manager.Manager;
@@ -18,5 +19,10 @@ public interface ManagerCustomRepository {
 
     String findManagerName(Integer memberId);
     Optional<Manager> findManager(Integer memberId);
+
+    Optional<Manager> findMangerWithAreaManger(Long memberId);
+
+    public Area findByAreaManager(String dist);
+
 
 }
