@@ -137,6 +137,10 @@ class BackApplicationTests {
 	@Test
 	@DisplayName("테스트 데이터 넣기")
 	void test_insert(){
+
+		HashMap<String,String> map = new HashMap<>();
+
+
 //		Question question_1 = Question.builder()
 //				.questionType(QuestionType.SELECT)
 //				.questionTitle("몇인분의 분량인가요?")

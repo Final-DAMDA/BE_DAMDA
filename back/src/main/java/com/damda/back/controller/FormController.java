@@ -116,4 +116,35 @@ public class FormController {
                 .body(commonResponse);
     }
 
+
+    @PutMapping("/api/v1/status/completed/{id}")
+    public ResponseEntity<CommonResponse<?>> payMentCompleted(@PathVariable Long id){
+        submitService.payMentCompleted(id);
+
+
+        CommonResponse<?> commonResponse = CommonResponse
+                .builder()
+                .codeEnum(CodeEnum.SUCCESS)
+                .data(true)
+                .build();
+        return ResponseEntity
+                .status(commonResponse.getStatus())
+                .body(commonResponse);
+    }
+
+
+    @PutMapping("/api/v1/status/cancellation/{id}")
+    public ResponseEntity<CommonResponse<?>> cancellation(@PathVariable Long id){
+        submitService.cancellation(id);
+
+        CommonResponse<?> commonResponse = CommonResponse
+                .builder()
+                .codeEnum(CodeEnum.SUCCESS)
+                .data(true)
+                .build();
+        return ResponseEntity
+                .status(commonResponse.getStatus())
+                .body(commonResponse);
+    }
+
 }

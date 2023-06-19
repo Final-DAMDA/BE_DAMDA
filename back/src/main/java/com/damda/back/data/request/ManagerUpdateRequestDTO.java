@@ -21,6 +21,8 @@ public class ManagerUpdateRequestDTO {
      
     private String certificateStatus;
     
+    private String certificateStatusEtc;
+    
     private Boolean vehicle;
     
     private String managerStatus;

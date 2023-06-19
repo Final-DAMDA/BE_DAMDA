@@ -11,4 +11,6 @@ public interface MatchCustomRepository {
     Optional<Match> matchFindByReservationAndMember(Long reservationId, Long managerId);
     List<Match> matchList(Long reservationId);
     List<String> matchListFindManager(Long reservationId);
+
+    public List<Match> matches(Long formId);
 }

@@ -1,5 +1,6 @@
 package com.damda.back;
 
+import com.damda.back.config.InitQuery;
 import com.damda.back.data.common.MemberRole;
 import com.damda.back.data.common.MemberStatus;
 import com.damda.back.data.common.QuestionIdentify;
@@ -8,10 +9,6 @@ import com.damda.back.domain.Category;
 import com.damda.back.domain.Member;
 import com.damda.back.domain.Question;
 import com.damda.back.domain.QuestionStatus;
-import com.damda.back.domain.area.Area;
-import com.damda.back.domain.manager.AreaManager;
-import com.damda.back.domain.manager.Manager;
-import com.damda.back.domain.manager.ManagerStatusEnum;
 import com.damda.back.repository.*;
 
 import org.springframework.boot.CommandLineRunner;
@@ -36,15 +33,19 @@ public class BackApplication {
 			ManagerRepository managerRepository,
 			EntityManager entityManager,
 			AreaRepository areaRepository,
-			AreaManagerRepository areaManagerRepository
+			AreaManagerRepository areaManagerRepository,
+			InitQuery initQuery
 	 ) {
-	 	return args -> insertQuery(questionRepository,
+	 	return args -> {insertQuery(questionRepository,
 				memberRepository,
 				passwordEncoder,
 				managerRepository,
 				entityManager,
 				areaRepository,
 				areaManagerRepository);
+
+			 	initQuery.initData();
+		 };
 	 }
 
 	public static void main(String[] args) {
@@ -247,7 +248,7 @@ public class BackApplication {
 						.page(2)
 						.order(8)
 						.placeHolder("고양이랑 강아지가 있어요.")
-						.questionIdentify(QuestionIdentify.RESERVATIONOTE)
+						.questionIdentify(QuestionIdentify.RESERVATIONNOTE)
 						.questionType(QuestionType.STRING)
 						.status(QuestionStatus.ACTIVATION)
 						.questionTitle(" 매니저가 알아야 할 정보가 있다면 알려주세요.")
@@ -288,68 +289,13 @@ public class BackApplication {
 				Category.builder().questionCategory("기타").build()
 		);
 
+
+
+
 		categories2.forEach(question4::addCategory);
 		questionRepository.save(question4);
 
-		Manager manager = managerRepository.save(Manager.builder()
-						.phoneNumber("01040783843")
-						.name("김재우")
-						.currManagerStatus(ManagerStatusEnum.ACTIVE)
-				.build());
 
-		Manager manager2 = managerRepository.save(Manager.builder()
-				.phoneNumber("01039041094")
-				.name("고예림")
-				.currManagerStatus(ManagerStatusEnum.ACTIVE)
-				.build());
-
-		Manager manager3 = managerRepository.save(Manager.builder()
-				.phoneNumber("01082535890")
-				.name("김형준")
-				.currManagerStatus(ManagerStatusEnum.ACTIVE)
-				.build());
-
-
-		Area area1 = Area.builder()
-				.city("서울특별시")
-				.district("강남구")
-				.managerCount(1)
-				.build();
-
-		Area area2 = Area.builder()
-				.city("서울특별시")
-				.district("강북구")
-				.managerCount(1)
-				.build();
-
-		Area area = Area.builder()
-				.city("경기도")
-				.district("하남시")
-				.managerCount(1)
-				.build();
-
-		areaRepository.save(area1);
-		areaRepository.save(area2);
-		areaRepository.save(area);
-
-		AreaManager.AreaManagerKey key = new AreaManager.AreaManagerKey(area,manager);
-		AreaManager.AreaManagerKey key2 = new AreaManager.AreaManagerKey(area1,manager2);
-		AreaManager.AreaManagerKey key3 = new AreaManager.AreaManagerKey(area2,manager3);
-
-
-		AreaManager areaManager = AreaManager.builder()
-				.areaManagerKey(key)
-				.build();
-		AreaManager areaManager2 = AreaManager.builder()
-				.areaManagerKey(key2)
-				.build();
-		AreaManager areaManager3 = AreaManager.builder()
-				.areaManagerKey(key3)
-				.build();
-
-		areaManagerRepository.save(areaManager);
-		areaManagerRepository.save(areaManager2);
-		areaManagerRepository.save(areaManager3);
 
 	}
 }

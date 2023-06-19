@@ -39,6 +39,7 @@ public class MatchServiceImpl implements MatchService {
 	public void matchingListUp(ReservationSubmitForm reservationSubmitForm, List<Manager> managerList) {
 		for (Manager manager : managerList) {
 			Match match = Match.builder()
+					.matching(false)
 					.managerId(manager.getId())
 					.managerName(manager.getName())
 					.manager(manager)
