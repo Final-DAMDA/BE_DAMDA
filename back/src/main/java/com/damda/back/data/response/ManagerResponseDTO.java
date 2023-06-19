@@ -27,8 +27,6 @@ public class ManagerResponseDTO {
     
     private String managerPhoneNumber;
     
-    private String address;
-    
     private ActivityDay activityDay;
     
     @Builder.Default

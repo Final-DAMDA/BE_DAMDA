@@ -31,8 +31,6 @@ public class Manager extends BaseEntity {
     private String name;
     
     private String phoneNumber;
-    
-    private String address;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "activity_day_id")
@@ -72,7 +70,6 @@ public class Manager extends BaseEntity {
     public void updateManager(ManagerUpdateRequestDTO dto) {
         this.name = dto.getManagerName();
         this.phoneNumber = dto.getManagerPhone();
-        this.address = dto.getAddress();
         this.level = dto.getLevel();
         this.certificateStatus = CertificateStatusEnum.valueOf(dto.getCertificateStatus());
         this.vehicle = dto.getVehicle();
