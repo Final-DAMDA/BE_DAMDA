@@ -214,11 +214,13 @@ public class SubmitServiceImpl implements SubmitService {
                 ReservationSubmitForm form = reservationFormRepository.save(reservationSubmitForm);
                 //TODO: 매칭로직 추가
 
-                log.info("{} 지역 매니저들을 조회 시도",dto.getAddressFront());
-                List<Manager> managerList = managerRepository.managerWithArea(dto.getAddressFront());
-                log.info("해당 지역에 활동가능한 매니저 {}",managerList);
-                matchService.matchingListUp(reservationSubmitForm,managerList);
-                talkSendService.sendReservationSubmitAfter(form.getId(),dto.getAddressFront(),form.getReservationAnswerList(),dto.getTotalPrice(),dto.getServicePerson());
+
+                    log.info("{} 지역 매니저들을 조회 시도",dto.getAddressFront());
+                    List<Manager> managerList = managerRepository.managerWithArea(dto.getAddressFront());
+                    log.info("해당 지역에 활동가능한 매니저 {}",managerList);
+                    matchService.matchingListUp(reservationSubmitForm,managerList);
+                //    talkSendService.sendReservationSubmitAfter(form.getId(),dto.getAddressFront(),form.getReservationAnswerList(),dto.getTotalPrice(),dto.getServicePerson());
+
 
                 return form.getId();
 //                }catch (Exception e){
@@ -344,8 +346,8 @@ public class SubmitServiceImpl implements SubmitService {
                }else{
                    log.info("기존 코드 그대로 사용됨 {}",discountCode.getCode());
                }
-               talkSendService.sendCustomenrCompleted(
-                       answerMap.get(QuestionIdentify.APPLICANTCONACTINFO),form.getId());
+     //          talkSendService.sendCustomenrCompleted(
+    //                   answerMap.get(QuestionIdentify.APPLICANTCONACTINFO),form.getId());
 
                form.changeStatus(dto.getStatus());
                //TODO: 서비스 완료시 고객에게 설문 조사 링크 보내야함 - 알림톡
@@ -422,7 +424,7 @@ public class SubmitServiceImpl implements SubmitService {
                     .map(Manager::getPhoneNumber).collect(Collectors.toList());
 
             log.info("요청 보낸 번호 {}",managers);
-            try {
+/*            try {
                 talkSendService.sendCancellation(managers, answerMap,form.getServicePerson());
             } catch (NurigoMessageNotReceivedException e) {
                 e.printStackTrace();
@@ -433,7 +435,7 @@ public class SubmitServiceImpl implements SubmitService {
             } catch (NurigoUnknownException e) {
                 e.printStackTrace();
                 throw new RuntimeException(e);
-            }
+            }*/
 
 
         }
