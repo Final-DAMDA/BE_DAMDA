@@ -62,8 +62,8 @@ public class QnAController {
     /**
      * API: QnA 수정하기
      */
-    @PutMapping("/api/v1/admin/qna")
-    public ResponseEntity<CommonResponse<?>> updateQnA(@RequestBody QnARequestDTO dto) {
+    @PutMapping("/api/v1/admin/qna/{id}")
+    public ResponseEntity<CommonResponse<?>> updateQnA(@PathVariable("id") Long qnaId, @RequestBody QnARequestDTO dto) {
 
         qnAService.updateQnA(dto);
 

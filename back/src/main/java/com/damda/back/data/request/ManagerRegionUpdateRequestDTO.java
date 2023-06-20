@@ -13,11 +13,11 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ManagerRegionUpdateRequestDTO {
-//
-//    private List<String> activityCity;
-//
-//    private List<String> activityDistrict;
+    
+    private Map<String, List<String>> region;
 
-    private Map<String,List<String>> city;
+    public Map<String, List<String>> getCity() {
+        return null;
+    }
     
 }

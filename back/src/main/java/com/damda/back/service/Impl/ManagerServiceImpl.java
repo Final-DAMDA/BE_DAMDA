@@ -148,24 +148,24 @@ public class ManagerServiceImpl implements ManagerService {
 
         Manager manager = managerRepository.findMangerWithAreaManger(managerId).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_MANAGER));
 
-        List<AreaManager> areaManagerList =manager.getAreaManagers();
+        List<AreaManager> areaManagerList = manager.getAreaManagers();
         List<Area> areaList = areaManagerList.stream().map(areaManager ->
-                areaManager.getAreaManagerKey().getArea())
+                        areaManager.getAreaManagerKey().getArea())
                 .collect(Collectors.toList());
 
 
         List<String> areaDistricts = areaList.stream().map(Area::getDistrict).collect(Collectors.toList());
-        Map<String,List<String>> map = dto.getCity();
+        Map<String, List<String>> map = dto.getCity();
 
-        List<String> seoul =  map.get("서울특별시");
+        List<String> seoul = map.get("서울특별시");
         List<String> gyeonggi = map.get("경기도");
 
-        //서울특별시일 경우
-        List<String> entitiesToRemove = areaDistricts.stream()  //DB에 원래 있었는데 없어진 것들 삭제해야함
+        // 서울특별시일 경우
+        List<String> entitiesToRemove = areaDistricts.stream()  // DB에 원래 있었는데 없어진 것들 삭제해야함
                 .filter(entity -> !seoul.contains(entity))
                 .collect(Collectors.toList());
 
-        List<String> entitiesToInsert =  seoul.stream()    //DB에 저장해야하는 값들 저장해야함
+        List<String> entitiesToInsert = seoul.stream()    // DB에 저장해야하는 값들 저장해야함
                 .filter(dtoString -> !areaDistricts.contains(dtoString))
                 .collect(Collectors.toList());
 
@@ -173,21 +173,21 @@ public class ManagerServiceImpl implements ManagerService {
             Area area = managerRepository.findByAreaManager(str);
             area.minusCount();
 
-            //AreaManager를 조회해서 삭제하는 로직 +1
+            // AreaManager를 조회해서 삭제하는 로직 +1
         }
 
-        for(String str2 : entitiesToInsert){
+        for (String str2 : entitiesToInsert) {
             Area area = managerRepository.findByAreaManager(str2);
             area.plusCount();
-            //AreaManager를 생성하는 로직 - 1
+            // AreaManager를 생성하는 로직 - 1
         }
 
-        //경기도일 경우
+        // 경기도일 경우
 
 
         return true;
     }
-
+    
 }
 
 
