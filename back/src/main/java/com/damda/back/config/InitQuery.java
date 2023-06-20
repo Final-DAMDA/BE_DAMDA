@@ -44,6 +44,16 @@ public class InitQuery {
 
             memberRepository.save(member);
 
+            Member member2 = Member.builder()
+                    .username("testMember2")
+                    .password("1234")
+                    .role(MemberRole.USER)
+                    .status(MemberStatus.ACTIVATION)
+                    .profileImage("404.jpg")
+                    .build();
+
+            memberRepository.save(member2);
+
             Manager manager = managerRepository.save(Manager.builder()
                     .phoneNumber("01040783843")
                     .name("김재우")

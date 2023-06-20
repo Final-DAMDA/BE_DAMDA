@@ -87,7 +87,6 @@ public class SubmitServiceImpl implements SubmitService {
             identifies.add(QuestionIdentify.RESERVATIONENTER); //들어가기 위해 필요한 자료=
             identifies.add(QuestionIdentify.RESERVATIONNOTE); // 알아야 할 사항=
             identifies.add(QuestionIdentify.RESERVATIONREQUEST); // 요청사항=
-            identifies.add(QuestionIdentify.SALEAGENT); //판매대행
         }
 
 

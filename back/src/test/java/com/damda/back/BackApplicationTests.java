@@ -73,6 +73,11 @@ class BackApplicationTests {
 	void contextLoads() {
 		//managerRepository.managerWithArea("하남시").forEach(System.out::println);
 
+		HashMap<String,List<String>> map = new HashMap<>();
+
+		map.get(0);
+
+
 //		QManager manager = QManager.manager;
 //		QAreaManager areaManager = QAreaManager.areaManager;
 //		QArea area = QArea.area;

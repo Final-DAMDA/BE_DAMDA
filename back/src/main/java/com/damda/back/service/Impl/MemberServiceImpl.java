@@ -1,24 +1,39 @@
 package com.damda.back.service.Impl;
 
+import com.amazonaws.services.ec2.model.Reservation;
 import com.damda.back.data.common.MemberRole;
-import com.damda.back.data.response.MemberResponseDTO;
-import com.damda.back.data.response.UserResponseDTO;
+import com.damda.back.data.common.QuestionIdentify;
+import com.damda.back.data.common.ReservationStatus;
+import com.damda.back.data.response.*;
 import com.damda.back.domain.Member;
+import com.damda.back.domain.ReservationAnswer;
+import com.damda.back.domain.ReservationSubmitForm;
 import com.damda.back.exception.CommonException;
 import com.damda.back.exception.ErrorCode;
 import com.damda.back.repository.MemberRepository;
+import com.damda.back.repository.ReservationFormRepository;
 import com.damda.back.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
+
+    private final ReservationFormRepository formRepository;
+
 
     @Override
     public MemberResponseDTO detail(Integer id) {
@@ -49,7 +64,89 @@ public class MemberServiceImpl implements MemberService {
 
 
 
-    public List<UserResponseDTO> listMember(){
-        return memberRepository.findByMemberListWithCode();
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public PageUserResponseDTO listMember(String search,Integer page){
+        Page<Member> memberPage = memberRepository.findByMemberListWithCode(search, PageRequest.of(page,10));
+        List<UserResponseDTO> dtos = new ArrayList<>();
+
+        memberPage.getContent().forEach(memberPE -> {
+            List<ReservationSubmitForm> submitForms = memberPE.getReservationSubmitFormList();
+            ReservationStatus status = submitForms.isEmpty() ? ReservationStatus.NONE : submitForms.stream().findFirst().get().getStatus();
+
+            UserResponseDTO dto = UserResponseDTO.builder()
+                    .id(memberPE.getId())
+                    .name(memberPE.getUsername())
+                    .address(memberPE.getAddress())
+                    .phoneNumber(memberPE.getPhoneNumber())
+                    .address(memberPE.getAddress())
+                    .reservationStatus(status)
+                    .createdAt(memberPE.getCreatedAt().toString())
+                    .code(memberPE.getDiscountCode() != null ? memberPE.getDiscountCode().getCode() : null)
+                    .memo(memberPE.getMemo())
+                    .build();
+
+            dto.safeFromNull();
+
+            dtos.add(dto);
+        });
+
+        PageUserResponseDTO pageUserResponseDTO = PageUserResponseDTO.builder()
+                .last(memberPage.isFirst())
+                .first(memberPage.isLast())
+                .total(memberPage.getTotalElements())
+                .content(dtos)
+                .build();
+
+        return pageUserResponseDTO;
+
+    }
+
+
+    public PageReservationMemberDTO reservationMemberDTOS(Integer memberId,Integer page){
+
+        Page<ReservationSubmitForm> pageData = formRepository.submitFormDataList(memberId,PageRequest.of(page,10));
+
+        List<ReservationSubmitForm> submitForms = pageData.getContent();
+        List<ReservationMemberDTO> dtos = new ArrayList<>();
+
+        submitForms.forEach(submitForm -> {
+                String createdAtStr = submitForm.getCreatedAt().toString();
+                Long idString = submitForm.getId();
+
+                ReservationMemberDTO dto = ReservationMemberDTO.builder()
+                        .createdAt(createdAtStr)
+                        .id(idString)
+                        .build();
+
+                dtos.add(dto);
+        });
+
+        PageReservationMemberDTO pageReservationMemberDTO = PageReservationMemberDTO.builder()
+                .content(dtos)
+                .first(pageData.isFirst())
+                .last(pageData.isLast())
+                .total(pageData.getTotalElements())
+                .build();
+
+        return pageReservationMemberDTO;
+    }
+
+    public MemberResFormDTO memberResFormDTO(Long id){
+        ReservationSubmitForm submitForm = formRepository.submitFormWithMember(id)
+                .orElseThrow(() -> new CommonException(ErrorCode.RESERVATION_FORM_MISSING_VALUE));
+
+        List<ReservationAnswer> answerList = submitForm.getReservationAnswerList();
+        Member member = submitForm.getMember();
+
+        Map<QuestionIdentify,String> map = answerList.stream()
+                .collect(Collectors
+                        .toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
+
+       // map.get()
+
+        //TODO: 해당 부분 dTO로 바꿔서 리턴 예약폼 자세히보기임  MemberResFormDTO로바구면도미
+
+
+        return null;
     }
 }
