@@ -17,7 +17,7 @@ public enum QuestionIdentify {
     LEARNEDROUTE("알게된 경로"), // --
 
     RESERVATIONENTER("들어가기 위해 필요한 자료"),
-    RESERVATIONOTE("알아야 할 사항"),
+    RESERVATIONNOTE("알아야 할 사항"),
     RESERVATIONREQUEST("요청사항"),
     SALEAGENT("판매대행"),
     SALECODE("할인코드"),

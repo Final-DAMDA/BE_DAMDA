@@ -1,5 +1,6 @@
 package com.damda.back.repository.custom.Impl;
 
+import com.damda.back.domain.Member;
 import com.damda.back.domain.area.Area;
 import com.damda.back.domain.area.DistrictEnum;
 import com.damda.back.domain.area.QArea;
@@ -10,6 +11,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,6 +59,32 @@ public class ManagerRepositoryImpl implements ManagerCustomRepository {
         return Optional.ofNullable(manager1);
     }
 
+    @Override
+    public Optional<Manager> findMangerWithAreaManger(Long managerId) {
+        QManager manager = QManager.manager;
+        QAreaManager areaManager = QAreaManager.areaManager;
+        QArea area = QArea.area;
+
+        Manager manager1 =  queryFactory.select(manager)
+                .from(manager)
+                .innerJoin(manager.areaManagers,areaManager).fetchJoin()
+                .innerJoin(areaManager.areaManagerKey.area,area)
+                .where(manager.id.eq(managerId))
+                .fetchOne();
+
+        if(manager1 != null) return Optional.of(manager1);
+        else return Optional.empty();
+    }
+
+    public Area findByAreaManager(String dist){
+        QArea area = QArea.area;
+
+        return queryFactory.select(area)
+                .from(area)
+                .where(area.district.eq(dist)).fetchOne();
+
+    }
+
     // public List<DistrictEnum> districtEnumList(){
     //     QManager manager = QManager.manager;
     //
@@ -69,15 +97,15 @@ public class ManagerRepositoryImpl implements ManagerCustomRepository {
     /**
      * @ManyToMany fetchJoin OneToMany 관계를 같이 영속화시키면서 ManyToOne 관계의 데이터도 모두 영속화 시킨다.
      * 그렇기 떄문에 칼럼은 모든 테이블의 칼럼이 포함되는 구조이지만, row수는 AreaManager 테이블의 영향만 받게 된다.
-     * */
-    public List<Manager> managerWithArea(String addressFront){
+     */
+    public List<Manager> managerWithArea(String addressFront) {
 
         QManager manager = QManager.manager;
         QAreaManager areaManager = QAreaManager.areaManager;
         QArea area = QArea.area;
 
 
-        List<Manager> managers =  queryFactory
+        List<Manager> managers = queryFactory
                 .selectDistinct(manager)
                 .from(manager)
                 .join(manager.areaManagers, areaManager).fetchJoin()

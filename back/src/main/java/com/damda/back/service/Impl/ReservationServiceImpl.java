@@ -164,34 +164,10 @@ public class ReservationServiceImpl implements ReservationService {
             question.changeQuestionType(dto.getQuestionType());
             question.changeQuestionTitle(dto.getQuestionTitle());
             question.changeRequired(dto.isRequired());
-            question.changeOrder(dto.getOrder());
+            question.changeOrder(dto.getQuestionOrder());
             question.changePlaceHolder(dto.getPlaceHolder());
             question.changePage(dto.getPage());
 
-            //end
-            Map<Long,CategoryMapDTO> modifyDTO = new HashMap<>();
-
-            for(CategoryMapDTO dtoData : dto.getCategoryList()){
-                modifyDTO.put(dtoData.getId(), dtoData);
-            }
-
-            for(Category category : question.getCategoryList()){
-                CategoryMapDTO data = modifyDTO.get(category.getId());
-
-                if(data != null){
-                    category.changeCategory(data.getCategory());
-                }
-
-            }
-            if(question.getCategoryList().isEmpty()){
-                modifyDTO.forEach((aLong, categoryMapDTO) -> {
-                    Category categoryPOJO = Category.builder()
-                            .questionCategory(categoryMapDTO.getCategory())
-                            .build();
-
-                    question.addCategory(categoryPOJO);
-                });
-            }
         }else {
             throw new CommonException(ErrorCode.NOT_FOUND_QUESTION_MODIFIED);
         }

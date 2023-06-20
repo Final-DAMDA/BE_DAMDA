@@ -10,6 +10,8 @@ import com.damda.back.service.Impl.SubmitServiceImpl;
 import com.damda.back.service.SubmitService;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,6 +34,7 @@ public class FormController {
 
     @GetMapping("/api/v1/admin/submit/list")
     public ResponseEntity<CommonResponse<?>> adminSubmitListView(
+            @RequestParam(required = false,defaultValue = "asc") String sort,
             @RequestParam(required = false,defaultValue = "0") Integer page,
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate){
@@ -40,7 +43,7 @@ public class FormController {
         CommonResponse<?> commonResponse = CommonResponse
                 .builder()
                 .codeEnum(CodeEnum.SUCCESS)
-                .data(submitService.submitTotalResponse(page,startDate,endDate))
+                .data(submitService.submitTotalResponse(page,startDate,endDate,sort))
                 .build();
 
         return ResponseEntity
@@ -105,6 +108,37 @@ public class FormController {
 
         submitService.statusModify(dto);
 
+
+        CommonResponse<?> commonResponse = CommonResponse
+                .builder()
+                .codeEnum(CodeEnum.SUCCESS)
+                .data(true)
+                .build();
+        return ResponseEntity
+                .status(commonResponse.getStatus())
+                .body(commonResponse);
+    }
+
+
+    @PutMapping("/api/v1/status/completed/{id}")
+    public ResponseEntity<CommonResponse<?>> payMentCompleted(@PathVariable Long id){
+        submitService.payMentCompleted(id);
+
+
+        CommonResponse<?> commonResponse = CommonResponse
+                .builder()
+                .codeEnum(CodeEnum.SUCCESS)
+                .data(true)
+                .build();
+        return ResponseEntity
+                .status(commonResponse.getStatus())
+                .body(commonResponse);
+    }
+
+
+    @PutMapping("/api/v1/status/cancellation/{id}")
+    public ResponseEntity<CommonResponse<?>> cancellation(@PathVariable Long id){
+        submitService.cancellation(id);
 
         CommonResponse<?> commonResponse = CommonResponse
                 .builder()

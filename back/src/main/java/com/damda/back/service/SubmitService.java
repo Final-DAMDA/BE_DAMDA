@@ -9,10 +9,14 @@ import com.damda.back.data.response.SubmitTotalResponse;
 public interface SubmitService {
     public Long saverFormSubmit(SubmitRequestDTO dto, Integer memberId);
 
-    public FormResultDTO submitTotalResponse(int page,String startDate,String endDate);
+    public FormResultDTO submitTotalResponse(int page,String startDate,String endDate,String sort);
 
     public Long jpaFormInsert(SubmitRequestDTO dto,Integer memberId);
 
     public void statusModify(FormStatusModifyRequestDTO dto);
+
+    public void payMentCompleted(Long id);
+
+    public void cancellation(Long id);
 
 }

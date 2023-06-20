@@ -5,6 +5,7 @@ import com.damda.back.domain.*;
 import com.damda.back.domain.manager.QManager;
 import com.damda.back.repository.custom.ReservationFormCustomRepository;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.JPAExpressions;
@@ -57,16 +58,26 @@ public class ReservationFormRepositoryImpl implements ReservationFormCustomRepos
                 return countByStatusMap;
         }
 
-        public Page<ReservationSubmitForm> formPaging(Pageable pageable, Timestamp startDate,Timestamp endDate){
+        public Page<ReservationSubmitForm> formPaging(Pageable pageable, Timestamp startDate,Timestamp endDate,String sort){
+
+
+
+
                 QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
                 QMember member = QMember.member;
                 QReservationAnswer answer = QReservationAnswer.reservationAnswer;
+
+                OrderSpecifier<?> orderSpecifier = submitForm.createdAt.asc();
+
+                if(sort.equalsIgnoreCase("desc")) orderSpecifier = submitForm.createdAt.desc();
+
 
                 JPAQuery<ReservationSubmitForm> query =
                         queryFactory.selectDistinct(submitForm)
                         .from(submitForm)
                         .innerJoin(submitForm.member, member).fetchJoin()
                         .where(createdAtBetween(startDate,endDate,submitForm))
+                        .orderBy(orderSpecifier)
                         .offset(pageable.getOffset())
                         .limit(pageable.getPageSize());
 

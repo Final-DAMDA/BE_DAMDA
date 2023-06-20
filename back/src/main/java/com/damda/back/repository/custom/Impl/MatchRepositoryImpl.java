@@ -87,5 +87,18 @@ public class MatchRepositoryImpl implements MatchCustomRepository {
         return match1;
     }
 
+    public List<Match> matches(Long formId){
+        QMatch match = QMatch.match;
+        QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
+        QManager manager = QManager.manager;
+
+        List<Match> matches = queryFactory.selectDistinct(match)
+                .from(match)
+                .innerJoin(match.manager,manager).fetchJoin()
+                .where(match.reservationForm.id.eq(formId)).fetch();
+
+        return matches;
+    }
+
 
 }

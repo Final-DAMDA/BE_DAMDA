@@ -1,5 +1,6 @@
 package com.damda.back;
 
+import com.damda.back.config.InitQuery;
 import com.damda.back.data.common.MemberRole;
 import com.damda.back.data.common.MemberStatus;
 import com.damda.back.data.common.QuestionIdentify;
@@ -8,11 +9,13 @@ import com.damda.back.domain.Category;
 import com.damda.back.domain.Member;
 import com.damda.back.domain.Question;
 import com.damda.back.domain.QuestionStatus;
+
 import com.damda.back.domain.area.Area;
 import com.damda.back.domain.manager.AreaManager;
 import com.damda.back.domain.manager.CertificateStatusEnum;
 import com.damda.back.domain.manager.Manager;
 import com.damda.back.domain.manager.ManagerStatusEnum;
+
 import com.damda.back.repository.*;
 
 import org.springframework.boot.CommandLineRunner;
@@ -37,15 +40,19 @@ public class BackApplication {
 			ManagerRepository managerRepository,
 			EntityManager entityManager,
 			AreaRepository areaRepository,
-			AreaManagerRepository areaManagerRepository
+			AreaManagerRepository areaManagerRepository,
+			InitQuery initQuery
 	 ) {
-	 	return args -> insertQuery(questionRepository,
+	 	return args -> {insertQuery(questionRepository,
 				memberRepository,
 				passwordEncoder,
 				managerRepository,
 				entityManager,
 				areaRepository,
 				areaManagerRepository);
+
+			 	initQuery.initData();
+		 };
 	 }
 
 	public static void main(String[] args) {
@@ -248,7 +255,7 @@ public class BackApplication {
 						.page(2)
 						.order(8)
 						.placeHolder("고양이랑 강아지가 있어요.")
-						.questionIdentify(QuestionIdentify.RESERVATIONOTE)
+						.questionIdentify(QuestionIdentify.RESERVATIONNOTE)
 						.questionType(QuestionType.STRING)
 						.status(QuestionStatus.ACTIVATION)
 						.questionTitle(" 매니저가 알아야 할 정보가 있다면 알려주세요.")
@@ -288,6 +295,9 @@ public class BackApplication {
 				Category.builder().questionCategory("지인추천").build(),
 				Category.builder().questionCategory("기타").build()
 		);
+
+
+
 
 		categories2.forEach(question4::addCategory);
 		questionRepository.save(question4);
@@ -354,6 +364,7 @@ public class BackApplication {
 		areaManagerRepository.save(areaManager);
 		areaManagerRepository.save(areaManager2);
 		areaManagerRepository.save(areaManager3);
+
 
 	}
 }

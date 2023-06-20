@@ -1,11 +1,13 @@
 package com.damda.back.service.Impl;
 
 import com.damda.back.data.common.MatchResponseStatus;
+
+import com.damda.back.data.common.CancellationDTO;
+
 import com.damda.back.data.common.QuestionIdentify;
 import com.damda.back.data.request.*;
 import com.damda.back.domain.Match;
 import com.damda.back.domain.ReservationAnswer;
-import com.damda.back.domain.ReservationSubmitForm;
 import com.damda.back.domain.manager.Manager;
 import com.damda.back.exception.CommonException;
 import com.damda.back.exception.ErrorCode;
@@ -69,7 +71,7 @@ public class TalkSendServiceImpl implements TalkSendService {
                 .userAddressCity(answerMap.get(QuestionIdentify.ADDRESS))
                 .reservationParking(answerMap.get(QuestionIdentify.PARKINGAVAILABLE))
                 .reservationEnter(answerMap.get(QuestionIdentify.RESERVATIONENTER))
-                .reservationNote(answerMap.get(QuestionIdentify.RESERVATIONOTE))
+                .reservationNote(answerMap.get(QuestionIdentify.RESERVATIONNOTE))
                 .reservationRequest(answerMap.get(QuestionIdentify.RESERVATIONREQUEST))
                 .formId(formId.toString())
                 .build();
@@ -100,7 +102,7 @@ public class TalkSendServiceImpl implements TalkSendService {
                 .estimate(totalPrice.toString())
                 .build();
         log.info("알림톡 발송");
-        //solapiUtils.reservationCompletedSendCustomer(dto,answerMap.get(QuestionIdentify.APPLICANTCONACTINFO));
+        solapiUtils.reservationCompletedSendCustomer(dto,answerMap.get(QuestionIdentify.APPLICANTCONACTINFO));
 
 
     }
@@ -112,6 +114,8 @@ public class TalkSendServiceImpl implements TalkSendService {
         solapiUtils.managerMatcingCompleted(phoneNumbers,dto);
 
     }
+
+
 
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
@@ -157,5 +161,26 @@ public class TalkSendServiceImpl implements TalkSendService {
         MatchingSuccessToUserDTO matchingSuccessToUserDTO = new MatchingSuccessToUserDTO(answerMap,managerAmount,totalPrice);
         solapiUtils.userMatchingSuccess(matchingSuccessToUserDTO);
     }
+
+
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public void sendCancellation(List<String> r,  Map<QuestionIdentify, String> answerMap,Integer servicePerson) throws NurigoMessageNotReceivedException, NurigoEmptyResponseException, NurigoUnknownException {
+
+        CancellationDTO dto = CancellationDTO.builder()
+                .reservationDate(answerMap.get(QuestionIdentify.SERVICEDATE))
+                .reservationHour(answerMap.get(QuestionIdentify.SERVICEDATE).substring(11))
+                .managerAmount(servicePerson.toString())
+                .reservationAddress(answerMap.get(QuestionIdentify.ADDRESS))
+                .reservationParking(answerMap.get(QuestionIdentify.PARKINGAVAILABLE))
+                .reservationEnter(answerMap.get(QuestionIdentify.RESERVATIONENTER))
+                .reservationNote(answerMap.get(QuestionIdentify.RESERVATIONNOTE))
+                .reservationRequest(answerMap.get(QuestionIdentify.RESERVATIONREQUEST))
+                .build();
+
+        solapiUtils.cancellationSendManager(r,dto);
+
+    }
+
 
 }
