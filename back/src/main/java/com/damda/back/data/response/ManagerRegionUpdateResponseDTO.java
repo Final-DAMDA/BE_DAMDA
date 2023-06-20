@@ -1,13 +1,13 @@
 package com.damda.back.data.response;
 
-import com.damda.back.domain.manager.AreaManager;
-import com.damda.back.domain.manager.Manager;
+import com.damda.back.data.request.ManagerRegionUpdateRequestDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
@@ -15,13 +15,6 @@ import java.util.List;
 @AllArgsConstructor
 public class ManagerRegionUpdateResponseDTO {
 
-     private List<String> activityCity;
-
-     private List<String> activityDistrict;
-
-//     public ManagerRegionUpdateResponseDTO(/* List<AreaManager> areaManagerList */) {
-//         this.activityCity = areaManagerList;
-//         this.activityDistrict = areaManagerList;
-//     }
+     private Map<String, List<String>> region;
 
 }
