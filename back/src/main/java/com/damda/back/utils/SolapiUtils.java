@@ -5,6 +5,7 @@ import com.damda.back.data.common.CancellationDTO;
 import com.damda.back.data.request.CustomerTalkDTO;
 import com.damda.back.data.request.MatchingCompletedDTO;
 import com.damda.back.data.request.ResCompleteRequestDTO;
+import com.damda.back.domain.GroupIdCode;
 import com.damda.back.exception.CommonException;
 import com.damda.back.exception.ErrorCode;
 import lombok.Builder;
@@ -89,6 +90,7 @@ public class SolapiUtils {
 
         MultipleDetailMessageSentResponse response = this.messageService.send(messageList);
 
+         String str = response.getGroupInfo().getGroupId();
 
         log.info("알림톡 전송 후 응답 객체 {}",response);
         System.out.println(response);
@@ -234,6 +236,7 @@ public class SolapiUtils {
       // try {
             // send 메소드로 단일 Message 객체를 넣어도 동작합니다!
             MultipleDetailMessageSentResponse response = this.messageService.send(messageList);
+
 
             // 중복 수신번호를 허용하고 싶으실 경우 위 코드 대신 아래코드로 대체해 사용해보세요!
             //MultipleDetailMessageSentResponse response = this.messageService.send(messageList, true);

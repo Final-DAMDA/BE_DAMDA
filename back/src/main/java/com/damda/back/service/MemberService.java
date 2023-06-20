@@ -1,6 +1,9 @@
 package com.damda.back.service;
 
 import com.damda.back.data.response.MemberResponseDTO;
+import com.damda.back.data.response.UserResponseDTO;
+
+import java.util.List;
 
 public interface MemberService {
 
@@ -8,5 +11,7 @@ public interface MemberService {
 
 
     public boolean existCode(String code);
+
+    public List<UserResponseDTO> listMember();
 
 }

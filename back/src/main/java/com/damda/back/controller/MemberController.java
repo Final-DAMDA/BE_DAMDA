@@ -97,4 +97,17 @@ public class MemberController {
         return ResponseEntity.ok(commonResponse);
     }
 
+
+    @GetMapping("/api/v1/member/list")
+    public ResponseEntity<CommonResponse<?>> memberList(){
+
+        CommonResponse<?> commonResponse = CommonResponse
+                .builder()
+                .codeEnum(CodeEnum.SUCCESS)
+                .data(memberService.listMember())
+                .build();
+
+        return ResponseEntity.ok(commonResponse);
+    }
+
 }
