@@ -28,6 +28,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -373,6 +378,53 @@ public class SolapiUtils {
         SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
         System.out.println("User전송-----"+response);
     }
+
+    /**
+     * @apiNote : 고객 리마인드 알림톡
+     */
+    public String userRemindTalk(RemindTalkToUserDTO dto) {
+        KakaoOption kakaoOption = new KakaoOption();
+
+        kakaoOption.setPfId(mainCh);
+        kakaoOption.setTemplateId("KA01TP230607122454569CmujjGt3Sme");
+
+
+        HashMap<String, String> variables = new HashMap<>();
+        variables.put("#{reservationHour}", dto.getReservationHour());
+        //TODO: 시간만 따로 parse 해야함
+
+        kakaoOption.setVariables(variables);
+
+        Message message = new Message();
+        // 발신번호 및 수신번호는 반드시 01012345678 형태로 입력되어야 합니다.
+        message.setFrom("01099636287");
+        message.setTo(dto.getPhoneNumber());
+        message.setKakaoOptions(kakaoOption);
+
+        try {
+            // Java LocalDateTime, Instant 기준, Kolintx의 datetime 내 Instant 타입을 넣어도 동작합니다!
+            LocalDateTime localDateTime = LocalDateTime.parse(dto.getReservationHour(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            localDateTime = localDateTime.minusDays(1);
+            ZoneOffset zoneOffset = ZoneId.systemDefault().getRules().getOffset(localDateTime);
+            Instant instant = localDateTime.toInstant(zoneOffset);
+
+
+            // send 메소드로 ArrayList<Message> 객체를 넣어도 동작합니다!
+            MultipleDetailMessageSentResponse response = this.messageService.send(message, instant);
+            System.out.println("리마인드 톡User전송-----"+response.getGroupInfo().getGroupId());
+
+
+        } catch (NurigoMessageNotReceivedException exception) {
+            // 발송에 실패한 메시지 목록을 확인할 수 있습니다!
+            System.out.println(exception.getFailedMessageList());
+            System.out.println(exception.getMessage());
+        } catch (Exception exception) {
+            System.out.println(exception.getMessage());
+        }
+        System.out.println("리마인드 톡User전송-----"+message.getGroupId());
+        return message.getGroupId();
+    }
+
 
 
 }
