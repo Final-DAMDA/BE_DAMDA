@@ -60,12 +60,10 @@ public class MatchRepositoryImpl implements MatchCustomRepository {
         QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
         QMatch match = QMatch.match;
         QManager manager = QManager.manager;
-        QReservationAnswer reservationAnswer = QReservationAnswer.reservationAnswer;
         List<Match> match1 = queryFactory
                 .selectDistinct(match)
                 .from(match)
                 .join(match.reservationForm,submitForm).fetchJoin()
-                .join(submitForm.reservationAnswerList,reservationAnswer).fetchJoin()
                 .join(match.manager,manager).fetchJoin()
                 .where(match.reservationForm.id.eq(reservationId))
                 .fetch();
@@ -98,6 +96,21 @@ public class MatchRepositoryImpl implements MatchCustomRepository {
                 .where(match.reservationForm.id.eq(formId)).fetch();
 
         return matches;
+    }
+
+    @Override
+    public Optional<Match> matchFindByReservationAndMatch(Long reservationId, Long matchId) {
+        QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
+        QMatch match = QMatch.match;
+
+        Match match1 = queryFactory
+                .selectDistinct(match)
+                .from(match)
+                .join(match.reservationForm,submitForm).fetchJoin()
+                .where(match.reservationForm.id.eq(reservationId).and(match.id.eq(matchId)).and(match.matchStatus.eq(MatchResponseStatus.YES)))
+                .fetchOne();
+
+        return Optional.ofNullable(match1);
     }
 
 

@@ -267,15 +267,34 @@ public class SolapiUtils {
             variables.put("#{reservationDate}", dto.getReservationDate());
             variables.put("#{reservationAddress}", dto.getReservationAddress());
             variables.put("#{reservationHour}", dto.getReservationHour());
+
+            kakaoOption.setVariables(variables);
+
+            Message message = new Message();
+            // 발신번호 및 수신번호는 반드시 01012345678 형태로 입력되어야 합니다.
+
+            message.setFrom("01099636287");
+            message.setTo(phoneNumber);
+            message.setKakaoOptions(kakaoOption);
+
+            messageList.add(message);
         });
+
         try {
             // send 메소드로 단일 Message 객체를 넣어도 동작합니다!
             MultipleDetailMessageSentResponse response = this.messageService.send(messageList);
 
+            // 중복 수신번호를 허용하고 싶으실 경우 위 코드 대신 아래코드로 대체해 사용해보세요!
+            //MultipleDetailMessageSentResponse response = this.messageService.send(messageList, true);
+
+            System.out.println("매칭 성공 매니저"+response);
+
+        } catch (NurigoMessageNotReceivedException exception) {
+            System.out.println(exception.getFailedMessageList());
+            System.out.println(exception.getMessage());
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
         }
-
     }
 
     /**
@@ -316,7 +335,7 @@ public class SolapiUtils {
             // 중복 수신번호를 허용하고 싶으실 경우 위 코드 대신 아래코드로 대체해 사용해보세요!
             //MultipleDetailMessageSentResponse response = this.messageService.send(messageList, true);
 
-            System.out.println(response);
+            System.out.println("매칭실패매니저 ==="+response);
 
         } catch (NurigoMessageNotReceivedException exception) {
             System.out.println(exception.getFailedMessageList());
@@ -338,7 +357,7 @@ public class SolapiUtils {
 
         HashMap<String, String> variables = new HashMap<>();
         variables.put("#{reservationDate}", dto.getReservationDate());
-        variables.put("#{reserveAddress}", dto.getReservationAddress());
+        variables.put("#{reservationAddress}", dto.getReservationAddress());
         variables.put("#{managerAmount}", dto.getManagerAmount().toString());
         variables.put("#{reservationHour}", dto.getReservationHour());
         variables.put("#{totalPrice}", dto.getTotalPrice().toString());
@@ -352,6 +371,7 @@ public class SolapiUtils {
         message.setKakaoOptions(kakaoOption);
 
         SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
+        System.out.println("User전송-----"+response);
     }
 
 

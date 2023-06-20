@@ -5,6 +5,7 @@ import com.damda.back.data.common.QuestionIdentify;
 import com.damda.back.data.request.MatchingCompletedDTO;
 import com.damda.back.domain.Match;
 import com.damda.back.domain.ReservationAnswer;
+import com.damda.back.domain.ReservationSubmitForm;
 import net.nurigo.sdk.message.exception.NurigoEmptyResponseException;
 import net.nurigo.sdk.message.exception.NurigoMessageNotReceivedException;
 import net.nurigo.sdk.message.exception.NurigoUnknownException;
@@ -21,7 +22,7 @@ public interface TalkSendService {
     public void sendCustomenrCompleted(String toPhoneNumber,Long formId);
 
     void sendManagerMatchingSuccess(Long reservationId);
-    void sendReservationCompleted(List<Match> matches);
+    void sendReservationCompleted(List<Match> matches, ReservationSubmitForm reservationSubmitForm);
 
 
     public void sendCancellation(List<String> r,  Map<QuestionIdentify, String> answerMap,Integer servicePerson) throws NurigoMessageNotReceivedException, NurigoEmptyResponseException, NurigoUnknownException;

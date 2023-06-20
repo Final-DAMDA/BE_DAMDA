@@ -44,7 +44,9 @@ public enum ErrorCode {
     SUBMITTED_SERVICE_COMPLETE(HttpStatus.BAD_REQUEST,"이미 서비스 완료폼이 제출되었습니다. "),
     SUBMITTED_MATCH_ORDER_COMPLETE(HttpStatus.BAD_REQUEST,"이미 어드민이 해당 매칭을 수락하였습니다. "),
     ERROR_MATCH_COMPLETE(HttpStatus.INTERNAL_SERVER_ERROR,"매치 데이터 저장 중에 에러가 발생했습니다."),
+    OVER_MATCH_ORDER(HttpStatus.BAD_REQUEST,"매칭 수락된 매니저가 지정된 매니저 수보다 많습니다. "),
     NOT_FOUND_AREA(HttpStatus.BAD_REQUEST,"DB에 해당 지역이 존재하지 않습니다. ");
+
 
 
     private HttpStatus httpStatus;

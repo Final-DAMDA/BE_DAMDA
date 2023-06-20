@@ -8,6 +8,7 @@ import com.damda.back.data.common.QuestionIdentify;
 import com.damda.back.data.request.*;
 import com.damda.back.domain.Match;
 import com.damda.back.domain.ReservationAnswer;
+import com.damda.back.domain.ReservationSubmitForm;
 import com.damda.back.domain.manager.Manager;
 import com.damda.back.exception.CommonException;
 import com.damda.back.exception.ErrorCode;
@@ -134,8 +135,8 @@ public class TalkSendServiceImpl implements TalkSendService {
      * @apiNote: 예약확정시 성공매니저, 실패매니저, 유저에게 알림톡 및 리마인드 메시지, 30분전 매니저 서비스 완료 폼 제출 톡 보냄
      */
     @Override
-    public void sendReservationCompleted(List<Match> matches) {
-        List<ReservationAnswer> answers = matches.get(0).getReservationForm().getReservationAnswerList();
+    public void sendReservationCompleted(List<Match> matches, ReservationSubmitForm reservationSubmitForm) {
+        List<ReservationAnswer> answers = reservationSubmitForm.getReservationAnswerList();
         Map<QuestionIdentify, String> answerMap
                 = answers.stream().collect(Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
 
@@ -144,22 +145,27 @@ public class TalkSendServiceImpl implements TalkSendService {
                 .filter(match -> match.isMatching())
                 .map(match -> match.getManager().getPhoneNumber())
                 .collect(Collectors.toList());
-        MatchingSuccessToManagerDTO matchingSuccessToManagerDTO = new MatchingSuccessToManagerDTO(answerMap,managerPhoneNumbers);
-        solapiUtils.managerMatchingSuccess(matchingSuccessToManagerDTO);
+        if(!managerPhoneNumbers.isEmpty()){
+            MatchingSuccessToManagerDTO matchingSuccessToManagerDTO = new MatchingSuccessToManagerDTO(answerMap,managerPhoneNumbers);
+            solapiUtils.managerMatchingSuccess(matchingSuccessToManagerDTO);
+        }
+
+        //유저에게 알림톡 보내기
+        Integer managerAmount = matches.get(0).getReservationForm().getServicePerson();
+        Integer totalPrice = reservationSubmitForm.getTotalPrice();
+        MatchingSuccessToUserDTO matchingSuccessToUserDTO = new MatchingSuccessToUserDTO(answerMap,managerAmount,totalPrice);
+        solapiUtils.userMatchingSuccess(matchingSuccessToUserDTO);
 
         //매칭 실패 매니저들에게 알림톡 보내기
-        Integer managerAmount = matches.get(0).getReservationForm().getServicePerson();
         List<String> failPhoneNumbers = matches.stream()
                 .filter(match -> match.getMatchStatus()== MatchResponseStatus.YES && !match.isMatching())
                 .map(match -> match.getManager().getPhoneNumber())
                 .collect(Collectors.toList());
-        MatchingFailToManagerDTO matchingFailToManagerDTO = new MatchingFailToManagerDTO(answerMap,failPhoneNumbers,managerAmount);
-        solapiUtils.managerMatchingFail(matchingFailToManagerDTO);
+        if(!failPhoneNumbers.isEmpty()){
+            MatchingFailToManagerDTO matchingFailToManagerDTO = new MatchingFailToManagerDTO(answerMap,failPhoneNumbers,managerAmount);
+            solapiUtils.managerMatchingFail(matchingFailToManagerDTO);
+        }
 
-        //유저에게 알림톡 보내기
-        Integer totalPrice = matches.get(0).getReservationForm().getTotalPrice();
-        MatchingSuccessToUserDTO matchingSuccessToUserDTO = new MatchingSuccessToUserDTO(answerMap,managerAmount,totalPrice);
-        solapiUtils.userMatchingSuccess(matchingSuccessToUserDTO);
     }
 
 

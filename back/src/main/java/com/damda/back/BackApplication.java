@@ -9,13 +9,6 @@ import com.damda.back.domain.Category;
 import com.damda.back.domain.Member;
 import com.damda.back.domain.Question;
 import com.damda.back.domain.QuestionStatus;
-
-import com.damda.back.domain.area.Area;
-import com.damda.back.domain.manager.AreaManager;
-import com.damda.back.domain.manager.CertificateStatusEnum;
-import com.damda.back.domain.manager.Manager;
-import com.damda.back.domain.manager.ManagerStatusEnum;
-
 import com.damda.back.repository.*;
 
 import org.springframework.boot.CommandLineRunner;
@@ -31,10 +24,10 @@ import java.util.List;
 @SpringBootApplication
 public class BackApplication {
 
-	 @Profile("dev")
-	 @Bean
-	 CommandLineRunner initData(
-	 		QuestionRepository questionRepository,
+	@Profile("dev")
+	@Bean
+	CommandLineRunner initData(
+			QuestionRepository questionRepository,
 			MemberRepository memberRepository,
 			PasswordEncoder passwordEncoder,
 			ManagerRepository managerRepository,
@@ -42,8 +35,8 @@ public class BackApplication {
 			AreaRepository areaRepository,
 			AreaManagerRepository areaManagerRepository,
 			InitQuery initQuery
-	 ) {
-	 	return args -> {insertQuery(questionRepository,
+	) {
+		return args -> {insertQuery(questionRepository,
 				memberRepository,
 				passwordEncoder,
 				managerRepository,
@@ -51,9 +44,9 @@ public class BackApplication {
 				areaRepository,
 				areaManagerRepository);
 
-			 	initQuery.initData();
-		 };
-	 }
+			initQuery.initData();
+		};
+	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(BackApplication.class, args);
@@ -70,17 +63,17 @@ public class BackApplication {
 							AreaManagerRepository areaManagerRepository){
 
 
-		 memberRepository.save(Member.builder()
-						 .username("admin")
-						 .password(passwordEncoder.encode("1234"))
-						 .phoneNumber("01012341234")
-						 .status(MemberStatus.ACTIVATION)
-						 .role(MemberRole.ADMIN)
-						 .profileImage("404.jpg")
-				 .build());
+		memberRepository.save(Member.builder()
+				.username("admin")
+				.password(passwordEncoder.encode("1234"))
+				.phoneNumber("01039041094")
+				.status(MemberStatus.ACTIVATION)
+				.role(MemberRole.ADMIN)
+				.profileImage("404.jpg")
+				.build());
 
 
-		 //--------------Question Insert
+		//--------------Question Insert
 
 
 		questionRepository.save(
@@ -295,76 +288,7 @@ public class BackApplication {
 				Category.builder().questionCategory("지인추천").build(),
 				Category.builder().questionCategory("기타").build()
 		);
-
-
-
-
 		categories2.forEach(question4::addCategory);
 		questionRepository.save(question4);
-
-		Manager manager = managerRepository.save(Manager.builder()
-						.phoneNumber("01040783843")
-						.name("김재우")
-						.certificateStatus(CertificateStatusEnum.NONE)
-						.currManagerStatus(ManagerStatusEnum.ACTIVE)
-				.build());
-
-		Manager manager2 = managerRepository.save(Manager.builder()
-				.phoneNumber("01039041094")
-				.name("고예림")
-				.certificateStatus(CertificateStatusEnum.NONE)
-				.currManagerStatus(ManagerStatusEnum.ACTIVE)
-				.build());
-
-		Manager manager3 = managerRepository.save(Manager.builder()
-				.phoneNumber("01082535890")
-				.name("김형준")
-				.certificateStatus(CertificateStatusEnum.NONE)
-				.currManagerStatus(ManagerStatusEnum.ACTIVE)
-				.build());
-
-
-		Area area1 = Area.builder()
-				.city("서울특별시")
-				.district("강남구")
-				.managerCount(1)
-				.build();
-
-		Area area2 = Area.builder()
-				.city("서울특별시")
-				.district("강북구")
-				.managerCount(1)
-				.build();
-
-		Area area = Area.builder()
-				.city("경기도")
-				.district("하남시")
-				.managerCount(1)
-				.build();
-
-		areaRepository.save(area1);
-		areaRepository.save(area2);
-		areaRepository.save(area);
-
-		AreaManager.AreaManagerKey key = new AreaManager.AreaManagerKey(area,manager);
-		AreaManager.AreaManagerKey key2 = new AreaManager.AreaManagerKey(area1,manager2);
-		AreaManager.AreaManagerKey key3 = new AreaManager.AreaManagerKey(area2,manager3);
-
-
-		AreaManager areaManager = AreaManager.builder()
-				.areaManagerKey(key)
-				.build();
-		AreaManager areaManager2 = AreaManager.builder()
-				.areaManagerKey(key2)
-				.build();
-		AreaManager areaManager3 = AreaManager.builder()
-				.areaManagerKey(key3)
-				.build();
-
-		areaManagerRepository.save(areaManager);
-		areaManagerRepository.save(areaManager2);
-		areaManagerRepository.save(areaManager3);
-
-
 	}
 }
