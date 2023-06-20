@@ -249,7 +249,7 @@ public class SubmitServiceImpl implements SubmitService {
         *  ,매니저 매칭(누가지원했는지), 서비스 상태(ReservationStatus),  결제상태
         * */
        @Transactional(isolation = Isolation.REPEATABLE_READ,readOnly = true)
-       public FormResultDTO submitTotalResponse(int page,String startDate,String endDate){
+       public FormResultDTO submitTotalResponse(int page,String startDate,String endDate,String sort){
             //TODO: 통계함수랑 매니저 조인해서 가져온 데이터 짬뽕해서 DTO 반환예쩡 통계함수 완성함
 
            Timestamp startDateTimeStamp = startDate != null ? Timestamp.valueOf(startDate + " 00:00:00") : null;
@@ -273,7 +273,7 @@ public class SubmitServiceImpl implements SubmitService {
             statistical.nullInit();
 
             Page<ReservationSubmitForm> submitFormPage =
-                    reservationFormRepository.formPaging(PageRequest.of(page,10),startDateTimeStamp,endDateTimeStamp);
+                    reservationFormRepository.formPaging(PageRequest.of(page,10),startDateTimeStamp,endDateTimeStamp,sort);
 
            for (ReservationSubmitForm submitForm : submitFormPage) {
                     dtos.add(asDTO(submitForm));
