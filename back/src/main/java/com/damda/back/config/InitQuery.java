@@ -1,10 +1,7 @@
 package com.damda.back.config;
 
 
-import com.damda.back.data.common.MatchResponseStatus;
-import com.damda.back.data.common.PayMentStatus;
-import com.damda.back.data.common.QuestionIdentify;
-import com.damda.back.data.common.ReservationStatus;
+import com.damda.back.data.common.*;
 import com.damda.back.domain.Match;
 import com.damda.back.domain.Member;
 import com.damda.back.domain.ReservationAnswer;
@@ -40,6 +37,8 @@ public class InitQuery {
             Member member = Member.builder()
                     .username("testMember")
                     .password("1234")
+                    .role(MemberRole.USER)
+                    .status(MemberStatus.ACTIVATION)
                     .profileImage("404.jpg")
                     .build();
 
@@ -147,10 +146,37 @@ public class InitQuery {
                     .questionIdentify(QuestionIdentify.SERVICEDATE)
                     .build();
 
+
+            ReservationAnswer answer5 = ReservationAnswer.builder()
+                    .answer("주차 가능합니다~!")
+                    .questionIdentify(QuestionIdentify.PARKINGAVAILABLE)
+                    .build();
+
+            ReservationAnswer answer6 = ReservationAnswer.builder()
+                    .answer("공동현관 비밀번호는 404 입니다")
+                    .questionIdentify(QuestionIdentify.RESERVATIONENTER)
+                    .build();
+
+            ReservationAnswer answer7 = ReservationAnswer.builder()
+                    .answer("고양이와 강아지가 있어요~!")
+                    .questionIdentify(QuestionIdentify.RESERVATIONNOTE)
+                    .build();
+
+            ReservationAnswer answer8 = ReservationAnswer.builder()
+                    .answer("잘 부탁드립니다~!~!")
+                    .questionIdentify(QuestionIdentify.RESERVATIONREQUEST)
+                    .build();
+
+
+
             submitForm.addAnswer(answer1);
             submitForm.addAnswer(answer2);
             submitForm.addAnswer(answer3);
             submitForm.addAnswer(answer4);
+            submitForm.addAnswer(answer5);
+            submitForm.addAnswer(answer6);
+            submitForm.addAnswer(answer7);
+            submitForm.addAnswer(answer8);
 
 
 
