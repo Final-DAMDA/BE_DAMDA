@@ -78,8 +78,6 @@ public class ManagerServiceImpl implements ManagerService {
     public ManagerResponseDTO managerResponseDTO(Long managerId) {
 
         Manager manager = managerRepository.findById(managerId).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_MANAGER));
-
-        System.out.println(manager);
         
         ManagerResponseDTO dto = ManagerResponseDTO
                 .builder()

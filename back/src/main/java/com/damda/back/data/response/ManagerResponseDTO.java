@@ -24,7 +24,6 @@ public class ManagerResponseDTO {
     private Member member;
     private String managerName;
     private String managerPhoneNumber;
-//    private ActivityDay activityDay;  // TODO
     private Map<String, List<String>> region;
     private Integer level;
     private String certificateStatus;

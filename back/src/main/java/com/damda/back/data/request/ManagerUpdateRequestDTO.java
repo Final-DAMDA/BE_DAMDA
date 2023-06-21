@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -15,7 +13,6 @@ public class ManagerUpdateRequestDTO {
     
     private String managerName;
     private String managerPhoneNumber;
-    private List<Boolean> activityDay;
     private String certificateStatus;
     private String certificateStatusEtc;
     private Integer level;
