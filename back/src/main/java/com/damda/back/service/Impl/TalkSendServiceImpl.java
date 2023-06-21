@@ -26,6 +26,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -165,6 +168,17 @@ public class TalkSendServiceImpl implements TalkSendService {
             MatchingFailToManagerDTO matchingFailToManagerDTO = new MatchingFailToManagerDTO(answerMap,failPhoneNumbers,managerAmount);
             solapiUtils.managerMatchingFail(matchingFailToManagerDTO);
         }
+
+        //리마인드 톡 유저한테 보내기
+
+
+        RemindTalkToUserDTO remindTalkToUserDTO = new RemindTalkToUserDTO
+                (answerMap.get(QuestionIdentify.SERVICEDATE), answerMap.get(QuestionIdentify.APPLICANTCONACTINFO));
+        solapiUtils.userRemindTalk(remindTalkToUserDTO);
+
+        //리마인드 톡 매니저에게 보내기
+        RemindTalkToManagerDTO remindTalkToManagerDTO = new RemindTalkToManagerDTO(answerMap,managerPhoneNumbers,managerAmount);
+        solapiUtils.managerRemindTalk(remindTalkToManagerDTO);
 
     }
 
