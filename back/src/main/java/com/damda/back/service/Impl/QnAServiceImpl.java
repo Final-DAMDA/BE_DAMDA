@@ -62,7 +62,7 @@ public class QnAServiceImpl implements QnAService {
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void updateQnA(Long qnaId, QnARequestDTO dto) {
 
-        QnA qnA = qnARepository.findById(qnaId).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_MANAGER));
+        QnA qnA = qnARepository.findById(qnaId).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_QNA));
 
         qnA.updateQnA(dto);
 
