@@ -73,7 +73,10 @@ class BackApplicationTests {
 	@Commit
 	void contextLoads() {
 		//managerRepository.managerWithArea("하남시").forEach(System.out::println);
+		ReservationSubmitForm submitForm = reservationFormRepository.findById(1L).get();
 
+		GroupIdCode groupIdCode = GroupIdCode.builder().managerGroupId("test").build();
+		submitForm.addGroupId(groupIdCode);
 //		QManager manager = QManager.manager;
 //		QAreaManager areaManager = QAreaManager.areaManager;
 //		QArea area = QArea.area;

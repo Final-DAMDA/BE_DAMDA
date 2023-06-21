@@ -136,26 +136,26 @@ public class BackApplication {
 		questionRepository.save(question2);
 
 
-
-		Question question3 = questionRepository.save(
-				Question.builder()
-						.page(1)
-						.order(3)
-						.placeHolder("없음")
-						.questionIdentify(QuestionIdentify.SALEAGENT)
-						.questionType(QuestionType.SELECT)
-						.status(QuestionStatus.ACTIVATION)
-						.required(true)
-						.questionTitle("판매 대행 옵션을 선택해주세요.")
-						.build()
-		);
-
-		List<Category> categories1 = List.of(
-				Category.builder().questionCategory("O").build(),
-				Category.builder().questionCategory("X").build()
-		);
-
-		categories1.forEach(question3::addCategory);
+//
+//		Question question3 = questionRepository.save(
+//				Question.builder()
+//						.page(1)
+//						.order(3)
+//						.placeHolder("없음")
+//						.questionIdentify(QuestionIdentify.SALEAGENT)
+//						.questionType(QuestionType.SELECT)
+//						.status(QuestionStatus.ACTIVATION)
+//						.required(true)
+//						.questionTitle("판매 대행 옵션을 선택해주세요.")
+//						.build()
+//		);
+//
+//		List<Category> categories1 = List.of(
+//				Category.builder().questionCategory("O").build(),
+//				Category.builder().questionCategory("X").build()
+//		);
+//
+//		categories1.forEach(question3::addCategory);
 
 
 		questionRepository.save(

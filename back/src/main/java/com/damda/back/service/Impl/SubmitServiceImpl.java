@@ -76,18 +76,17 @@ public class SubmitServiceImpl implements SubmitService {
 
         @PostConstruct
         private void questionIdentifyInit(){
-            identifies.add(QuestionIdentify.AFEWSERVINGS); //몇인분량의 옷 (투입인원아님)
-            identifies.add(QuestionIdentify.SERVICEDURATION); //서비스 사용시간=
-            identifies.add(QuestionIdentify.ADDRESS); //서비스 주소=
-            identifies.add(QuestionIdentify.SERVICEDATE); //서비스 날짜와 시간=
-            identifies.add(QuestionIdentify.PARKINGAVAILABLE); //주차 가능여부=
-            identifies.add(QuestionIdentify.APPLICANTNAME); //신청인 이름
-            identifies.add(QuestionIdentify.APPLICANTCONACTINFO); //신청인 전화번호
+            identifies.add(QuestionIdentify.AFEWSERVINGS); //몇인분량의 옷 (투입인원아님)/
+            identifies.add(QuestionIdentify.SERVICEDURATION); //서비스 사용시간=/
+            identifies.add(QuestionIdentify.ADDRESS); //서비스 주소=/
+            identifies.add(QuestionIdentify.SERVICEDATE); //서비스 날짜와 시간=/
+            identifies.add(QuestionIdentify.PARKINGAVAILABLE); //주차 가능여부=/
+            identifies.add(QuestionIdentify.APPLICANTNAME); //신청인 이름/
+            identifies.add(QuestionIdentify.APPLICANTCONACTINFO); //신청인 전화번호/
             identifies.add(QuestionIdentify.LEARNEDROUTE); // 알게된 경로
-            identifies.add(QuestionIdentify.RESERVATIONENTER); //들어가기 위해 필요한 자료=
-            identifies.add(QuestionIdentify.RESERVATIONNOTE); // 알아야 할 사항=
-            identifies.add(QuestionIdentify.RESERVATIONREQUEST); // 요청사항=
-            identifies.add(QuestionIdentify.SALEAGENT); //판매대행
+            identifies.add(QuestionIdentify.RESERVATIONENTER); //들어가기 위해 필요한 자료=/
+            identifies.add(QuestionIdentify.RESERVATIONNOTE); // 알아야 할 사항=/
+            identifies.add(QuestionIdentify.RESERVATIONREQUEST); // 요청사항=/
         }
 
 
@@ -203,6 +202,10 @@ public class SubmitServiceImpl implements SubmitService {
         //    try{
                 dto.getSubmit().forEach(submitSlice -> {
                     if(!StringUtils.hasText(submitSlice.getAnswer())) throw new CommonException(ErrorCode.RESERVATION_FORM_MISSING_VALUE);
+
+                    if(submitSlice.getQuestionIdentify().equals(QuestionIdentify.SERVICEDATE)){
+                        reservationSubmitForm.changeReservationDate(submitSlice.getAnswer());
+                    }
 
                     reservationSubmitForm.addAnswer(ReservationAnswer.builder()
                             .questionIdentify(submitSlice.getQuestionIdentify())
