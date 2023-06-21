@@ -9,6 +9,8 @@ import com.damda.back.repository.ReservationFormRepository;
 import com.damda.back.service.MatchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -87,6 +89,25 @@ public class MatchController {
 				.builder()
 				.codeEnum(CodeEnum.SUCCESS)
 				.data(true)
+				.build();
+		return ResponseEntity.ok(commonResponse);
+	}
+
+
+	/**
+	 * @apiNote : 매칭 리스트-> 예약내역
+	 * @return
+	 */
+	@GetMapping("/api/v1/matching/reservation/{id}")
+	public ResponseEntity<CommonResponse<?>> matchingListReservation(@PathVariable("id") Long managerId,
+																	 @RequestParam(name = "page", defaultValue = "0") int page,
+																	 @RequestParam(name = "size", defaultValue = "8") int size){//reservationID 임
+		Pageable pageable = PageRequest.of(page, size);
+
+		CommonResponse<?> commonResponse = CommonResponse
+				.builder()
+				.codeEnum(CodeEnum.SUCCESS)
+				.data("")
 				.build();
 		return ResponseEntity.ok(commonResponse);
 	}

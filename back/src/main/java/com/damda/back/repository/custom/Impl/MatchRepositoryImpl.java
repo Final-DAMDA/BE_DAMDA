@@ -1,16 +1,18 @@
 package com.damda.back.repository.custom.Impl;
 
 import com.damda.back.data.common.MatchResponseStatus;
-import com.damda.back.domain.Match;
-import com.damda.back.domain.QMatch;
-import com.damda.back.domain.QReservationAnswer;
-import com.damda.back.domain.QReservationSubmitForm;
+import com.damda.back.domain.*;
 import com.damda.back.domain.manager.Manager;
 import com.damda.back.domain.manager.QManager;
+import com.damda.back.repository.ReservationFormRepository;
 import com.damda.back.repository.custom.MatchCustomRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -22,6 +24,7 @@ public class MatchRepositoryImpl implements MatchCustomRepository {
 
 
     private final JPAQueryFactory queryFactory;
+    private final ReservationFormRepository reservationFormRepository;
 
 
     public List<Manager> matchingManagerInfo(Long formId){
@@ -111,6 +114,23 @@ public class MatchRepositoryImpl implements MatchCustomRepository {
                 .fetchOne();
 
         return Optional.ofNullable(match1);
+    }
+
+    @Override
+    public Page<ReservationSubmitForm> findByManagerId(Long managerId, Pageable pageable) {
+        QMatch match = QMatch.match;
+        QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
+
+        List<ReservationSubmitForm> list = queryFactory.selectDistinct(match.reservationForm)
+                .from(match)
+                .innerJoin(match.reservationForm, submitForm).fetchJoin()
+                .where(match.matching.eq(true).and(match.managerId.eq(managerId)))
+                .fetch();
+
+        JPAQuery<Long> count = queryFactory.selectDistinct(match.reservationForm.count())
+                .from(match)
+                .where(match.matching.eq(true).and(match.managerId.eq(managerId)));
+        return PageableExecutionUtils.getPage(list,pageable,count::fetchOne);
     }
 
 

@@ -8,6 +8,8 @@ import com.damda.back.data.request.MatchingSuccessToManagerDTO;
 import com.damda.back.data.request.MatchingSuccessToUserDTO;
 import com.damda.back.data.response.MatchingAcceptGetDTO;
 import com.damda.back.data.response.MatchingListDTO;
+import com.damda.back.data.response.ReservationListManagerIDDTO;
+import com.damda.back.data.response.ReviewListAdminDTO;
 import com.damda.back.domain.Match;
 import com.damda.back.domain.ReservationAnswer;
 import com.damda.back.domain.ReservationSubmitForm;
@@ -21,6 +23,9 @@ import com.damda.back.service.MatchService;
 import com.damda.back.service.TalkSendService;
 import com.damda.back.utils.SolapiUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -179,6 +184,26 @@ public class MatchServiceImpl implements MatchService {
 			throw new CommonException(ErrorCode.OVER_MATCH_ORDER);
 		}
 
+	}
+
+	@Transactional(isolation = Isolation.REPEATABLE_READ)
+	@Override
+	public Page<ReservationListManagerIDDTO> reservationListManagerDTO(Long managerId, Pageable pageable) {
+		Manager manager= managerRepository.findById(managerId).orElseThrow
+				(()-> new CommonException(ErrorCode.NOT_FOUND_MANAGER));
+
+		Page<ReservationSubmitForm> reservationSubmitForms = matchRepository.findByManagerId(managerId,pageable);
+
+		List<ReservationListManagerIDDTO> dtos = new ArrayList<>();
+		for(ReservationSubmitForm form:reservationSubmitForms){
+			ReservationListManagerIDDTO dto = ReservationListManagerIDDTO.builder()
+					.reservationId(form.getId())
+					.serviceDate(form.getReservationDate())
+					.build();
+			dtos.add(dto);
+		}
+		Page<ReservationListManagerIDDTO> resultPage = new PageImpl<>(dtos, pageable, reservationSubmitForms.getTotalElements());
+		return resultPage;
 	}
 
 }
