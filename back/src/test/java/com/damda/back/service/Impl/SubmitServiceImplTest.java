@@ -86,12 +86,13 @@ class SubmitServiceImplTest {
         List<ReservationSubmitForm> mockedForms = Arrays.asList(form, form2);
 
         Page<ReservationSubmitForm> mockedPage = new PageImpl<>(mockedForms);
-        when(repository.formPaging(any(PageRequest.class),any(Timestamp.class),any(Timestamp.class)))
+        when(repository.formPaging(any(PageRequest.class),any(Timestamp.class),any(Timestamp.class),any(String.class)))
                 .thenReturn(mockedPage);
 
         // when
 
-        FormResultDTO resultDTO = submitService.submitTotalResponse(page,startDate,endDate);
+        FormResultDTO resultDTO = submitService.submitTotalResponse(page,startDate,endDate,"asc");
+
         Statistical statistical = resultDTO.getStatistical();
 
         // then
@@ -102,7 +103,7 @@ class SubmitServiceImplTest {
         Assertions.assertThat(resultDTO.isLast()).isTrue();
 
         Assertions.assertThat(statistical.getCancellation()).isEqualTo(0L);
-        Assertions.assertThat(statistical.getWating()).isEqualTo(0L);
+        Assertions.assertThat(statistical.getWaiting()).isEqualTo(0L);
         Assertions.assertThat(statistical.getCompleted()).isEqualTo(0L);
         Assertions.assertThat(statistical.getConfirmation()).isEqualTo(0L);
         Assertions.assertThat(statistical.getMatching()).isEqualTo(0L);

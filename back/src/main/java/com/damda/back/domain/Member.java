@@ -5,6 +5,7 @@ import com.damda.back.data.common.MemberRole;
 import com.damda.back.data.common.MemberStatus;
 import lombok.*;
 import org.aspectj.apache.bcel.classfile.Code;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -15,12 +16,15 @@ import java.util.List;
 @Builder
 @Entity
 @Getter
+@Table(name = "member",indexes = @Index(name = "idx_username",columnList = "username"))
 public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+
+    @Column(name = "username")
     private String username;
 
     @Column(columnDefinition = "TEXT")
@@ -47,6 +51,8 @@ public class Member extends BaseEntity {
     private MemberStatus status;
 
     @Builder.Default
+    @BatchSize(size = 100)
+    @OrderBy("createdAt DESC ")
     @OneToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             orphanRemoval = true,

@@ -20,7 +20,7 @@ public interface ReservationFormCustomRepository {
      * */
     public Map<ReservationStatus, Long> statistical();
 
-    public Page<ReservationSubmitForm> formPaging(Pageable pageable, Timestamp startDate, Timestamp endDate);
+    public Page<ReservationSubmitForm> formPaging(Pageable pageable, Timestamp startDate, Timestamp endDate,String sort);
 
     public List<String> matches(List<Long> ids);
 
@@ -33,5 +33,7 @@ public interface ReservationFormCustomRepository {
 
     public Optional<ReservationSubmitForm> submitFormWithAnswer(Long formId);
 
+    public Page<ReservationSubmitForm> submitFormDataList(Integer memberId,Pageable pageable);
+    public Optional<ReservationSubmitForm> submitFormWithMember(Long formId);
 
 }

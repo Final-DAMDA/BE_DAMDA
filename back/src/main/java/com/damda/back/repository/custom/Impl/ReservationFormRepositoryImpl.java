@@ -5,6 +5,7 @@ import com.damda.back.domain.*;
 import com.damda.back.domain.manager.QManager;
 import com.damda.back.repository.custom.ReservationFormCustomRepository;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.JPAExpressions;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
+import javax.swing.text.html.Option;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
@@ -57,16 +59,26 @@ public class ReservationFormRepositoryImpl implements ReservationFormCustomRepos
                 return countByStatusMap;
         }
 
-        public Page<ReservationSubmitForm> formPaging(Pageable pageable, Timestamp startDate,Timestamp endDate){
+        public Page<ReservationSubmitForm> formPaging(Pageable pageable, Timestamp startDate,Timestamp endDate,String sort){
+
+
+
+
                 QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
                 QMember member = QMember.member;
                 QReservationAnswer answer = QReservationAnswer.reservationAnswer;
+
+                OrderSpecifier<?> orderSpecifier = submitForm.createdAt.asc();
+
+                if(sort.equalsIgnoreCase("desc")) orderSpecifier = submitForm.createdAt.desc();
+
 
                 JPAQuery<ReservationSubmitForm> query =
                         queryFactory.selectDistinct(submitForm)
                         .from(submitForm)
                         .innerJoin(submitForm.member, member).fetchJoin()
                         .where(createdAtBetween(startDate,endDate,submitForm))
+                        .orderBy(orderSpecifier)
                         .offset(pageable.getOffset())
                         .limit(pageable.getPageSize());
 
@@ -197,5 +209,41 @@ public class ReservationFormRepositoryImpl implements ReservationFormCustomRepos
                 return Optional.ofNullable(reservationSubmitForm);
         }
 
+
+        public Page<ReservationSubmitForm> submitFormDataList(Integer memberId,Pageable pageable){
+                QMember member = QMember.member;
+                QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
+                QReservationAnswer answer = QReservationAnswer.reservationAnswer;
+
+                List<ReservationSubmitForm> submitForms = queryFactory.selectDistinct(submitForm)
+                        .from(submitForm)
+                        .where(submitForm.member.id.eq(memberId))
+                        .offset(pageable.getOffset())
+                        .limit(pageable.getPageSize())
+                        .fetch();
+
+                JPAQuery<Long> count = queryFactory.select(submitForm.count())
+                        .from(submitForm);
+
+                return PageableExecutionUtils.getPage(submitForms,pageable,count::fetchOne);
+
+        }
+
+
+        public Optional<ReservationSubmitForm> submitFormWithMember(Long formId){
+                QMember member = QMember.member;
+                QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
+                QReservationAnswer reservationAnswer = QReservationAnswer.reservationAnswer;
+
+               ReservationSubmitForm submitFormEntity = queryFactory.selectDistinct(submitForm)
+                        .from(submitForm)
+                        .innerJoin(submitForm.reservationAnswerList, reservationAnswer).fetchJoin()
+                        .innerJoin(submitForm.member,member).fetchJoin()
+                        .where(submitForm.id.eq(formId))
+                        .fetchOne();
+
+               if(submitFormEntity != null) return Optional.of(submitFormEntity);
+               else return Optional.empty();
+        }
 
 }
