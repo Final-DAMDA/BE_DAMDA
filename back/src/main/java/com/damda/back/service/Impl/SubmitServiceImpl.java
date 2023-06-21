@@ -26,9 +26,6 @@ import com.damda.back.service.SubmitService;
 import com.damda.back.service.TalkSendService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.nurigo.sdk.message.exception.NurigoEmptyResponseException;
-import net.nurigo.sdk.message.exception.NurigoMessageNotReceivedException;
-import net.nurigo.sdk.message.exception.NurigoUnknownException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -318,8 +315,8 @@ public class SubmitServiceImpl implements SubmitService {
                });
 
                managerRepository.managers(managerList).forEach(manager -> {
-                    log.info("수신자들 {} : {}",manager.getName(),manager.getPhoneNumber());
-                    phoneNumbers.add(manager.getPhoneNumber());
+                    log.info("수신자들 {} : {}",manager.getManagerName(),manager.getManagerPhoneNumber());
+                    phoneNumbers.add(manager.getManagerPhoneNumber());
                });
                if(!phoneNumbers.isEmpty()) talkSendService.sendManagerWithCustomer(data,phoneNumbers);
            }else if(dto.getStatus().equals(ReservationStatus.SERVICE_COMPLETED)){ // 서비스완료시 입금 완료시로 변경해야함
@@ -421,7 +418,7 @@ public class SubmitServiceImpl implements SubmitService {
             List<String> managers = managerList.stream()
                     .filter(match ->  match.isMatching()) //매칭이 되었었던 매니저들
                     .map(Match::getManager)
-                    .map(Manager::getPhoneNumber).collect(Collectors.toList());
+                    .map(Manager::getManagerPhoneNumber).collect(Collectors.toList());
 
             log.info("요청 보낸 번호 {}",managers);
 /*            try {

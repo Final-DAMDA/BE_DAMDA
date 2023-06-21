@@ -16,14 +16,12 @@ import com.damda.back.repository.*;
 import com.damda.back.service.ManagerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.engine.internal.Collections;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Slf4j
 @Service
@@ -81,21 +79,24 @@ public class ManagerServiceImpl implements ManagerService {
 
         Manager manager = managerRepository.findById(managerId).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_MANAGER));
 
+        System.out.println(manager);
+        
         ManagerResponseDTO dto = ManagerResponseDTO
                 .builder()
                 .id(manager.getId())
-                .managerName(manager.getName())
-                .managerPhoneNumber(manager.getPhoneNumber())
-                .address(manager.getAddress())
+                .managerName(manager.getManagerName())
+                .managerPhoneNumber(manager.getManagerPhoneNumber())
                 .level(manager.getLevel())
                 .certificateStatus(String.valueOf(manager.getCertificateStatus()))
                 .certificateStatusEtc(manager.getCertificateStatusEtc())
                 .vehicle(manager.getVehicle())
+                .fieldExperience(manager.getFieldExperience())
+                .mainJobStatus(manager.getMainJobStatus())
+                .mainJobStatusEtc(manager.getMainJobStatusEtc())
+                .memo(manager.getMemo())
                 .prevManagerStatus(String.valueOf(manager.getPrevManagerStatus()))
                 .currManagerStatus(String.valueOf(manager.getCurrManagerStatus()))
                 .build();
-
-        List<AreaManager> managers = manager.getAreaManagers();
 
         return dto;
     }
@@ -111,18 +112,19 @@ public class ManagerServiceImpl implements ManagerService {
             ManagerResponseDTO dto = ManagerResponseDTO
                     .builder()
                     .id(manager.getId())
-                    .managerName(manager.getName())
-                    .managerPhoneNumber(manager.getPhoneNumber())
-                    .address(manager.getAddress())
+                    .managerName(manager.getManagerName())
+                    .managerPhoneNumber(manager.getManagerPhoneNumber())
                     .level(manager.getLevel())
-                    .certificateStatus(manager.getCertificateStatus().toString())
+                    .certificateStatus(String.valueOf(manager.getCertificateStatus()))
                     .certificateStatusEtc(manager.getCertificateStatusEtc())
                     .vehicle(manager.getVehicle())
+                    .fieldExperience(manager.getFieldExperience())
+                    .mainJobStatus(manager.getMainJobStatus())
+                    .mainJobStatusEtc(manager.getMainJobStatusEtc())
+                    .memo(manager.getMemo())
                     .prevManagerStatus(String.valueOf(manager.getPrevManagerStatus()))
                     .currManagerStatus(String.valueOf(manager.getCurrManagerStatus()))
                     .build();
-
-            List<AreaManager> managers = manager.getAreaManagers();
 
             managerResponseDTOList.add(dto);
 

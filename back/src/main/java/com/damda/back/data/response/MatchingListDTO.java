@@ -1,7 +1,6 @@
 package com.damda.back.data.response;
 
 import com.damda.back.domain.Match;
-import com.damda.back.domain.manager.Manager;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,7 +30,7 @@ public class MatchingListDTO {
 		this.matchingResponse = match.getMatchStatus().name();
 		this.updateAt = match.getUpdatedAt().toString();
 		this.name = match.getManagerName();
-		this.phone = match.getManager().getPhoneNumber();
+		this.phone = match.getManager().getManagerPhoneNumber();
 		this.address = match.getManager().getAddress();
 		this.driving = match.getManager().getVehicle();
 		this.certificate = match.getManager().getCertificateStatus().name();

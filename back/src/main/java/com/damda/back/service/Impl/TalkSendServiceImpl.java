@@ -75,8 +75,8 @@ public class TalkSendServiceImpl implements TalkSendService {
                 .build();
 
         for (Manager manager : managerList) {
-            log.info("전송된 번호 {}" , manager.getPhoneNumber());
-            phoneNumbers.add(manager.getPhoneNumber());
+            log.info("전송된 번호 {}" , manager.getManagerPhoneNumber());
+            phoneNumbers.add(manager.getManagerPhoneNumber());
         }
 
 //        try{
