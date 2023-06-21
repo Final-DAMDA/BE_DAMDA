@@ -977,10 +977,6 @@ public class InitQuery {
             submitForm10.addAnswer(answer2011111111);
             submitForm10.addAnswer(answer2111111111);
 
-
-
-
-
         }
 
 }
