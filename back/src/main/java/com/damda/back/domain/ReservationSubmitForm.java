@@ -57,6 +57,16 @@ public class ReservationSubmitForm extends BaseEntity{
     private List<Match> matches = new ArrayList<>();
 
 
+    @OneToOne(mappedBy = "submitForm",cascade = CascadeType.ALL,orphanRemoval = true)
+    private GroupIdCode groupIdCode;
+
+
+
+    public void addGroupId(GroupIdCode groupIdCode){
+        this.groupIdCode = groupIdCode;
+        groupIdCode.connectSubmitFor(this);
+
+    }
 
     public void addAnswer(ReservationAnswer answer){
         answer.changeForm(this);
