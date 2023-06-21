@@ -67,6 +67,7 @@ class BackApplicationTests {
 	private JPAQueryFactory queryFactory;
 
 
+
 	@Test
 	@Transactional
 	@Commit
@@ -139,6 +140,7 @@ class BackApplicationTests {
 
 
 	}
+
 	@Test
 	@DisplayName("테스트 데이터 넣기")
 	void test_insert(){
