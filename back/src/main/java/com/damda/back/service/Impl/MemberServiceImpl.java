@@ -116,7 +116,7 @@ public class MemberServiceImpl implements MemberService {
                 Long idString = submitForm.getId();
 
                 ReservationMemberDTO dto = ReservationMemberDTO.builder()
-                        .createdAt(createdAtStr)
+                        .createdAt(submitForm.getReservationDate())
                         .id(idString)
                         .build();
 
@@ -165,5 +165,10 @@ public class MemberServiceImpl implements MemberService {
                 .build();
 
         return dto;
+    }
+
+    @Override
+    public void memoModify(String memo) {
+
     }
 }

@@ -30,4 +30,8 @@ public class GroupIdCode {
 
         private String beforeAfterGroupId;
 
+
+        public void connectSubmitFor(ReservationSubmitForm submitForm){
+                this.submitForm = submitForm;
+        }
 }

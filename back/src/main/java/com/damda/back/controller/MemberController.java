@@ -145,8 +145,23 @@ public class MemberController {
 
         CommonResponse<?> commonResponse = CommonResponse
                 .builder()
-                .codeEnum(CodeEnum.SUCCESS) // TODO: 이거 해야함
+                .codeEnum(CodeEnum.SUCCESS)
                 .data(memberService.memberResFormDTO(formId))
+                .build();
+
+        return ResponseEntity.ok(commonResponse);
+    }
+
+
+    @PutMapping("/api/v1/member/memo/modify")
+    public ResponseEntity<CommonResponse<?>> memoModify(
+            @RequestParam Integer memberId
+    ){
+
+
+        CommonResponse<?> commonResponse = CommonResponse
+                .builder()
+                .codeEnum(CodeEnum.SUCCESS) // TODO: 이거 해야함
                 .build();
 
         return ResponseEntity.ok(commonResponse);
