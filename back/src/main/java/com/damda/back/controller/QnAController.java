@@ -60,12 +60,32 @@ public class QnAController {
     }
 
     /**
+     * API: QnA 가져오기
+     */
+    @GetMapping("/api/v1/member/qna/{id}")
+    public ResponseEntity<CommonResponse<?>> qnaResponseDTO(@PathVariable("id") Long qnaId) {
+
+        QnAResponseDTO qnaResponseDTO = qnAService.qnaResponseDTO(qnaId);
+
+        CommonResponse<?> commonResponse = CommonResponse
+                .builder()
+                .codeEnum(CodeEnum.SUCCESS)
+                .data(qnaResponseDTO)
+                .build();
+
+        return ResponseEntity
+                .status(commonResponse.getStatus())
+                .body(commonResponse);
+
+    }
+
+    /**
      * API: QnA 수정하기
      */
     @PutMapping("/api/v1/admin/qna/{id}")
     public ResponseEntity<CommonResponse<?>> updateQnA(@PathVariable("id") Long qnaId, @RequestBody QnARequestDTO dto) {
 
-        qnAService.updateQnA(dto);
+        qnAService.updateQnA(qnaId, dto);
 
         CommonResponse<?> commonResponse = CommonResponse
                 .builder()

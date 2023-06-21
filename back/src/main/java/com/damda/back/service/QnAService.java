@@ -10,7 +10,9 @@ public interface QnAService {
 
     List<QnAResponseDTO> qnaResponseDTOList();
 
-    void updateQnA(QnARequestDTO dto);
+    void updateQnA(Long qnaId, QnARequestDTO dto);
 
     void deleteQnA(Long qnaId);
+
+    QnAResponseDTO qnaResponseDTO(Long qnaId);
 }

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class QnARequestDTO {
     
-    private String qnaTitle;
+    private String title;
     
     private String qnaCategory;
     

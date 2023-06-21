@@ -52,25 +52,26 @@ public class ManagerServiceImpl implements ManagerService {
             // TODO:
         }
 
+        for (String district : dto.getRegion().get("서울특별시")) {
+            Area area2 = areaRepository.searchArea("서울특별시", district).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_AREA));
 
-        List<Area> areas = IntStream.range(0, dto.getActivityDistrict().size())
-                .mapToObj(i -> {
-                    String city = dto.getActivityCity().get(i);
-                    String district = dto.getActivityDistrict().get(i);
-                    Area area2 = areaRepository.searchArea(city, district).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_AREA));
-                    return area2;
-                }).collect(Collectors.toList());
-
-        for (Area a : areas) {
             AreaManager areaManager = AreaManager.builder()
-                    .areaManagerKey(new AreaManager.AreaManagerKey(a, manager))
+                    .areaManagerKey(new AreaManager.AreaManagerKey(area2, manager))
                     .build();
-            try {
-                areaManagerRepository.save(areaManager);
-            } catch (Exception e) {
-                // TODO:
-            }
+
+            areaManagerRepository.save(areaManager);
         }
+
+        for (String district : dto.getRegion().get("경기도")) {
+            Area area2 = areaRepository.searchArea("경기도", district).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_AREA));
+
+            AreaManager areaManager = AreaManager.builder()
+                    .areaManagerKey(new AreaManager.AreaManagerKey(area2, manager))
+                    .build();
+
+            areaManagerRepository.save(areaManager);
+        }
+
         return true;
     }
 
@@ -85,13 +86,13 @@ public class ManagerServiceImpl implements ManagerService {
                 .id(manager.getId())
                 .managerName(manager.getName())
                 .managerPhoneNumber(manager.getPhoneNumber())
-                .address(manager.getMember().getAddress())
+                .address(manager.getAddress())
                 .level(manager.getLevel())
-                .certificateStatus(manager.getCertificateStatus().toString())
+                .certificateStatus(String.valueOf(manager.getCertificateStatus()))
                 .certificateStatusEtc(manager.getCertificateStatusEtc())
                 .vehicle(manager.getVehicle())
-                .prevManagerStatus(manager.getPrevManagerStatus().toString())
-                .currManagerStatus(manager.getCurrManagerStatus().toString())
+                .prevManagerStatus(String.valueOf(manager.getPrevManagerStatus()))
+                .currManagerStatus(String.valueOf(manager.getCurrManagerStatus()))
                 .build();
 
         List<AreaManager> managers = manager.getAreaManagers();
@@ -112,13 +113,13 @@ public class ManagerServiceImpl implements ManagerService {
                     .id(manager.getId())
                     .managerName(manager.getName())
                     .managerPhoneNumber(manager.getPhoneNumber())
-                    .address(manager.getMember().getAddress())
+                    .address(manager.getAddress())
                     .level(manager.getLevel())
                     .certificateStatus(manager.getCertificateStatus().toString())
                     .certificateStatusEtc(manager.getCertificateStatusEtc())
                     .vehicle(manager.getVehicle())
-                    .prevManagerStatus(manager.getPrevManagerStatus().toString())
-                    .currManagerStatus(manager.getCurrManagerStatus().toString())
+                    .prevManagerStatus(String.valueOf(manager.getPrevManagerStatus()))
+                    .currManagerStatus(String.valueOf(manager.getCurrManagerStatus()))
                     .build();
 
             List<AreaManager> managers = manager.getAreaManagers();
@@ -187,7 +188,7 @@ public class ManagerServiceImpl implements ManagerService {
 
         return true;
     }
-    
+
 }
 
 

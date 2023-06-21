@@ -22,8 +22,7 @@ public class ManagerApplicationDTO {
     private String address;
     private List<Boolean> activityDay;//(월~일 boolean만 보냄)
 
-    private List<String> activityCity;
-    private List<String> activityDistrict;
+    private Map<String, List<String>> region;
     private String certificateStatus;
     private String certificateStatusEtc;
 
@@ -35,7 +34,7 @@ public class ManagerApplicationDTO {
 
     private String mainJobStatusEtc;
 
-    public Manager toManagerEntity(Member manager) { // TODO: 매니저 상태값 체크
+    public Manager toManagerEntity(Member member) { // TODO: 매니저 상태값 체크
         return Manager.builder()
                 .name(name)
                 .phoneNumber(phone)
@@ -47,7 +46,7 @@ public class ManagerApplicationDTO {
                 .fieldExperience(fieldExperience)
                 .mainJobStatus(mainJobStatus)
                 .mainJobStatusEtc(mainJobStatusEtc)
-                .member(manager)
+                .member(member)
                 .currManagerStatus(ManagerStatusEnum.WAITING)
                 .build();
     }
@@ -64,6 +63,5 @@ public class ManagerApplicationDTO {
                 .isOkSunday(activityDay.get(6))
                 .build();
     }
-
-
+    
 }
