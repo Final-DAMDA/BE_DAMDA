@@ -15,4 +15,8 @@ public interface MemberService {
 
     public PageReservationMemberDTO reservationMemberDTOS(Integer memberId, Integer page);
     public MemberResFormDTO memberResFormDTO(Long formId);
+
+
+    public void memoModify(String memo);
+
 }
