@@ -107,7 +107,7 @@ public class MatchController {
 		CommonResponse<?> commonResponse = CommonResponse
 				.builder()
 				.codeEnum(CodeEnum.SUCCESS)
-				.data("")
+				.data(matchService.reservationListManagerDTO(managerId,pageable))
 				.build();
 		return ResponseEntity.ok(commonResponse);
 	}
