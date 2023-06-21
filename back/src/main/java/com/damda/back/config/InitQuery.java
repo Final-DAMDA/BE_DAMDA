@@ -44,6 +44,16 @@ public class InitQuery {
 
             memberRepository.save(member);
 
+            Member member2 = Member.builder()
+                    .username("testMember2")
+                    .password("1234")
+                    .role(MemberRole.USER)
+                    .status(MemberStatus.ACTIVATION)
+                    .profileImage("404.jpg")
+                    .build();
+
+            memberRepository.save(member2);
+
             Manager manager = managerRepository.save(Manager.builder()
                     .phoneNumber("01040783843")
                     .name("김재우")
@@ -125,6 +135,22 @@ public class InitQuery {
 
             matchRepository.save(match);
 
+        /**
+         *  테스트 응답 11가지
+         * */
+
+            ReservationAnswer answer0 = ReservationAnswer.builder()
+                    .answer("3인분")
+                    .questionIdentify(QuestionIdentify.AFEWSERVINGS)
+                    .build();
+            ReservationAnswer answer02 = ReservationAnswer.builder()
+                    .answer("인스타그램")
+                    .questionIdentify(QuestionIdentify.LEARNEDROUTE)
+                    .build();
+            ReservationAnswer answer01 = ReservationAnswer.builder()
+                    .answer("홍길동")
+                    .questionIdentify(QuestionIdentify.APPLICANTNAME)
+                    .build();
 
             ReservationAnswer answer1 = ReservationAnswer.builder()
                     .answer("3시간")
@@ -168,7 +194,9 @@ public class InitQuery {
                     .build();
 
 
-
+            submitForm.addAnswer(answer0);
+            submitForm.addAnswer(answer01);
+            submitForm.addAnswer(answer02);
             submitForm.addAnswer(answer1);
             submitForm.addAnswer(answer2);
             submitForm.addAnswer(answer3);

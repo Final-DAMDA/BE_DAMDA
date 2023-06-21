@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 public class UserResponseDTO {
 
 
+    private Integer id;
+
     private String name;
 
     private String phoneNumber;

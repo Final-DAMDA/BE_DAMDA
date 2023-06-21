@@ -98,13 +98,55 @@ public class MemberController {
     }
 
 
+    /**
+     * @apiNote 고객 관리 리스트를 프론트에게 보내주는 엔드포인트이다.
+     *
+     * */
     @GetMapping("/api/v1/member/list")
-    public ResponseEntity<CommonResponse<?>> memberList(){
+    public ResponseEntity<CommonResponse<?>> memberList(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false,defaultValue = "0") Integer page
+    ){
 
         CommonResponse<?> commonResponse = CommonResponse
                 .builder()
                 .codeEnum(CodeEnum.SUCCESS)
-                .data(memberService.listMember())
+                .data(memberService.listMember(search,page))
+                .build();
+
+        return ResponseEntity.ok(commonResponse);
+    }
+
+
+    /**
+     * @apiNote 고객관리 리스트에서 아래 회색창으로 쭉 나오는 부분이고 여기서 MemberId를 가지고있는다.
+     * */
+    @GetMapping("/api/v1/member/reservation")
+    public ResponseEntity<CommonResponse<?>> commonResponseMemberReservation(
+            @RequestParam Integer memberId,
+            @RequestParam(required = false, defaultValue = "0") Integer page){
+
+        CommonResponse<?> commonResponse = CommonResponse
+                .builder()
+                .codeEnum(CodeEnum.SUCCESS)
+                .data(memberService.reservationMemberDTOS(memberId,page))
+                .build();
+
+        return ResponseEntity.ok(commonResponse);
+    }
+
+    /**
+     * @apiNote 위에서 준 회색부분에 memberId를 통해 조회하는 고객예약폼이다.
+     *
+     * */
+    @GetMapping("/api/v1/member/submit/form")
+    public ResponseEntity<CommonResponse<?>> submitFormResponseEntity(
+            @RequestParam Long formId){
+
+        CommonResponse<?> commonResponse = CommonResponse
+                .builder()
+                .codeEnum(CodeEnum.SUCCESS) // TODO: 이거 해야함
+                .data(memberService.memberResFormDTO(formId))
                 .build();
 
         return ResponseEntity.ok(commonResponse);

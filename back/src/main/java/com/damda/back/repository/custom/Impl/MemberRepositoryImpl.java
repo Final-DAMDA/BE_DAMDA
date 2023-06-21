@@ -9,9 +9,13 @@ import com.damda.back.repository.MemberRepository;
 import com.damda.back.repository.custom.MemberCustomRepository;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import javax.swing.text.html.Option;
@@ -85,10 +89,14 @@ public class MemberRepositoryImpl implements MemberCustomRepository {
         else return Optional.empty();
     }
 
-    public List<UserResponseDTO> findByMemberListWithCode(){
+    public Page<Member> findByMemberListWithCode(String search, Pageable pageable){
         QMember member = QMember.member;
         QDiscountCode discountCode = QDiscountCode.discountCode;
         QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
+
+        BooleanExpression searchExpression = null;
+        if(search != null) searchExpression = member.username.contains(search);;
+
 
         List<UserResponseDTO> dtos = new ArrayList<>();
 
@@ -96,34 +104,17 @@ public class MemberRepositoryImpl implements MemberCustomRepository {
                 .selectDistinct(member)
                 .from(member)
                 .leftJoin(member.discountCode,discountCode).fetchJoin()
-                .leftJoin(member.reservationSubmitFormList,submitForm).fetchJoin()
                 .where(member.status.eq(MemberStatus.ACTIVATION))
                 .where(member.role.eq(MemberRole.USER))
-                .orderBy(submitForm.createdAt.desc())
+                .where(searchExpression)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
-        list.forEach(memberPE -> {
+        var count = queryFactory.selectDistinct(member.count())
+                .from(member);
 
-            List<ReservationSubmitForm> submitForms = memberPE.getReservationSubmitFormList();
-            ReservationStatus status = submitForms.isEmpty() ? ReservationStatus.NONE : submitForms.stream().findFirst().get().getStatus();
-
-            UserResponseDTO dto = UserResponseDTO.builder()
-                    .name(memberPE.getUsername())
-                    .address(memberPE.getAddress())
-                    .phoneNumber(memberPE.getPhoneNumber())
-                    .address(memberPE.getAddress())
-                    .reservationStatus(status)
-                    .createdAt(memberPE.getCreatedAt().toString())
-                    .code(memberPE.getDiscountCode() != null ? memberPE.getDiscountCode().getCode() : null)
-                    .memo(memberPE.getMemo())
-                    .build();
-
-            dto.safeFromNull();
-
-            dtos.add(dto);
-        });
-
-        return dtos;
+        return PageableExecutionUtils.getPage(list,pageable,count::fetchOne);
     }
 
 }

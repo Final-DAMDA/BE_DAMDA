@@ -33,5 +33,7 @@ public interface ReservationFormCustomRepository {
 
     public Optional<ReservationSubmitForm> submitFormWithAnswer(Long formId);
 
+    public Page<ReservationSubmitForm> submitFormDataList(Integer memberId,Pageable pageable);
+    public Optional<ReservationSubmitForm> submitFormWithMember(Long formId);
 
 }
