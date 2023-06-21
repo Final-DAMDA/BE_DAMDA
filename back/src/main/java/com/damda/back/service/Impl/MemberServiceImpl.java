@@ -102,6 +102,8 @@ public class MemberServiceImpl implements MemberService {
     }
 
 
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public PageReservationMemberDTO reservationMemberDTOS(Integer memberId,Integer page){
 
         Page<ReservationSubmitForm> pageData = formRepository.submitFormDataList(memberId,PageRequest.of(page,10));
@@ -131,22 +133,37 @@ public class MemberServiceImpl implements MemberService {
         return pageReservationMemberDTO;
     }
 
-    public MemberResFormDTO memberResFormDTO(Long id){
-        ReservationSubmitForm submitForm = formRepository.submitFormWithMember(id)
+
+    /**
+     * @apiNote  고객관리에서 예약 폼 자세히 보기
+     * */
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public MemberResFormDTO memberResFormDTO(Long formId){
+        ReservationSubmitForm submitForm = formRepository.submitFormWithMember(formId)
                 .orElseThrow(() -> new CommonException(ErrorCode.RESERVATION_FORM_MISSING_VALUE));
 
         List<ReservationAnswer> answerList = submitForm.getReservationAnswerList();
         Member member = submitForm.getMember();
-
-        Map<QuestionIdentify,String> map = answerList.stream()
+        Map<QuestionIdentify,String> answerMap = answerList.stream()
                 .collect(Collectors
                         .toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
 
-       // map.get()
 
-        //TODO: 해당 부분 dTO로 바꿔서 리턴 예약폼 자세히보기임  MemberResFormDTO로바구면도미
+        MemberResFormDTO dto = MemberResFormDTO.builder()
+                .applicantName(answerMap.get(QuestionIdentify.APPLICANTNAME))
+                .applicantContactInfo(answerMap.get(QuestionIdentify.APPLICANTCONACTINFO))
+                .address(answerMap.get(QuestionIdentify.ADDRESS))
+                .aFewServings(answerMap.get(QuestionIdentify.AFEWSERVINGS))
+                .serviceDuration(answerMap.get(QuestionIdentify.SERVICEDURATION))
+                .serviceDate(answerMap.get(QuestionIdentify.SERVICEDATE))
+                .parkingAvailable(answerMap.get(QuestionIdentify.PARKINGAVAILABLE))
+                .reservationNote(answerMap.get(QuestionIdentify.RESERVATIONNOTE))
+                .reservationRequest(answerMap.get(QuestionIdentify.RESERVATIONNOTE))
+                .reservationEnter(answerMap.get(QuestionIdentify.RESERVATIONENTER))
+                .discountCode(member.getDiscountCode() != null ? member.getDiscountCode().getCode() : "미발급")
+                .learnedRoute(answerMap.get(QuestionIdentify.LEARNEDROUTE))
+                .build();
 
-
-        return null;
+        return dto;
     }
 }

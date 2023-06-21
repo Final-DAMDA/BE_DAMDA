@@ -14,5 +14,5 @@ public interface MemberService {
     public PageUserResponseDTO listMember(String search, Integer page);
 
     public PageReservationMemberDTO reservationMemberDTOS(Integer memberId, Integer page);
-
+    public MemberResFormDTO memberResFormDTO(Long formId);
 }

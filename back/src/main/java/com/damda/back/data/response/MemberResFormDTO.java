@@ -15,13 +15,13 @@ public class MemberResFormDTO {
 
     private String applicantName;
 
-    private String applicantConactInfo;
+    private String applicantContactInfo;
 
     private String address;
 
     private String aFewServings;
 
-    private String serviceDuraction;
+    private String serviceDuration;
 
     private String serviceDate;
 

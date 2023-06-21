@@ -141,11 +141,12 @@ public class MemberController {
      * */
     @GetMapping("/api/v1/member/submit/form")
     public ResponseEntity<CommonResponse<?>> submitFormResponseEntity(
-            @RequestParam Integer memberId){
+            @RequestParam Long formId){
 
         CommonResponse<?> commonResponse = CommonResponse
                 .builder()
                 .codeEnum(CodeEnum.SUCCESS) // TODO: 이거 해야함
+                .data(memberService.memberResFormDTO(formId))
                 .build();
 
         return ResponseEntity.ok(commonResponse);
