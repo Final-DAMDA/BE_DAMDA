@@ -32,12 +32,18 @@ public class ReservationSubmitForm extends BaseEntity{
 
     private Integer totalPrice;
 
+
     private Integer servicePerson; //투입인원
+
+
+    private String reservationDate;
 
     private boolean deleted;
 
     @Enumerated(EnumType.STRING)
     private PayMentStatus payMentStatus;
+
+
 
     @Builder.Default
     @BatchSize(size = 200)
@@ -81,6 +87,10 @@ public class ReservationSubmitForm extends BaseEntity{
     public void changeStatus(ReservationStatus status){
         this.status =status;
 
+    }
+
+    public void changeReservationDate(String reservationDate){
+        this.reservationDate = reservationDate;
     }
 
     public void paymentCompleted(){

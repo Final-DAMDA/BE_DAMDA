@@ -120,6 +120,7 @@ public class InitQuery {
                     .status(ReservationStatus.WAITING_FOR_MANAGER_REQUEST)
                     .payMentStatus(PayMentStatus.NOT_PAID_FOR_ANYTHING)
                     .totalPrice(40000)
+                    .reservationDate("2023-06-17 12:00:00")
                     .deleted(false)
                     .member(member)
                     .build();
@@ -168,7 +169,7 @@ public class InitQuery {
                     .build();
 
             ReservationAnswer answer4 = ReservationAnswer.builder()
-                    .answer("2023-06-017 12:00:00")
+                    .answer("2023-06-17 12:00:00")
                     .questionIdentify(QuestionIdentify.SERVICEDATE)
                     .build();
 
@@ -215,6 +216,7 @@ public class InitQuery {
                     .status(ReservationStatus.MANAGER_MATCHING_COMPLETED)
                     .payMentStatus(PayMentStatus.NOT_PAID_FOR_ANYTHING)
                     .totalPrice(40000)
+                    .reservationDate("2023-06-17 12:00:00")
                     .deleted(false)
                     .member(member)
                     .build();
@@ -262,6 +264,7 @@ public class InitQuery {
                     .status(ReservationStatus.MANAGER_MATCHING_COMPLETED)
                     .payMentStatus(PayMentStatus.NOT_PAID_FOR_ANYTHING)
                     .totalPrice(40000)
+                    .reservationDate("2023-06-17 12:00:00")
                     .deleted(false)
                     .member(member)
                     .build();
@@ -309,6 +312,7 @@ public class InitQuery {
                     .payMentStatus(PayMentStatus.NOT_PAID_FOR_ANYTHING)
                     .totalPrice(40000)
                     .deleted(false)
+                    .reservationDate("2023-06-17 12:00:00")
                     .member(member)
                     .build();
 

@@ -203,6 +203,10 @@ public class SubmitServiceImpl implements SubmitService {
                 dto.getSubmit().forEach(submitSlice -> {
                     if(!StringUtils.hasText(submitSlice.getAnswer())) throw new CommonException(ErrorCode.RESERVATION_FORM_MISSING_VALUE);
 
+                    if(submitSlice.getQuestionIdentify().equals(QuestionIdentify.SERVICEDATE)){
+                        reservationSubmitForm.changeReservationDate(submitSlice.getAnswer());
+                    }
+
                     reservationSubmitForm.addAnswer(ReservationAnswer.builder()
                             .questionIdentify(submitSlice.getQuestionIdentify())
                             .answer(submitSlice.getAnswer())
