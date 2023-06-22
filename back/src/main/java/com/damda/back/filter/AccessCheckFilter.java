@@ -35,7 +35,10 @@ public class AccessCheckFilter extends OncePerRequestFilter {
             "/api/v1/member/code",
             "/api/v1/test/login",
             "/h2-console",
-            "/api/v1/admin/login"
+            "/api/v1/admin/login",
+            "/api/v1/matching/accept",
+            "/api/v1/user/review/list",
+            "/api/v1/review/best"
     ));
 
     @Override
