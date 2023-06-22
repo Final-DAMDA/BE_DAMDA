@@ -15,4 +15,5 @@ public interface ReviewCustomRepository {
 	Optional<Review> findByReservationId(Long reservationId);
 	Optional<Review> findByBestReview();
 	Optional<Review> findByBestReviewUser();
+	Optional<Review> serviceCompleteFindByReservation(Long reservationId);
 }

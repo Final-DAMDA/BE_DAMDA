@@ -1,5 +1,6 @@
 package com.damda.back.service;
 
+import com.damda.back.data.request.ReviewManualRequestDTO;
 import com.damda.back.data.request.ReviewRequestDTO;
 import com.damda.back.data.request.ServiceCompleteRequestDTO;
 import com.damda.back.data.response.*;
@@ -25,4 +26,6 @@ public interface ReviewService {
 	boolean deleteReviewImage(Long imageId);
 	boolean deleteReview(Long reviewId);
 	Page<ReviewListAdminDTO> listReviewAdmin(Pageable pageable);
+	BeforeAfterImageDTO serviceCompleteDetail(Long reservationId);
+	Long manualReviewUpload(ReviewManualRequestDTO reviewManualRequestDTO);
 }

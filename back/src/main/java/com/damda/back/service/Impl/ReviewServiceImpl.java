@@ -3,16 +3,14 @@ package com.damda.back.service.Impl;
 import com.damda.back.data.common.ImageType;
 import com.damda.back.data.common.QuestionIdentify;
 import com.damda.back.data.common.ReservationStatus;
+import com.damda.back.data.request.ReviewManualRequestDTO;
 import com.damda.back.data.request.ReviewRequestDTO;
 import com.damda.back.data.request.ServiceCompleteRequestDTO;
 import com.damda.back.data.response.*;
 import com.damda.back.domain.*;
 import com.damda.back.exception.CommonException;
 import com.damda.back.exception.ErrorCode;
-import com.damda.back.repository.ImageRepository;
-import com.damda.back.repository.MatchRepository;
-import com.damda.back.repository.ReservationFormRepository;
-import com.damda.back.repository.ReviewRepository;
+import com.damda.back.repository.*;
 import com.damda.back.service.ReviewService;
 import com.damda.back.service.S3Service;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +34,7 @@ public class ReviewServiceImpl implements ReviewService {
 	private final ReservationFormRepository reservationFormRepository;
 	private final ReviewRepository reviewRepository;
 	private final MatchRepository matchRepository;
+	private final ReservationAnswerRepository reservationAnswerRepository;
 
 
 	/**
@@ -198,6 +197,30 @@ public class ReviewServiceImpl implements ReviewService {
 		return resultPage;
 	}
 
+	@Override
+	@Transactional(readOnly = true)
+	public BeforeAfterImageDTO serviceCompleteDetail(Long reservationId) {
+		Review review =reviewRepository.serviceCompleteFindByReservation(reservationId)
+				.orElseThrow(()-> new CommonException(ErrorCode.NOT_FOUND_SERVICE_COMPLETE));
+
+		List<Image> images = review.getReviewImage();
+		List<String> before = new ArrayList<>();
+		List<String> after = new ArrayList<>();
+		for(Image image : images){
+			if(image.getImgType().equals(ImageType.BEFORE)){
+				before.add(image.getImgUrl());
+			}else{
+				after.add(image.getImgUrl());
+			}
+		}
+		BeforeAfterImageDTO beforeAfterImageDTO = BeforeAfterImageDTO.builder()
+												.before(before)
+												.after(after)
+												.build();
+		return beforeAfterImageDTO;
+	}
+
+
 	/***
 	 * @apiNote : 유저 리뷰리스트 조회
 	 */
@@ -278,9 +301,10 @@ public class ReviewServiceImpl implements ReviewService {
 	@Override
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	public boolean deleteReviewImage(Long imageId) {
-		Optional<Image> image = imageRepository.findById(imageId);
-		nullCheck(image);
-		s3Service.deleteFile(image.get().getImgName());
+		Image image = imageRepository.findById(imageId)
+				.orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_IMAGE));
+
+		s3Service.deleteFile(image.getImgName());
 		imageRepository.deleteById(imageId);
 		return true;
 	}
@@ -289,13 +313,10 @@ public class ReviewServiceImpl implements ReviewService {
 	 * @apiNote: 리뷰 삭제
 	 */
 	@Override
+	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	public boolean deleteReview(Long reviewId) {
-		Optional<Review> review = reviewRepository.findById(reviewId);
-		nullCheck(review);
-
-		Review deleteReview=review.get();
-		deleteReview.reviewDelete();
-		reviewRepository.save(deleteReview);
+		Review review = reviewRepository.findById(reviewId).orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_REVIEW));
+		review.reviewDelete();
 		return true;
 	}
 
@@ -305,8 +326,7 @@ public class ReviewServiceImpl implements ReviewService {
 	@Override
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	public boolean selectBestReview(Long reviewId) {
-		Optional<Review> review=reviewRepository.findById(reviewId);
-		nullCheck(review);
+		Review review = reviewRepository.findById(reviewId).orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_REVIEW));
 
 		Optional<Review> oldBestReview = reviewRepository.findByBestReview();
 		if(oldBestReview.isPresent()){ //이미 베스트 리뷰가 있을경우 원래 베스트리뷰 내리기
@@ -319,7 +339,7 @@ public class ReviewServiceImpl implements ReviewService {
 			}
 		}
 		//새로운 베스트 리뷰 업데이트
-		Review newBestReview = review.get();
+		Review newBestReview = review;
 		newBestReview.setBestReview(true);
 		try{
 			reviewRepository.save(newBestReview);
@@ -339,15 +359,13 @@ public class ReviewServiceImpl implements ReviewService {
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	@Override
 	public boolean uploadReview(Long reservationId, ReviewRequestDTO reviewRequestDTO) {
-		Optional<Review> review = reviewRepository.findByReservationId(reservationId);
-		nullCheck(review);
-		Review uploadReview = review.get();
+		Review uploadReview = reviewRepository.findByReservationId(reservationId).orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_REVIEW));
 		uploadReview.reviewUpload(reviewRequestDTO);
-
-		if(reviewRequestDTO.getBefore()!=null){
+		System.out.println(reviewRequestDTO);
+		if(reviewRequestDTO.getBefore()!=null||!reviewRequestDTO.getBefore().isEmpty()){
 			saveImage(uploadReview,reviewRequestDTO.getBefore(),ImageType.BEFORE);
 		}
-		if(reviewRequestDTO.getAfter()!=null){
+		if(reviewRequestDTO.getAfter()!=null||!reviewRequestDTO.getAfter().isEmpty()){
 			saveImage(uploadReview,reviewRequestDTO.getAfter(),ImageType.AFTER);
 		}
 
@@ -360,20 +378,13 @@ public class ReviewServiceImpl implements ReviewService {
 	}
 
 
-	/**
-	 * @apiNote: null 체크
-	 */
-	private void nullCheck(Optional<?> data){
-		if(data.isEmpty()){
-			throw new CommonException(ErrorCode.NOT_FOUND_QUESTION);
-		}
-	}
 
 	/**
 	 * @apiNote: 이미지 저장
 	 */
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	void saveImage(Review serviceComplete, List<MultipartFile> images, ImageType imageType) {
+
 		List<String> imageNameList = s3Service.uploadFile(images, imageType.toString());
 		List<String> imageUrlList = s3Service.uploadFileUrl(imageNameList, imageType.toString());
 
@@ -398,6 +409,48 @@ public class ReviewServiceImpl implements ReviewService {
 			throw new CommonException(ErrorCode.ERROR_IMAGE_COMPLETE);
 		}
 
+	}
+
+	@Override
+	@Transactional(isolation = Isolation.REPEATABLE_READ)
+	public Long manualReviewUpload(ReviewManualRequestDTO dto) {
+		ReservationSubmitForm reservationSubmitForm = ReservationSubmitForm.builder()
+				.status(ReservationStatus.REVIEW_DATA)
+				.build();
+		reservationFormRepository.save(reservationSubmitForm);
+
+		ReservationAnswer name = ReservationAnswer.builder()
+				.answer(dto.getName())
+				.questionIdentify(QuestionIdentify.APPLICANTNAME)
+				.reservationSubmitForm(reservationSubmitForm)
+				.build();
+		reservationAnswerRepository.save(name);
+
+		ReservationAnswer address = ReservationAnswer.builder()
+				.answer(dto.getAddress())
+				.questionIdentify(QuestionIdentify.ADDRESS)
+				.reservationSubmitForm(reservationSubmitForm)
+				.build();
+		reservationAnswerRepository.save(address);
+
+		ReservationAnswer serviceDate = ReservationAnswer.builder()
+				.answer(dto.getServiceDate())
+				.questionIdentify(QuestionIdentify.SERVICEDATE)
+				.reservationSubmitForm(reservationSubmitForm)
+				.build();
+		reservationAnswerRepository.save(serviceDate);
+
+		Review review = Review.builder()
+				.status(true)
+				.best(false)
+				.content(dto.getContent())
+				.title(dto.getTitle())
+				.reservationSubmitForm(reservationSubmitForm)
+				.build();
+		reviewRepository.save(review);
+		saveImage(review,dto.getBefore(),ImageType.BEFORE);
+		saveImage(review,dto.getAfter(),ImageType.AFTER);
+		return review.getId();
 	}
 
 
