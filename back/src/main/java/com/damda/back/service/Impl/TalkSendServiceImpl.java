@@ -56,13 +56,12 @@ public class TalkSendServiceImpl implements TalkSendService {
      * @apiNote 고객이 예약완료시 매니저에게 알람톡을 보낸 후 확인차 고객한테도 알림톡을 보낸다.
      * */
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public void sendReservationSubmitAfter(Long formId, String addressFront,List<ReservationAnswer> answers,Integer totalPrice,Integer servicePerson){
+    public void sendReservationSubmitAfter(Long formId, String addressFront,List<ReservationAnswer> answers,Integer totalPrice,Integer servicePerson, List<Manager> managerList){
 
         if(answers.isEmpty()) throw new CommonException(ErrorCode.FORM_NOT_FOUND);
-        List<Manager> managerList = managerRepository.managerWithArea(addressFront);
+
         List<String> phoneNumbers = new ArrayList<>();
 
-        if(managerList.isEmpty()) throw new CommonException(ErrorCode.ACTIVITY_MANAGER_NOT_FOUND);
 
         Map<QuestionIdentify, String> answerMap =
                 answers.stream()
@@ -89,7 +88,7 @@ public class TalkSendServiceImpl implements TalkSendService {
         }
 
 //        try{
-//       //     solapiUtils.reservationCompletedSendManager(phoneNumbers, resCompleteRequestDTO);
+//       //     solapiUtils.reservationCompletedSendManager(phoneNumbers, resCompleteRequestDTO); //TODO 활성화필요
 //        }catch (NurigoEmptyResponseException e) {
 //            throw new RuntimeException(e);
 //        } catch (NurigoUnknownException e) {

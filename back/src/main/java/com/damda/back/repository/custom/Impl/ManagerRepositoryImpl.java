@@ -68,7 +68,7 @@ public class ManagerRepositoryImpl implements ManagerCustomRepository {
         Manager manager1 =  queryFactory.select(manager)
                 .from(manager)
                 .innerJoin(manager.areaManagers,areaManager).fetchJoin()
-                .innerJoin(areaManager.areaManagerKey.area,area)
+                .innerJoin(areaManager.areaManagerKey.area,area).fetchJoin()
                 .where(manager.id.eq(managerId))
                 .fetchOne();
 

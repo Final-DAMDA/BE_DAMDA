@@ -81,9 +81,9 @@ public class SubmitServiceImpl implements SubmitService {
             identifies.add(QuestionIdentify.APPLICANTNAME); //신청인 이름/
             identifies.add(QuestionIdentify.APPLICANTCONACTINFO); //신청인 전화번호/
             identifies.add(QuestionIdentify.LEARNEDROUTE); // 알게된 경로
-            identifies.add(QuestionIdentify.RESERVATIONENTER); //들어가기 위해 필요한 자료=/
-            identifies.add(QuestionIdentify.RESERVATIONNOTE); // 알아야 할 사항=/
-            identifies.add(QuestionIdentify.RESERVATIONREQUEST); // 요청사항=/
+            identifies.add(QuestionIdentify.RESERVATIONENTER); //들어가기 위해 필요한 자료=/ -> 없다면 대체 문자열 보내줘야함 프론트에서
+            identifies.add(QuestionIdentify.RESERVATIONNOTE); // 알아야 할 사항=/ -> 없다면 대체 문자열 보내줘야함 프론트에서
+            identifies.add(QuestionIdentify.RESERVATIONREQUEST); // 요청사항=/ -> 없다면 대체 문자열 보내줘야함 프론트에서
         }
 
 
@@ -215,11 +215,15 @@ public class SubmitServiceImpl implements SubmitService {
                 //TODO: 매칭로직 추가
 
 
-                    log.info("{} 지역 매니저들을 조회 시도",dto.getAddressFront());
-                    List<Manager> managerList = managerRepository.managerWithArea(dto.getAddressFront());
-                    log.info("해당 지역에 활동가능한 매니저 {}",managerList);
-                    matchService.matchingListUp(reservationSubmitForm,managerList);
-                //    talkSendService.sendReservationSubmitAfter(form.getId(),dto.getAddressFront(),form.getReservationAnswerList(),dto.getTotalPrice(),dto.getServicePerson());
+                log.info("{} 지역 매니저들을 조회 시도",dto.getAddressFront());
+                List<Manager> managerList = managerRepository.managerWithArea(dto.getAddressFront());
+
+                if(managerList.isEmpty()) throw new CommonException(ErrorCode.ACTIVITY_MANAGER_NOT_FOUND);
+                log.info("해당 지역에 활동가능한 매니저 {}",managerList);
+                matchService.matchingListUp(reservationSubmitForm,managerList);
+
+
+         //       talkSendService.sendReservationSubmitAfter(form.getId(),dto.getAddressFront(),form.getReservationAnswerList(),dto.getTotalPrice(),dto.getServicePerson(),managerList);
 
 
                 return form.getId();
@@ -292,6 +296,10 @@ public class SubmitServiceImpl implements SubmitService {
        }
 
 
+
+       /**
+        * @Deprecated 상태값 변경에 제한이 생겼기 때문에 해당 메소드는 사용안함
+        * */
        @Transactional(isolation = Isolation.REPEATABLE_READ)
        public void statusModify(FormStatusModifyRequestDTO dto){
            ReservationSubmitForm form = reservationFormRepository.submitFormWithAnswer(dto.getId()).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_RESERIVATION));
@@ -325,7 +333,7 @@ public class SubmitServiceImpl implements SubmitService {
            }else if(dto.getStatus().equals(ReservationStatus.SERVICE_COMPLETED)){ // 서비스완료시 입금 완료시로 변경해야함
 
                Member member = form.getMember();
-               DiscountCode discountCode = member.getDiscountCode();
+               String discountCode = member.getDiscountCode();
 
                if(discountCode == null){
                    String code = "";
@@ -337,14 +345,11 @@ public class SubmitServiceImpl implements SubmitService {
                    }
 
                    log.info("발급된 할인코드 {}",code);
-                   DiscountCode discountCodeNew = DiscountCode.builder()
-                           .code(code)
-                           .build();
 
-                   member.changeCode(discountCodeNew);
+                   member.changeCode(code);
                    form.changeStatus(dto.getStatus());
                }else{
-                   log.info("기존 코드 그대로 사용됨 {}",discountCode.getCode());
+                   log.info("기존 코드 그대로 사용됨 {}",member.getDiscountCode());
                }
      //          talkSendService.sendCustomenrCompleted(
     //                   answerMap.get(QuestionIdentify.APPLICANTCONACTINFO),form.getId());
@@ -381,7 +386,7 @@ public class SubmitServiceImpl implements SubmitService {
             String phoneNumber = member.getPhoneNumber() != null ? member.getPhoneNumber() : answerMap.get(QuestionIdentify.APPLICANTCONACTINFO);
 
             log.info("서비스 완료 알림톡을 보내는 번호 {}",phoneNumber);
-            DiscountCode discountCode = member.getDiscountCode();
+            String discountCode = member.getDiscountCode();
 
             if(discountCode == null) {
                 String code = "";
@@ -393,12 +398,8 @@ public class SubmitServiceImpl implements SubmitService {
                 }
 
                 log.info("발급된 할인코드 {}", code);
-                DiscountCode discountCodeNew = DiscountCode.builder()
-                        .code(code)
-                        .build();
 
-                member.changeCode(discountCodeNew);
-
+                member.changeCode(code);
            //     talkSendService.sendCustomenrCompleted(phoneNumber,form.getId());
             }
         }

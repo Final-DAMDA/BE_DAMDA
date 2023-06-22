@@ -261,4 +261,19 @@ public class ReservationFormRepositoryImpl implements ReservationFormCustomRepos
                else return Optional.empty();
         }
 
+        @Override
+        public String reservationDiscountCode(Long formId) {
+                QMember member = QMember.member;
+                QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
+
+                Member memberPE = queryFactory.select(member)
+                        .from(member)
+                        .innerJoin(member.reservationSubmitFormList,submitForm)
+                        .where(submitForm.id.eq(formId))
+                        .fetchOne();
+
+
+                return memberPE.getDiscountCode();
+        }
+
 }
