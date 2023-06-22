@@ -82,7 +82,7 @@ public class BackApplication {
 						.order(0)
 						.placeHolder("없음")
 						.questionIdentify(QuestionIdentify.TITLE)
-						.questionType(QuestionType.SELECT)
+						.questionType(QuestionType.TITLE)
 						.required(true)
 						.status(QuestionStatus.ACTIVATION)
 						.questionTitle("담다컴퍼니 입니다.")
@@ -98,7 +98,6 @@ public class BackApplication {
 						.required(true)
 						.questionTitle("정리가 필요한 옷들이 몇 인 분량인가요?")
 						.status(QuestionStatus.ACTIVATION)
-
 						.build()
 		);
 

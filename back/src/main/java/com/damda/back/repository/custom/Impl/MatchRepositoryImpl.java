@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -121,7 +122,7 @@ public class MatchRepositoryImpl implements MatchCustomRepository {
         QMatch match = QMatch.match;
         QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
 
-        List<ReservationSubmitForm> list = queryFactory.selectDistinct(match.reservationForm)
+        List<Match> list = queryFactory.selectDistinct(match)
                 .from(match)
                 .innerJoin(match.reservationForm, submitForm).fetchJoin()
                 .where(match.matching.eq(true).and(match.managerId.eq(managerId)))
@@ -130,7 +131,11 @@ public class MatchRepositoryImpl implements MatchCustomRepository {
         JPAQuery<Long> count = queryFactory.selectDistinct(match.reservationForm.count())
                 .from(match)
                 .where(match.matching.eq(true).and(match.managerId.eq(managerId)));
-        return PageableExecutionUtils.getPage(list,pageable,count::fetchOne);
+
+
+        List<ReservationSubmitForm> reservationSubmitForms=list.stream().map(Match::getReservationForm).collect(Collectors.toList());
+
+        return PageableExecutionUtils.getPage(reservationSubmitForms,pageable,count::fetchOne);
     }
 
 

@@ -166,4 +166,9 @@ public class MemberServiceImpl implements MemberService {
 
         return dto;
     }
+
+    @Override
+    public void memoModify(String memo) {
+
+    }
 }
