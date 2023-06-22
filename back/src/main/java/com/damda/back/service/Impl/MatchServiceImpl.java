@@ -2,8 +2,14 @@ package com.damda.back.service.Impl;
 
 import com.damda.back.data.common.MatchResponseStatus;
 import com.damda.back.data.common.QuestionIdentify;
+import com.damda.back.data.common.ReservationStatus;
+import com.damda.back.data.request.MatchingFailToManagerDTO;
+import com.damda.back.data.request.MatchingSuccessToManagerDTO;
+import com.damda.back.data.request.MatchingSuccessToUserDTO;
 import com.damda.back.data.response.MatchingAcceptGetDTO;
 import com.damda.back.data.response.MatchingListDTO;
+import com.damda.back.data.response.ReservationListManagerIDDTO;
+import com.damda.back.data.response.ReviewListAdminDTO;
 import com.damda.back.domain.Match;
 import com.damda.back.domain.ReservationAnswer;
 import com.damda.back.domain.ReservationSubmitForm;
@@ -13,7 +19,12 @@ import com.damda.back.exception.CommonException;
 import com.damda.back.exception.ErrorCode;
 import com.damda.back.repository.*;
 import com.damda.back.service.MatchService;
+import com.damda.back.service.TalkSendService;
+import com.damda.back.utils.SolapiUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +42,8 @@ public class MatchServiceImpl implements MatchService {
 	private final ManagerRepository managerRepository;
 	private final MatchRepository matchRepository;
 	private final ReservationFormRepository reservationFormRepository;
+	private final SolapiUtils solapiUtils;
+	private final TalkSendService talkSendService;
 
 
 	@Override
@@ -96,7 +109,7 @@ public class MatchServiceImpl implements MatchService {
 		Manager manager = managerRepository.findManager(memberId).
 				orElseThrow(()->new CommonException(ErrorCode.ACTIVITY_MANAGER_NOT_FOUND));
 		//TODO: 굳이 객체 전부 안가져와도 되긴 함, 나중에 id만 가져오는 걸로 바꾸기
-
+		System.out.println(manager);
 		Match match = matchRepository.matchFindByReservationAndMember(reservation.getId(),manager.getId())
 				.orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_MATCH));
 
@@ -136,14 +149,60 @@ public class MatchServiceImpl implements MatchService {
 
 	@Override
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
-	public void matchingOrder(List<Long> matchIds) {
+	public void matchingOrder(Long reservationId, List<Long> matchIds) {
 		if(matchIds.isEmpty()){
 			throw new CommonException(ErrorCode.NOT_FOUND_MATCH_ID);
 		}
 		for(Long matchId:matchIds){
-			Match match = matchRepository.findById(matchId).orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_MATCH));
+			Match match = matchRepository.matchFindByReservationAndMatch(reservationId,matchId)
+					.orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_MATCH));
 			match.matchingOrder();
+		} //TODO: 해당 매치에서 예약 ID 가져와서 매칭 실패된 매니저와 매칭성공 매니저, 유저한테 알림톡 보내야 함 , 예약 상태 바꾸기 -> 신청인원만큼 수락되었으면 바로 예약 확정, 아니면 매칭대기
+		//해당 예약 상태값 바꾸기,
+		List<Match> matches = matchRepository.matchList(reservationId);
+		ReservationSubmitForm reservationSubmitForm = reservationFormRepository.findByreservationId(reservationId).orElseThrow(
+				()->new CommonException(ErrorCode.NOT_FOUND_RESERIVATION));
+		if(matches.isEmpty()){
+			throw new CommonException(ErrorCode.NOT_FOUND_MATCH);
 		}
+
+		int managerCount = 0;
+		for(Match match:matches){
+			if(match.isMatching()){
+				managerCount++;
+			}
+		}
+		if(managerCount!=0 && managerCount<reservationSubmitForm.getServicePerson()){
+			reservationSubmitForm.changeStatus(ReservationStatus.WAITING_FOR_ACCEPT_MATCHING);
+		}
+		if(managerCount==reservationSubmitForm.getServicePerson()){
+			reservationSubmitForm.changeStatus(ReservationStatus.MANAGER_MATCHING_COMPLETED);
+			talkSendService.sendReservationCompleted(matches,reservationSubmitForm);
+		}
+		if(managerCount>reservationSubmitForm.getServicePerson()){
+			throw new CommonException(ErrorCode.OVER_MATCH_ORDER);
+		}
+
+	}
+
+	@Transactional(isolation = Isolation.REPEATABLE_READ)
+	@Override
+	public Page<ReservationListManagerIDDTO> reservationListManagerDTO(Long managerId, Pageable pageable) {
+		Manager manager= managerRepository.findById(managerId).orElseThrow
+				(()-> new CommonException(ErrorCode.NOT_FOUND_MANAGER));
+
+		Page<ReservationSubmitForm> reservationSubmitForms = matchRepository.findByManagerId(managerId,pageable);
+
+		List<ReservationListManagerIDDTO> dtos = new ArrayList<>();
+		for(ReservationSubmitForm form:reservationSubmitForms){
+			ReservationListManagerIDDTO dto = ReservationListManagerIDDTO.builder()
+					.reservationId(form.getId())
+					.serviceDate(form.getReservationDate())
+					.build();
+			dtos.add(dto);
+		}
+		Page<ReservationListManagerIDDTO> resultPage = new PageImpl<>(dtos, pageable, reservationSubmitForms.getTotalElements());
+		return resultPage;
 	}
 
 }

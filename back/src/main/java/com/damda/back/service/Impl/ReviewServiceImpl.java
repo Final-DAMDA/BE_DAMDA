@@ -143,13 +143,17 @@ public class ReviewServiceImpl implements ReviewService {
 				= answers.stream().collect(Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
 
 		List<Image> images = review.get().getReviewImage();
-		Map<Long, String> before = new HashMap<>();
-		Map<Long, String> after = new HashMap<>();
+		List<ImageResponseDTO> before = new ArrayList<>();
+		List<ImageResponseDTO> after = new ArrayList<>();
 		for(Image image : images){
+			ImageResponseDTO dto = new ImageResponseDTO().builder()
+									.id(image.getId())
+									.imgUrl(image.getImgUrl())
+									.build();
 			if(image.getImgType().equals(ImageType.BEFORE)){
-				before.put(image.getId(),image.getImgUrl());
+				before.add(dto);
 			}else{
-				after.put(image.getId(),image.getImgUrl());
+				after.add(dto);
 			}
 		}
 		ReviewAutoResponseDTO responseDTO = ReviewAutoResponseDTO.builder()
