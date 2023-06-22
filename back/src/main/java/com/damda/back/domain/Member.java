@@ -60,18 +60,11 @@ public class Member extends BaseEntity {
     private List<ReservationSubmitForm> reservationSubmitFormList = new ArrayList<>();
 
 
-    @OneToOne(mappedBy = "member",
+    private String discountCode;
 
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY)
-    private DiscountCode discountCode;
-
-
-    public void changeCode(DiscountCode discountCode){
-        this.discountCode = discountCode;
-        discountCode.changeMember(this);
+    public void changeCode(String code){
+        this.discountCode = code;
     }
-
     public void changeMemo(String memo){
         this.memo = memo;
     }

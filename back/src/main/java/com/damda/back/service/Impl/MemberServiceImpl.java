@@ -82,7 +82,7 @@ public class MemberServiceImpl implements MemberService {
                     .address(memberPE.getAddress())
                     .reservationStatus(status)
                     .createdAt(memberPE.getCreatedAt().toString())
-                    .code(memberPE.getDiscountCode() != null ? memberPE.getDiscountCode().getCode() : null)
+                    .code(memberPE.getDiscountCode() != null ? memberPE.getDiscountCode() : null)
                     .memo(memberPE.getMemo())
                     .build();
 
@@ -161,7 +161,7 @@ public class MemberServiceImpl implements MemberService {
                 .reservationNote(answerMap.get(QuestionIdentify.RESERVATIONNOTE))
                 .reservationRequest(answerMap.get(QuestionIdentify.RESERVATIONREQUEST))
                 .reservationEnter(answerMap.get(QuestionIdentify.RESERVATIONENTER))
-                .discountCode(member.getDiscountCode() != null ? member.getDiscountCode().getCode() : "미발급")
+                .discountCode(member.getDiscountCode() != null ? member.getDiscountCode() : "미발급")
                 .learnedRoute(answerMap.get(QuestionIdentify.LEARNEDROUTE))
                 .build();
 

@@ -336,7 +336,7 @@ public class SubmitServiceImpl implements SubmitService {
            }else if(dto.getStatus().equals(ReservationStatus.SERVICE_COMPLETED)){ // 서비스완료시 입금 완료시로 변경해야함
 
                Member member = form.getMember();
-               DiscountCode discountCode = member.getDiscountCode();
+               String discountCode = member.getDiscountCode();
 
                if(discountCode == null){
                    String code = "";
@@ -348,14 +348,11 @@ public class SubmitServiceImpl implements SubmitService {
                    }
 
                    log.info("발급된 할인코드 {}",code);
-                   DiscountCode discountCodeNew = DiscountCode.builder()
-                           .code(code)
-                           .build();
 
-                   member.changeCode(discountCodeNew);
+                   member.changeCode(code);
                    form.changeStatus(dto.getStatus());
                }else{
-                   log.info("기존 코드 그대로 사용됨 {}",discountCode.getCode());
+                   log.info("기존 코드 그대로 사용됨 {}",member.getDiscountCode());
                }
      //          talkSendService.sendCustomenrCompleted(
     //                   answerMap.get(QuestionIdentify.APPLICANTCONACTINFO),form.getId());
@@ -392,7 +389,7 @@ public class SubmitServiceImpl implements SubmitService {
             String phoneNumber = member.getPhoneNumber() != null ? member.getPhoneNumber() : answerMap.get(QuestionIdentify.APPLICANTCONACTINFO);
 
             log.info("서비스 완료 알림톡을 보내는 번호 {}",phoneNumber);
-            DiscountCode discountCode = member.getDiscountCode();
+            String discountCode = member.getDiscountCode();
 
             if(discountCode == null) {
                 String code = "";
@@ -404,12 +401,8 @@ public class SubmitServiceImpl implements SubmitService {
                 }
 
                 log.info("발급된 할인코드 {}", code);
-                DiscountCode discountCodeNew = DiscountCode.builder()
-                        .code(code)
-                        .build();
 
-                member.changeCode(discountCodeNew);
-
+                member.changeCode(code);
            //     talkSendService.sendCustomenrCompleted(phoneNumber,form.getId());
             }
         }
