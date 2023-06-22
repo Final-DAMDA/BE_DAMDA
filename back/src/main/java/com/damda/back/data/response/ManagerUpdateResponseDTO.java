@@ -30,7 +30,7 @@ public class ManagerUpdateResponseDTO {
 
     public ManagerUpdateResponseDTO(Manager manager) {
         this.managerName = manager.getManagerName();
-        this.managerPhone = manager.getManagerPhoneNumber();
+        this.managerPhone = manager.getPhoneNumber();
         this.level = manager.getLevel();
         this.certificateStatus = manager.getCertificateStatus().toString();
         this.vehicle = manager.getVehicle();

@@ -318,8 +318,8 @@ public class SubmitServiceImpl implements SubmitService {
                });
 
                managerRepository.managers(managerList).forEach(manager -> {
-                    log.info("수신자들 {} : {}",manager.getManagerName(),manager.getManagerPhoneNumber());
-                    phoneNumbers.add(manager.getManagerPhoneNumber());
+                    log.info("수신자들 {} : {}",manager.getManagerName(),manager.getPhoneNumber());
+                    phoneNumbers.add(manager.getPhoneNumber());
                });
                if(!phoneNumbers.isEmpty()) talkSendService.sendManagerWithCustomer(data,phoneNumbers);
            }else if(dto.getStatus().equals(ReservationStatus.SERVICE_COMPLETED)){ // 서비스완료시 입금 완료시로 변경해야함
@@ -421,7 +421,7 @@ public class SubmitServiceImpl implements SubmitService {
             List<String> managers = managerList.stream()
                     .filter(match ->  match.isMatching()) //매칭이 되었었던 매니저들
                     .map(Match::getManager)
-                    .map(Manager::getManagerPhoneNumber).collect(Collectors.toList());
+                    .map(Manager::getPhoneNumber).collect(Collectors.toList());
 
             log.info("요청 보낸 번호 {}",managers);
 /*            try {
