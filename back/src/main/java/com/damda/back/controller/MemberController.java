@@ -99,6 +99,26 @@ public class MemberController {
     }
 
 
+    @GetMapping("/api/v1/kakao/discount/code/{id}")
+    public ResponseEntity<CommonResponse<?>> discoundCodeCheck(
+            @PathVariable Long id
+    ){
+
+        String code = memberService.discountCode(id);
+
+        CommonResponse<?> commonResponse = CommonResponse
+                .builder()
+                .codeEnum(CodeEnum.SUCCESS)
+                .data(code)
+                .build();
+
+        return ResponseEntity
+                .status(commonResponse.getStatus())
+                .body(commonResponse);
+
+    }
+
+
     /**
      * @apiNote 고객 관리 리스트를 프론트에게 보내주는 엔드포인트이다.
      *

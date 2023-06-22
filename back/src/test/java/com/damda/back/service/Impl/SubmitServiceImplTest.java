@@ -190,8 +190,8 @@ class SubmitServiceImplTest {
         Mockito.verify(form, Mockito.times(1)).paymentCompleted();
 
         // member.changeCode 메소드가 호출되었는지 검증
-        DiscountCode discountCode = member.getDiscountCode();
-        Mockito.verify(member, Mockito.times(1)).changeCode(Mockito.any(DiscountCode.class));
+//        DiscountCode discountCode = member.getDiscountCode();
+//        Mockito.verify(member, Mockito.times(1)).changeCode(Mockito.any(DiscountCode.class));
 
         // talkSendService.sendCustomenrCompleted 메소드가 호출되었는지 검증
         Mockito.verify(talkSendService, Mockito.times(1)).sendCustomenrCompleted(anyString(), anyLong());

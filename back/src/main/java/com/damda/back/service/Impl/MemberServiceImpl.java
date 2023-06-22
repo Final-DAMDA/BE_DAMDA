@@ -175,4 +175,12 @@ public class MemberServiceImpl implements MemberService {
 
         member.changeMemo(memo.getMemo());
     }
+
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public String discountCode(Long formId){
+        String discountCode = formRepository.reservationDiscountCode(formId);
+
+        return discountCode != null ? discountCode : "발급실패";
+    }
 }

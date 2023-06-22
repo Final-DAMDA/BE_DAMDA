@@ -79,7 +79,7 @@ public class TalkSendServiceImpl implements TalkSendService {
         }
 
 //        try{
-//       //     solapiUtils.reservationCompletedSendManager(phoneNumbers, resCompleteRequestDTO);
+//       //     solapiUtils.reservationCompletedSendManager(phoneNumbers, resCompleteRequestDTO); //TODO 활성화필요
 //        }catch (NurigoEmptyResponseException e) {
 //            throw new RuntimeException(e);
 //        } catch (NurigoUnknownException e) {

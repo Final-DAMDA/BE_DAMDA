@@ -19,6 +19,7 @@ import java.util.Set;
 @Slf4j
 public class AdminCheckFilter extends OncePerRequestFilter {
 
+
     private static final Set<String> ALLOWED_PATHS = new HashSet<>(Arrays.asList(
             "/api/v1/member/code",
             "/api/v1/test/login",
@@ -39,6 +40,7 @@ public class AdminCheckFilter extends OncePerRequestFilter {
             filterChain.doFilter(request,response);
             return;
         }
+
 
 
         log.info("ADMIN CHECKING");

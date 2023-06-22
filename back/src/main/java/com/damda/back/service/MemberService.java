@@ -20,4 +20,6 @@ public interface MemberService {
 
     public void memoModify(MemoRequestDTO memoRequestDTO);
 
+    public String discountCode(Long formId);
+
 }
