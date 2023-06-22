@@ -301,9 +301,10 @@ public class ReviewServiceImpl implements ReviewService {
 	@Override
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	public boolean deleteReviewImage(Long imageId) {
-		Optional<Image> image = imageRepository.findById(imageId);
-		nullCheck(image);
-		s3Service.deleteFile(image.get().getImgName());
+		Image image = imageRepository.findById(imageId)
+				.orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_IMAGE));
+
+		s3Service.deleteFile(image.getImgName());
 		imageRepository.deleteById(imageId);
 		return true;
 	}
@@ -312,13 +313,10 @@ public class ReviewServiceImpl implements ReviewService {
 	 * @apiNote: 리뷰 삭제
 	 */
 	@Override
+	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	public boolean deleteReview(Long reviewId) {
-		Optional<Review> review = reviewRepository.findById(reviewId);
-		nullCheck(review);
-
-		Review deleteReview=review.get();
-		deleteReview.reviewDelete();
-		reviewRepository.save(deleteReview);
+		Review review = reviewRepository.findById(reviewId).orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_REVIEW));
+		review.reviewDelete();
 		return true;
 	}
 
@@ -328,8 +326,7 @@ public class ReviewServiceImpl implements ReviewService {
 	@Override
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	public boolean selectBestReview(Long reviewId) {
-		Optional<Review> review=reviewRepository.findById(reviewId);
-		nullCheck(review);
+		Review review = reviewRepository.findById(reviewId).orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_REVIEW));
 
 		Optional<Review> oldBestReview = reviewRepository.findByBestReview();
 		if(oldBestReview.isPresent()){ //이미 베스트 리뷰가 있을경우 원래 베스트리뷰 내리기
@@ -342,7 +339,7 @@ public class ReviewServiceImpl implements ReviewService {
 			}
 		}
 		//새로운 베스트 리뷰 업데이트
-		Review newBestReview = review.get();
+		Review newBestReview = review;
 		newBestReview.setBestReview(true);
 		try{
 			reviewRepository.save(newBestReview);
@@ -362,9 +359,7 @@ public class ReviewServiceImpl implements ReviewService {
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	@Override
 	public boolean uploadReview(Long reservationId, ReviewRequestDTO reviewRequestDTO) {
-		Optional<Review> review = reviewRepository.findByReservationId(reservationId);
-		nullCheck(review);
-		Review uploadReview = review.get();
+		Review uploadReview = reviewRepository.findByReservationId(reservationId).orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_REVIEW));
 		uploadReview.reviewUpload(reviewRequestDTO);
 		System.out.println(reviewRequestDTO);
 		if(reviewRequestDTO.getBefore()!=null||!reviewRequestDTO.getBefore().isEmpty()){
@@ -383,14 +378,6 @@ public class ReviewServiceImpl implements ReviewService {
 	}
 
 
-	/**
-	 * @apiNote: null 체크
-	 */
-	private void nullCheck(Optional<?> data){
-		if(data.isEmpty()){
-			throw new CommonException(ErrorCode.NOT_FOUND_QUESTION);
-		}
-	}
 
 	/**
 	 * @apiNote: 이미지 저장
