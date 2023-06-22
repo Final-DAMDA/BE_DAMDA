@@ -61,15 +61,19 @@ public class Member extends BaseEntity {
 
 
     @OneToOne(mappedBy = "member",
+
             cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            orphanRemoval = true)
+            fetch = FetchType.LAZY)
     private DiscountCode discountCode;
 
 
     public void changeCode(DiscountCode discountCode){
         this.discountCode = discountCode;
         discountCode.changeMember(this);
+    }
+
+    public void changeMemo(String memo){
+        this.memo = memo;
     }
 
 }

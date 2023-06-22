@@ -3,6 +3,7 @@ package com.damda.back.controller;
 
 import com.damda.back.data.common.CodeEnum;
 import com.damda.back.data.common.CommonResponse;
+import com.damda.back.data.request.MemoRequestDTO;
 import com.damda.back.data.response.AccessTokenResponse;
 import com.damda.back.data.response.MemberResponseDTO;
 import com.damda.back.data.response.TokenWithImageDTO;
@@ -153,11 +154,15 @@ public class MemberController {
     }
 
 
+    /**
+     * @apiNote 수정하는 부분
+     * */
     @PutMapping("/api/v1/member/memo/modify")
     public ResponseEntity<CommonResponse<?>> memoModify(
-            @RequestParam Integer memberId
+            @RequestBody MemoRequestDTO memoRequestDTO
     ){
 
+        memberService.memoModify(memoRequestDTO);
 
         CommonResponse<?> commonResponse = CommonResponse
                 .builder()

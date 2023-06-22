@@ -25,8 +25,9 @@ public class AdminCheckFilter extends OncePerRequestFilter {
             "/h2-console",
             "/api/v1/admin/login",
             "/api/v1/user/form/submit",
-            "/api/v1/auth/me"
-
+            "/api/v1/auth/me",
+            "/api/v1/user/review/list",
+            "/api/v1/review/best"
     ));
 
     @Override

@@ -1,5 +1,6 @@
 package com.damda.back.service;
 
+import com.damda.back.data.request.MemoRequestDTO;
 import com.damda.back.data.response.*;
 
 import java.util.List;
@@ -17,6 +18,6 @@ public interface MemberService {
     public MemberResFormDTO memberResFormDTO(Long formId);
 
 
-    public void memoModify(String memo);
+    public void memoModify(MemoRequestDTO memoRequestDTO);
 
 }

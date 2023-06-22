@@ -7,7 +7,9 @@ import com.damda.back.data.common.SubmitSlice;
 import com.damda.back.data.request.SubmitRequestDTO;
 import com.damda.back.data.response.FormResultDTO;
 import com.damda.back.data.response.Statistical;
+import com.damda.back.domain.DiscountCode;
 import com.damda.back.domain.Member;
+import com.damda.back.domain.ReservationAnswer;
 import com.damda.back.domain.ReservationSubmitForm;
 import com.damda.back.domain.manager.Manager;
 import com.damda.back.repository.ManagerRepository;
@@ -18,6 +20,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -27,6 +30,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -56,6 +60,10 @@ class SubmitServiceImplTest {
 
     @Mock
     TalkSendServiceImpl talkSendService;
+
+    @Mock
+    CodeServiceImpl codeService;
+
 
 
 
@@ -146,5 +154,52 @@ class SubmitServiceImplTest {
         // then
         Assertions.assertThat(formId).isNotNull();
         Assertions.assertThat(formId).isEqualTo(1L);
+    }
+
+
+    @Test
+    @DisplayName("결제완료 상태 변경 테스트")
+    void pay_completed_test() {
+        // given
+        List<ReservationAnswer> answers = new ArrayList<>();
+
+        Member member = Mockito.mock(Member.class);
+
+
+
+        ReservationSubmitForm form = Mockito.mock(ReservationSubmitForm.class);
+
+        Mockito.when(member.getPhoneNumber()).thenReturn("01012341234");
+        Mockito.when(form.getStatus()).thenReturn(ReservationStatus.SERVICE_COMPLETED);
+        Mockito.when(form.getReservationAnswerList()).thenReturn(answers);
+        Mockito.when(form.getMember()).thenReturn(member);
+        // when
+        // reservationFormRepository의 submitFormWithAnswer 메소드가 가상의 데이터를 반환하도록 정의
+        Mockito.when(repository.submitFormWithAnswer(Mockito.anyLong())).thenReturn(Optional.of(form));
+
+        // memberRepository.existCode 메소드가 false를 반환하도록 정의
+        Mockito.when(memberRepository.existCode(Mockito.anyString())).thenReturn(false);
+
+        // codeService.codePublish 메소드가 가상의 코드를 반환하도록 정의
+        Mockito.when(codeService.codePublish()).thenReturn("ABC123");
+
+        // 테스트 대상 메소드 실행
+        submitService.payMentCompleted(1L);
+
+        // form.paymentCompleted() 메소드가 호출되었는지 검증
+        Mockito.verify(form, Mockito.times(1)).paymentCompleted();
+
+        // member.changeCode 메소드가 호출되었는지 검증
+        DiscountCode discountCode = member.getDiscountCode();
+        Mockito.verify(member, Mockito.times(1)).changeCode(Mockito.any(DiscountCode.class));
+
+        // talkSendService.sendCustomenrCompleted 메소드가 호출되었는지 검증
+        Mockito.verify(talkSendService, Mockito.times(1)).sendCustomenrCompleted(anyString(), anyLong());
+
+        // memberRepository.existCode 메소드가 가상의 코드를 매개변수로 호출되었는지 검증
+        Mockito.verify(memberRepository, Mockito.times(1)).existCode(Mockito.eq("ABC123"));
+
+        Mockito.verify(talkSendService, Mockito.times(1)).sendCustomenrCompleted(Mockito.eq("123456789"), Mockito.eq(form.getId()));
+
     }
 }
