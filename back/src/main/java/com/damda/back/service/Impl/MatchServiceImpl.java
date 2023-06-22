@@ -13,7 +13,6 @@ import com.damda.back.data.response.ReviewListAdminDTO;
 import com.damda.back.domain.Match;
 import com.damda.back.domain.ReservationAnswer;
 import com.damda.back.domain.ReservationSubmitForm;
-import com.damda.back.domain.area.Area;
 import com.damda.back.domain.manager.AreaManager;
 import com.damda.back.domain.manager.Manager;
 import com.damda.back.exception.CommonException;
@@ -54,7 +53,7 @@ public class MatchServiceImpl implements MatchService {
 			Match match = Match.builder()
 					.matching(false)
 					.managerId(manager.getId())
-					.managerName(manager.getName())
+					.managerName(manager.getManagerName())
 					.manager(manager)
 					.matchStatus(MatchResponseStatus.WAITING)
 					.reservationForm(reservationSubmitForm)
