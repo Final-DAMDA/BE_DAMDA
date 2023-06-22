@@ -26,9 +26,6 @@ import com.damda.back.service.SubmitService;
 import com.damda.back.service.TalkSendService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.nurigo.sdk.message.exception.NurigoEmptyResponseException;
-import net.nurigo.sdk.message.exception.NurigoMessageNotReceivedException;
-import net.nurigo.sdk.message.exception.NurigoUnknownException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -329,7 +326,7 @@ public class SubmitServiceImpl implements SubmitService {
                });
 
                managerRepository.managers(managerList).forEach(manager -> {
-                    log.info("수신자들 {} : {}",manager.getName(),manager.getPhoneNumber());
+                    log.info("수신자들 {} : {}",manager.getManagerName(),manager.getPhoneNumber());
                     phoneNumbers.add(manager.getPhoneNumber());
                });
                if(!phoneNumbers.isEmpty()) talkSendService.sendManagerWithCustomer(data,phoneNumbers);

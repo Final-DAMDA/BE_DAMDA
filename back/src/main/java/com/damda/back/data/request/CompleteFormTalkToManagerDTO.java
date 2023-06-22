@@ -5,16 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class QnARequestDTO {
-    
-    private String title;
-    
-    private String qnaCategory;
-    
-    private String contents;
-    
+public class CompleteFormTalkToManagerDTO {
+	private List<String> phoneNumber;
+	private String link;
+	private LocalDateTime sendTime;
 }

@@ -29,7 +29,7 @@ public class ManagerUpdateResponseDTO {
     private String memo;
 
     public ManagerUpdateResponseDTO(Manager manager) {
-        this.managerName = manager.getName();
+        this.managerName = manager.getManagerName();
         this.managerPhone = manager.getPhoneNumber();
         this.level = manager.getLevel();
         this.certificateStatus = manager.getCertificateStatus().toString();

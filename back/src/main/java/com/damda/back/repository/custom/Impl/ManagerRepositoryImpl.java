@@ -40,7 +40,7 @@ public class ManagerRepositoryImpl implements ManagerCustomRepository {
     public String findManagerName(Integer memberId) {
         QManager manager = QManager.manager;
 
-        String managerName = queryFactory.selectDistinct(manager.name)
+        String managerName = queryFactory.selectDistinct(manager.managerName)
                 .from(manager)
                 .where(manager.member.id.eq(memberId).and(manager.currManagerStatus.eq(ManagerStatusEnum.ACTIVE)))
                 .fetchOne();

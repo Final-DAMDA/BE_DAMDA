@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @NoArgsConstructor
@@ -20,38 +21,19 @@ import java.util.List;
 public class ManagerResponseDTO {
 
     private Long id;
-
     private Member member;
-
     private String managerName;
-
     private String managerPhoneNumber;
-
-    private String address;
-
-    private ActivityDay activityDay;
-
-    @Builder.Default
-    private List<AreaManager> areaManagers = new ArrayList<>();
-
-    private String certificateStatus;
-
-    private String certificateStatusEtc;
-
+    private Map<String, List<String>> region;
     private Integer level;
-
-    private Boolean vehicle;
-
+    private String certificateStatus;
+    private String certificateStatusEtc;
     private String fieldExperience;
-
     private Boolean mainJobStatus;
-
     private String mainJobStatusEtc;
-
+    private Boolean vehicle;
     private String memo;
-
     private String prevManagerStatus;
-
     private String currManagerStatus;
 
 }
