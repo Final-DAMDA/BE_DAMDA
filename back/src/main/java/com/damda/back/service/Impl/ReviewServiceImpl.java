@@ -343,11 +343,11 @@ public class ReviewServiceImpl implements ReviewService {
 		nullCheck(review);
 		Review uploadReview = review.get();
 		uploadReview.reviewUpload(reviewRequestDTO);
-
-		if(reviewRequestDTO.getBefore()!=null){
+		System.out.println(reviewRequestDTO);
+		if(reviewRequestDTO.getBefore()!=null||!reviewRequestDTO.getBefore().isEmpty()){
 			saveImage(uploadReview,reviewRequestDTO.getBefore(),ImageType.BEFORE);
 		}
-		if(reviewRequestDTO.getAfter()!=null){
+		if(reviewRequestDTO.getAfter()!=null||!reviewRequestDTO.getAfter().isEmpty()){
 			saveImage(uploadReview,reviewRequestDTO.getAfter(),ImageType.AFTER);
 		}
 
@@ -374,6 +374,7 @@ public class ReviewServiceImpl implements ReviewService {
 	 */
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	void saveImage(Review serviceComplete, List<MultipartFile> images, ImageType imageType) {
+
 		List<String> imageNameList = s3Service.uploadFile(images, imageType.toString());
 		List<String> imageUrlList = s3Service.uploadFileUrl(imageNameList, imageType.toString());
 

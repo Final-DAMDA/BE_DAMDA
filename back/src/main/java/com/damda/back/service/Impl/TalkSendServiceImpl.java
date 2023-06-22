@@ -183,6 +183,15 @@ public class TalkSendServiceImpl implements TalkSendService {
         String managerRemindGroupId = solapiUtils.managerRemindTalk(remindTalkToManagerDTO);
 
         //서비스 완료 폼 매니저에게 보내기
+
+        Optional<String> highestLevelManagerPhoneNumber = matches.stream()
+                .filter(Match::isMatching)
+                .map(Match::getManager)
+                .max(Comparator.comparingInt(manager -> manager.getLevel()))
+                .map(Manager::getPhoneNumber);
+
+        String highestLevelManagerPhoneNumberString = highestLevelManagerPhoneNumber.orElseThrow(()->new CommonException(ErrorCode.ERROR_MATCH_COMPLETE));//TODO
+
         LocalDateTime localDateTime = LocalDateTime.parse(answerMap.get(QuestionIdentify.SERVICEDATE), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
         String serviceDuration = (String) answerMap.get(QuestionIdentify.SERVICEDURATION);

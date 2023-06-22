@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReservationListManagerIDDTO {
-	private Long reservationId;
-	private String serviceDate;
+	private Long id;
+	private String createdAt;
 }
