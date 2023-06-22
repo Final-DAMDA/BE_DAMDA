@@ -51,6 +51,7 @@ public enum ErrorCode {
     ERROR_COMPLETE_TALK(HttpStatus.INTERNAL_SERVER_ERROR,"서비스 완료 폼 예약톡에 에러가 발생했습니다. "),
     ERROR_REMIND_TALK_USER(HttpStatus.INTERNAL_SERVER_ERROR,"유저 리마인드 예약톡에 에러가 발생했습니다. "),
     ERROR_REMIND_TALK_MANAGER(HttpStatus.INTERNAL_SERVER_ERROR,"매니저 리마인드 예약톡에 에러가 발생했습니다. "),
+    NOT_FOUND_SERVICE_COMPLETE(HttpStatus.BAD_REQUEST, "없는 예약이거나 서비스 완료 폼이 제출되지 않은 예약입니다. "),
     NOT_FOUND_QNA(HttpStatus.BAD_REQUEST, "없는 QnA를 조회했습니다.");
 
 

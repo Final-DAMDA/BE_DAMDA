@@ -198,6 +198,29 @@ public class ReviewServiceImpl implements ReviewService {
 		return resultPage;
 	}
 
+	@Override
+	@Transactional(readOnly = true)
+	public BeforeAfterImageDTO serviceCompleteDetail(Long reservationId) {
+		Review review =reviewRepository.serviceCompleteFindByReservation(reservationId)
+				.orElseThrow(()-> new CommonException(ErrorCode.NOT_FOUND_SERVICE_COMPLETE));
+
+		List<Image> images = review.getReviewImage();
+		List<String> before = new ArrayList<>();
+		List<String> after = new ArrayList<>();
+		for(Image image : images){
+			if(image.getImgType().equals(ImageType.BEFORE)){
+				before.add(image.getImgUrl());
+			}else{
+				after.add(image.getImgUrl());
+			}
+		}
+		BeforeAfterImageDTO beforeAfterImageDTO = BeforeAfterImageDTO.builder()
+												.before(before)
+												.after(after)
+												.build();
+		return beforeAfterImageDTO;
+	}
+
 	/***
 	 * @apiNote : 유저 리뷰리스트 조회
 	 */
