@@ -17,8 +17,8 @@ public class ReviewAutoResponseDTO {
 	private String name;
 	private String address;
 	private String reservationDate;
-	private Map<Long, String> before;
-	private Map<Long, String> after;
+	private List<ImageResponseDTO> before;
+	private List<ImageResponseDTO>  after;
 
 
 }

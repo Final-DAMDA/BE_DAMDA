@@ -24,10 +24,10 @@ import java.util.List;
 @SpringBootApplication
 public class BackApplication {
 
-	 @Profile("dev")
-	 @Bean
-	 CommandLineRunner initData(
-	 		QuestionRepository questionRepository,
+	@Profile("dev")
+	@Bean
+	CommandLineRunner initData(
+			QuestionRepository questionRepository,
 			MemberRepository memberRepository,
 			PasswordEncoder passwordEncoder,
 			ManagerRepository managerRepository,
@@ -35,8 +35,8 @@ public class BackApplication {
 			AreaRepository areaRepository,
 			AreaManagerRepository areaManagerRepository,
 			InitQuery initQuery
-	 ) {
-	 	return args -> {insertQuery(questionRepository,
+	) {
+		return args -> {insertQuery(questionRepository,
 				memberRepository,
 				passwordEncoder,
 				managerRepository,
@@ -44,9 +44,9 @@ public class BackApplication {
 				areaRepository,
 				areaManagerRepository);
 
-			 	initQuery.initData();
-		 };
-	 }
+			initQuery.initData();
+		};
+	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(BackApplication.class, args);
@@ -63,17 +63,17 @@ public class BackApplication {
 							AreaManagerRepository areaManagerRepository){
 
 
-		 memberRepository.save(Member.builder()
-						 .username("admin")
-						 .password(passwordEncoder.encode("1234"))
-						 .phoneNumber("01012341234")
-						 .status(MemberStatus.ACTIVATION)
-						 .role(MemberRole.ADMIN)
-						 .profileImage("404.jpg")
-				 .build());
+		memberRepository.save(Member.builder()
+				.username("admin")
+				.password(passwordEncoder.encode("1234"))
+				.phoneNumber("01039041094")
+				.status(MemberStatus.ACTIVATION)
+				.role(MemberRole.ADMIN)
+				.profileImage("404.jpg")
+				.build());
 
 
-		 //--------------Question Insert
+		//--------------Question Insert
 
 
 		questionRepository.save(
@@ -287,14 +287,7 @@ public class BackApplication {
 				Category.builder().questionCategory("지인추천").build(),
 				Category.builder().questionCategory("기타").build()
 		);
-
-
-
-
 		categories2.forEach(question4::addCategory);
 		questionRepository.save(question4);
-
-
-
 	}
 }
