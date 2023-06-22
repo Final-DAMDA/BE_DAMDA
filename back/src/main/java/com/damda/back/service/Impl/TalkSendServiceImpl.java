@@ -6,12 +6,14 @@ import com.damda.back.data.common.CancellationDTO;
 
 import com.damda.back.data.common.QuestionIdentify;
 import com.damda.back.data.request.*;
+import com.damda.back.domain.GroupIdCode;
 import com.damda.back.domain.Match;
 import com.damda.back.domain.ReservationAnswer;
 import com.damda.back.domain.ReservationSubmitForm;
 import com.damda.back.domain.manager.Manager;
 import com.damda.back.exception.CommonException;
 import com.damda.back.exception.ErrorCode;
+import com.damda.back.repository.GroupIdCodeRepository;
 import com.damda.back.repository.ManagerRepository;
 import com.damda.back.repository.MatchRepository;
 import com.damda.back.repository.ReservationFormRepository;
@@ -36,6 +38,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class TalkSendServiceImpl implements TalkSendService {
+    private final GroupIdCodeRepository groupIdCodeRepository;
 
 
     private final SolapiUtils solapiUtils;
@@ -138,6 +141,7 @@ public class TalkSendServiceImpl implements TalkSendService {
      * @apiNote: 예약확정시 성공매니저, 실패매니저, 유저에게 알림톡 및 리마인드 메시지, 30분전 매니저 서비스 완료 폼 제출 톡 보냄
      */
     @Override
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void sendReservationCompleted(List<Match> matches, ReservationSubmitForm reservationSubmitForm) {
         List<ReservationAnswer> answers = reservationSubmitForm.getReservationAnswerList();
         Map<QuestionIdentify, String> answerMap
@@ -170,15 +174,41 @@ public class TalkSendServiceImpl implements TalkSendService {
         }
 
         //리마인드 톡 유저한테 보내기
-
-
         RemindTalkToUserDTO remindTalkToUserDTO = new RemindTalkToUserDTO
                 (answerMap.get(QuestionIdentify.SERVICEDATE), answerMap.get(QuestionIdentify.APPLICANTCONACTINFO));
-        solapiUtils.userRemindTalk(remindTalkToUserDTO);
+        String userRemindGroupId = solapiUtils.userRemindTalk(remindTalkToUserDTO);
 
         //리마인드 톡 매니저에게 보내기
         RemindTalkToManagerDTO remindTalkToManagerDTO = new RemindTalkToManagerDTO(answerMap,managerPhoneNumbers,managerAmount);
-        solapiUtils.managerRemindTalk(remindTalkToManagerDTO);
+        String managerRemindGroupId = solapiUtils.managerRemindTalk(remindTalkToManagerDTO);
+
+        //서비스 완료 폼 매니저에게 보내기
+        LocalDateTime localDateTime = LocalDateTime.parse(answerMap.get(QuestionIdentify.SERVICEDATE), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        localDateTime = localDateTime.plusHours(Long.valueOf(answerMap.get(QuestionIdentify.SERVICEDURATION))); //서비스 완료시간 구하기
+        localDateTime = localDateTime.minusMinutes(30); //30분 마이너스
+
+        String completeFormLink = "https://fe-damda.vercel.app/manager/completed"+reservationSubmitForm.getId().toString();
+
+        CompleteFormTalkToManagerDTO completeFormTalkToManagerDTO =CompleteFormTalkToManagerDTO
+                .builder()
+                .sendTime(localDateTime)
+                .link(completeFormLink)
+                .phoneNumber(managerPhoneNumbers)
+                .build();
+        String serviceCompleteGroupId = solapiUtils.managerServiceCompleteFormSend(completeFormTalkToManagerDTO);
+
+        //그룹 Code 객체 저장
+        GroupIdCode groupIdCode = GroupIdCode.builder()
+                .memberGroupId(userRemindGroupId)
+                .managerGroupId(managerRemindGroupId)
+                .beforeAfterGroupId(serviceCompleteGroupId)
+                .submitForm(reservationSubmitForm)
+                .build();
+        try{
+            groupIdCodeRepository.save(groupIdCode);
+        }catch (Exception e){
+            throw new CommonException(ErrorCode.ERROR_GROUP_ID_CODE);
+        }
 
     }
 

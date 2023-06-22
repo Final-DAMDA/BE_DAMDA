@@ -47,6 +47,10 @@ public enum ErrorCode {
     ERROR_MATCH_COMPLETE(HttpStatus.INTERNAL_SERVER_ERROR,"매치 데이터 저장 중에 에러가 발생했습니다."),
     OVER_MATCH_ORDER(HttpStatus.BAD_REQUEST,"매칭 수락된 매니저가 지정된 매니저 수보다 많습니다. "),
     NOT_FOUND_AREA(HttpStatus.BAD_REQUEST,"DB에 해당 지역이 존재하지 않습니다. "),
+    ERROR_GROUP_ID_CODE(HttpStatus.INTERNAL_SERVER_ERROR,"리마인드 톡 예약정보 저장 중에 에러가 발생했습니다. "),
+    ERROR_COMPLETE_TALK(HttpStatus.INTERNAL_SERVER_ERROR,"서비스 완료 폼 예약톡에 에러가 발생했습니다. "),
+    ERROR_REMIND_TALK_USER(HttpStatus.INTERNAL_SERVER_ERROR,"유저 리마인드 예약톡에 에러가 발생했습니다. "),
+    ERROR_REMIND_TALK_MANAGER(HttpStatus.INTERNAL_SERVER_ERROR,"매니저 리마인드 예약톡에 에러가 발생했습니다. "),
     NOT_FOUND_QNA(HttpStatus.BAD_REQUEST, "없는 QnA를 조회했습니다.");
 
 

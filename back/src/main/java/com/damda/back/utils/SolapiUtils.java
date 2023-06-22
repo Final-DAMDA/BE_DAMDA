@@ -414,18 +414,19 @@ public class SolapiUtils {
 
             // send 메소드로 ArrayList<Message> 객체를 넣어도 동작합니다!
             MultipleDetailMessageSentResponse response = this.messageService.send(message, instant);
-            System.out.println("리마인드 톡User전송1-----"+response.getGroupInfo().getGroupId());
-
+            System.out.println("리마인드 톡User전송1-----"+response.getGroupInfo().getGroupId());// TODO:
+            return response.getGroupInfo().getGroupId();
 
         } catch (NurigoMessageNotReceivedException exception) {
             // 발송에 실패한 메시지 목록을 확인할 수 있습니다!
             System.out.println(exception.getFailedMessageList());
             System.out.println(exception.getMessage());
+            throw new CommonException(ErrorCode.ERROR_REMIND_TALK_USER);
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
+            throw new CommonException(ErrorCode.ERROR_REMIND_TALK_USER);
         }
-        System.out.println("리마인드 톡User전송3-----"+message.getGroupId());
-        return message.getGroupId();
+
     }
 
     /**
@@ -473,21 +474,22 @@ public class SolapiUtils {
 
             // send 메소드로 ArrayList<Message> 객체를 넣어도 동작합니다!
             MultipleDetailMessageSentResponse response = this.messageService.send(messageList, instant);
-
+            return response.getGroupInfo().getGroupId();
         } catch (NurigoMessageNotReceivedException exception) {
             // 발송에 실패한 메시지 목록을 확인할 수 있습니다!
             System.out.println(exception.getFailedMessageList());
             System.out.println(exception.getMessage());
+            throw new CommonException(ErrorCode.ERROR_REMIND_TALK_MANAGER);
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
+            throw new CommonException(ErrorCode.ERROR_REMIND_TALK_MANAGER);
         }
-        return messageList.get(0).getGroupId();
     }
 
     /**
      * @apiNote : 매니저 서비스 완료 폼 알림톡 (비포/애프터)
      */
-    public String managerServiceCompleteFormSend(RemindTalkToManagerDTO dto) {
+    public String managerServiceCompleteFormSend(CompleteFormTalkToManagerDTO dto) {
         ArrayList<Message> messageList = new ArrayList<>();
 
         dto.getPhoneNumber().forEach(phoneNumber -> {
@@ -497,9 +499,7 @@ public class SolapiUtils {
             kakaoOption.setTemplateId("KA01TP230607122818804PShXbWTb05K");
 
             HashMap<String, String> variables = new HashMap<>();
-            variables.put("#{photoLink}", dto.getReservationHour());
-
-
+            variables.put("#{photoLink}", dto.getLink());
             kakaoOption.setVariables(variables);
 
             Message message = new Message();
@@ -514,24 +514,24 @@ public class SolapiUtils {
 
         try {
             // Java LocalDateTime, Instant 기준, Kolintx의 datetime 내 Instant 타입을 넣어도 동작합니다!
-            LocalDateTime localDateTime = LocalDateTime.parse(dto.getReservationHour(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            localDateTime = localDateTime.minusDays(1); //예약 하루 전
+            LocalDateTime localDateTime = dto.getSendTime();
             ZoneOffset zoneOffset = ZoneId.systemDefault().getRules().getOffset(localDateTime);
             Instant instant = localDateTime.toInstant(zoneOffset);
 
 
             // send 메소드로 ArrayList<Message> 객체를 넣어도 동작합니다!
             MultipleDetailMessageSentResponse response = this.messageService.send(messageList, instant);
-
-
+            return response.getGroupInfo().getGroupId();
         } catch (NurigoMessageNotReceivedException exception) {
             // 발송에 실패한 메시지 목록을 확인할 수 있습니다!
             System.out.println(exception.getFailedMessageList());
             System.out.println(exception.getMessage());
+            throw new CommonException(ErrorCode.ERROR_COMPLETE_TALK);
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
+            throw new CommonException(ErrorCode.ERROR_COMPLETE_TALK);
         }
-        return messageList.get(0).getGroupId();
+
     }
 
 
