@@ -1,11 +1,9 @@
 package com.damda.back.domain.manager;
 
-import com.damda.back.data.request.ManagerRegionUpdateRequestDTO;
 import com.damda.back.data.request.ManagerUpdateRequestDTO;
 import com.damda.back.domain.BaseEntity;
 import com.damda.back.domain.Match;
 import com.damda.back.domain.Member;
-import com.damda.back.domain.area.DistrictEnum;
 import lombok.*;
 
 import javax.persistence.*;
@@ -28,11 +26,9 @@ public class Manager extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
-
-    private String name;
-
-    private String phoneNumber;
-
+    
+    private String managerName;
+    private String managerPhoneNumber;
     private String address;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -46,21 +42,13 @@ public class Manager extends BaseEntity {
     private CertificateStatusEnum certificateStatus;
 
     private String certificateStatusEtc;
-
     private Integer level;
-
     private Boolean vehicle;
-
     private String fieldExperience;
-
     private Boolean mainJobStatus;
-
     private String mainJobStatusEtc;
-
     private String memo;
-
     private ManagerStatusEnum prevManagerStatus;
-
     private ManagerStatusEnum currManagerStatus;
 
     @OneToMany(mappedBy = "manager", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -71,15 +59,18 @@ public class Manager extends BaseEntity {
     }
 
     public void updateManager(ManagerUpdateRequestDTO dto) {
-        this.name = dto.getManagerName();
-        this.phoneNumber = dto.getManagerPhone();
-        this.address = dto.getAddress();
-        this.level = dto.getLevel();
+        this.managerName = dto.getManagerName();
+        this.managerPhoneNumber = dto.getManagerPhoneNumber();
+//        this.activityDay = dto.getActivityDay();
         this.certificateStatus = CertificateStatusEnum.valueOf(dto.getCertificateStatus());
+        this.certificateStatusEtc = dto.getCertificateStatusEtc();
+        this.level = dto.getLevel();
         this.vehicle = dto.getVehicle();
-        this.prevManagerStatus = this.currManagerStatus;
-        this.currManagerStatus = ManagerStatusEnum.valueOf(dto.getManagerStatus());
+        this.fieldExperience = dto.getFieldExperience();
         this.memo = dto.getMemo();
+        this.prevManagerStatus = this.currManagerStatus;
+        this.currManagerStatus = ManagerStatusEnum.valueOf(dto.getCurrManagerStatus());
+
     }
 
 

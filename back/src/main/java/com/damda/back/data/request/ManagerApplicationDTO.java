@@ -1,7 +1,6 @@
 package com.damda.back.data.request;
 
 import com.damda.back.domain.Member;
-import com.damda.back.domain.area.Area;
 import com.damda.back.domain.manager.ActivityDay;
 import com.damda.back.domain.manager.CertificateStatusEnum;
 import com.damda.back.domain.manager.Manager;
@@ -17,29 +16,21 @@ import java.util.Map;
 @AllArgsConstructor
 public class ManagerApplicationDTO {
 
-    private String name;
-    private String phone;
-    private String address;
+    private String managerName;
+    private String managerPhoneNumber;
     private List<Boolean> activityDay;//(월~일 boolean만 보냄)
-
-    private List<String> activityCity;
-    private List<String> activityDistrict;
+    private Map<String, List<String>> region;
     private String certificateStatus;
     private String certificateStatusEtc;
-
+    private String fieldExperience;
+    private Boolean mainJobStatus;
+    private String mainJobStatusEtc;
     private Boolean vehicle;
 
-    private String fieldExperience;
-
-    private Boolean mainJobStatus;
-
-    private String mainJobStatusEtc;
-
-    public Manager toManagerEntity(Member manager) { // TODO: 매니저 상태값 체크
+    public Manager toManagerEntity(Member member) {
         return Manager.builder()
-                .name(name)
-                .phoneNumber(phone)
-                .address(address)
+                .managerName(managerName)
+                .managerPhoneNumber(managerPhoneNumber)
                 .level(1)
                 .certificateStatusEtc(certificateStatusEtc)
                 .certificateStatus(CertificateStatusEnum.valueOf(certificateStatus))
@@ -47,7 +38,7 @@ public class ManagerApplicationDTO {
                 .fieldExperience(fieldExperience)
                 .mainJobStatus(mainJobStatus)
                 .mainJobStatusEtc(mainJobStatusEtc)
-                .member(manager)
+                .member(member)
                 .currManagerStatus(ManagerStatusEnum.WAITING)
                 .build();
     }
@@ -64,6 +55,5 @@ public class ManagerApplicationDTO {
                 .isOkSunday(activityDay.get(6))
                 .build();
     }
-
-
+    
 }
