@@ -28,7 +28,7 @@ public enum ErrorCode {
     NOT_FOUND_QUESTION(HttpStatus.BAD_REQUEST,"없는 데이터를 조회했습니다."),
     NOT_FOUND_CATEGORY(HttpStatus.BAD_REQUEST,"없는 카테고리를 조회했습니다."),
     NOT_FOUND_QUESTION_MODIFIED(HttpStatus.BAD_REQUEST,"없는 데이터를 수정요청했습니다"),
-    NO_REQUIRED_VALUE(HttpStatus.BAD_REQUEST,"필수 값 중에 누락된 값이 있습니다"),
+    NO_REQUIRED_VALUE(HttpStatus.BAD_REQUEST,"필수 값 중에 누락된 값 혹은 중복된 값이 있습니다."),
     SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"DB 커넥션 에러"),
     FORM_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR,"저장되지 않은 폼 값이 넘어왔습닌다."),
     ERROR_WHILE_SUBMITTING_USER_FORM(HttpStatus.INTERNAL_SERVER_ERROR,"유저 폼 제출 중에 에러가 발생"),

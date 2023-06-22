@@ -107,7 +107,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public PageReservationMemberDTO reservationMemberDTOS(Integer memberId,Integer page){
 
-        Page<ReservationSubmitForm> pageData = formRepository.submitFormDataList(memberId,PageRequest.of(page,10));
+        Page<ReservationSubmitForm> pageData = formRepository.submitFormDataList(memberId,PageRequest.of(page,5));
 
         List<ReservationSubmitForm> submitForms = pageData.getContent();
         List<ReservationMemberDTO> dtos = new ArrayList<>();

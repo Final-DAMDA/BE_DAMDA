@@ -41,9 +41,7 @@ import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -178,10 +176,15 @@ public class SubmitServiceImpl implements SubmitService {
     @TimeChecking
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public Long jpaFormInsert(SubmitRequestDTO dto,Integer memberId){
-        boolean isValid = dto.getSubmit().stream()
+
+        Set<QuestionIdentify> submittedIdentifies = new HashSet<>();
+        boolean hasDuplicate = dto.getSubmit().stream()
                 .map(SubmitSlice::getQuestionIdentify)
-                .collect(Collectors.toSet())
-                .containsAll(identifies);
+                .anyMatch(q -> !submittedIdentifies.add(q));
+
+         boolean isValid = !hasDuplicate && submittedIdentifies.containsAll(identifies);
+
+
 
         if(isValid){
             List<ReservationAnswer> answers = new ArrayList<>();
