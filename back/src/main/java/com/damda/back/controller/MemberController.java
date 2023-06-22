@@ -3,6 +3,7 @@ package com.damda.back.controller;
 
 import com.damda.back.data.common.CodeEnum;
 import com.damda.back.data.common.CommonResponse;
+import com.damda.back.data.request.MemoRequestDTO;
 import com.damda.back.data.response.AccessTokenResponse;
 import com.damda.back.data.response.MemberResponseDTO;
 import com.damda.back.data.response.TokenWithImageDTO;
@@ -98,6 +99,26 @@ public class MemberController {
     }
 
 
+    @GetMapping("/api/v1/kakao/discount/code/{id}")
+    public ResponseEntity<CommonResponse<?>> discoundCodeCheck(
+            @PathVariable Long id
+    ){
+
+        String code = memberService.discountCode(id);
+
+        CommonResponse<?> commonResponse = CommonResponse
+                .builder()
+                .codeEnum(CodeEnum.SUCCESS)
+                .data(code)
+                .build();
+
+        return ResponseEntity
+                .status(commonResponse.getStatus())
+                .body(commonResponse);
+
+    }
+
+
     /**
      * @apiNote 고객 관리 리스트를 프론트에게 보내주는 엔드포인트이다.
      *
@@ -153,11 +174,15 @@ public class MemberController {
     }
 
 
+    /**
+     * @apiNote 수정하는 부분
+     * */
     @PutMapping("/api/v1/member/memo/modify")
     public ResponseEntity<CommonResponse<?>> memoModify(
-            @RequestParam Integer memberId
+            @RequestBody MemoRequestDTO memoRequestDTO
     ){
 
+        memberService.memoModify(memoRequestDTO);
 
         CommonResponse<?> commonResponse = CommonResponse
                 .builder()

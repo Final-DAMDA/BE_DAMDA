@@ -30,10 +30,13 @@ public interface ReservationFormCustomRepository {
     Page<ReservationSubmitForm> serviceCompleteList(Pageable pageable);
     Optional<ReservationSubmitForm> findByreservationId(Long reservationId);
 
+    Optional<ReservationSubmitForm> findByreservationId2(Long reservationId);
 
     public Optional<ReservationSubmitForm> submitFormWithAnswer(Long formId);
 
     public Page<ReservationSubmitForm> submitFormDataList(Integer memberId,Pageable pageable);
     public Optional<ReservationSubmitForm> submitFormWithMember(Long formId);
+
+    public String reservationDiscountCode(Long formId);
 
 }

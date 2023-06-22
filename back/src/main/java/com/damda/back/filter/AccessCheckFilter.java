@@ -50,25 +50,13 @@ public class AccessCheckFilter extends OncePerRequestFilter {
 
         log.info("TOKEN 검증 시작");
 
-        log.info("REQUEST INFO URI : {} ",request.getRequestURI());
-
-        String ipAddress = request.getRemoteAddr();
-        log.info("Client IP Address: {}",ipAddress);
-
-        String hostName = request.getRemoteHost();
-        log.info("요청이 온 서버의 호스트명 확인 {}",hostName);
-
-        int portNumber = request.getRemotePort();
-        log.info("요청의 포트 번호 확인: {}",portNumber);
-
-        String requestURL = request.getRequestURL().toString();
-        log.info("Request URL: {}",requestURL);
-
         String method = request.getMethod();
         log.info("HTTP Method: "+method);
 
         String userAgent = request.getHeader("User-Agent");
         log.info("User-Agent: {}",userAgent);
+
+
       try{
           Map<String,Claim> claimMap = validateAccessToken(request);
 

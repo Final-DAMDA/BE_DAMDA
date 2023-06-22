@@ -55,9 +55,6 @@ public class Match extends BaseEntity{
 		this.matchStatus=MatchResponseStatus.NO;
 	}
 	public void matchingOrder(){
-		if(this.matching==true){
-			throw new CommonException(ErrorCode.SUBMITTED_MATCH_ORDER_COMPLETE);
-		}
 		this.matching = true;
 	}
 }

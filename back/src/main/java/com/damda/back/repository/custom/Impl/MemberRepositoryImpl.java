@@ -45,11 +45,9 @@ public class MemberRepositoryImpl implements MemberCustomRepository {
     @Override
     public Optional<Member> findByIdWhereActive(Integer id) {
         QMember member = QMember.member;
-        QDiscountCode discountCode = QDiscountCode.discountCode;
 
         Member memberEntity = queryFactory.select(member)
                 .from(member)
-                .leftJoin(member.discountCode,discountCode).fetchJoin()
                 .where(member.id.eq(id))
                 .where(member.status.eq(MemberStatus.ACTIVATION))
                 .fetchOne();
@@ -60,11 +58,12 @@ public class MemberRepositoryImpl implements MemberCustomRepository {
 
 
     public boolean existCode(String code){
-        QDiscountCode discountCode = QDiscountCode.discountCode;
-        BooleanExpression booleanExpression = discountCode.code.eq(code);
+        QMember member = QMember.member;
+
+        BooleanExpression booleanExpression = member.discountCode.eq(code);
 
         boolean data =queryFactory.selectOne()
-                .from(discountCode)
+                .from(member)
                 .where(booleanExpression)
                 .fetchOne() != null;
 
@@ -75,11 +74,9 @@ public class MemberRepositoryImpl implements MemberCustomRepository {
     public Optional<Member> findByAdmin(String username) {
 
         QMember member = QMember.member;
-        QDiscountCode discountCode = QDiscountCode.discountCode;
         Member memberEntity  =  queryFactory
                 .selectDistinct(member)
                 .from(member)
-                .leftJoin(member.discountCode,discountCode).fetchJoin()
                 .where(member.status.eq(MemberStatus.ACTIVATION))
                 .where(member.role.eq(MemberRole.ADMIN))
                 .where(member.username.eq(username))
@@ -91,7 +88,6 @@ public class MemberRepositoryImpl implements MemberCustomRepository {
 
     public Page<Member> findByMemberListWithCode(String search, Pageable pageable){
         QMember member = QMember.member;
-        QDiscountCode discountCode = QDiscountCode.discountCode;
         QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
 
         BooleanExpression searchExpression = null;
@@ -103,7 +99,6 @@ public class MemberRepositoryImpl implements MemberCustomRepository {
         List<Member> list = queryFactory
                 .selectDistinct(member)
                 .from(member)
-                .leftJoin(member.discountCode,discountCode).fetchJoin()
                 .where(member.status.eq(MemberStatus.ACTIVATION))
                 .where(member.role.eq(MemberRole.USER))
                 .where(searchExpression)
