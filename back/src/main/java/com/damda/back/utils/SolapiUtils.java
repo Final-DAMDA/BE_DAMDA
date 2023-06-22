@@ -487,7 +487,7 @@ public class SolapiUtils {
     /**
      * @apiNote : 매니저 서비스 완료 폼 알림톡 (비포/애프터)
      */
-    public String managerServiceCompleteFormSend(RemindTalkToManagerDTO dto) {
+    public String managerServiceCompleteFormSend(CompleteFormTalkToManagerDTO dto) {
         ArrayList<Message> messageList = new ArrayList<>();
 
         dto.getPhoneNumber().forEach(phoneNumber -> {
@@ -497,9 +497,7 @@ public class SolapiUtils {
             kakaoOption.setTemplateId("KA01TP230607122818804PShXbWTb05K");
 
             HashMap<String, String> variables = new HashMap<>();
-            variables.put("#{photoLink}", dto.getReservationHour());
-
-
+            variables.put("#{photoLink}", dto.getLink());
             kakaoOption.setVariables(variables);
 
             Message message = new Message();
@@ -514,15 +512,13 @@ public class SolapiUtils {
 
         try {
             // Java LocalDateTime, Instant 기준, Kolintx의 datetime 내 Instant 타입을 넣어도 동작합니다!
-            LocalDateTime localDateTime = LocalDateTime.parse(dto.getReservationHour(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            localDateTime = localDateTime.minusDays(1); //예약 하루 전
+            LocalDateTime localDateTime = dto.getSendTime();
             ZoneOffset zoneOffset = ZoneId.systemDefault().getRules().getOffset(localDateTime);
             Instant instant = localDateTime.toInstant(zoneOffset);
 
 
             // send 메소드로 ArrayList<Message> 객체를 넣어도 동작합니다!
             MultipleDetailMessageSentResponse response = this.messageService.send(messageList, instant);
-
 
         } catch (NurigoMessageNotReceivedException exception) {
             // 발송에 실패한 메시지 목록을 확인할 수 있습니다!

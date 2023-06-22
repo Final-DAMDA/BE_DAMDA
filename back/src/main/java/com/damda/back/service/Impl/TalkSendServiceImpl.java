@@ -170,8 +170,6 @@ public class TalkSendServiceImpl implements TalkSendService {
         }
 
         //리마인드 톡 유저한테 보내기
-
-
         RemindTalkToUserDTO remindTalkToUserDTO = new RemindTalkToUserDTO
                 (answerMap.get(QuestionIdentify.SERVICEDATE), answerMap.get(QuestionIdentify.APPLICANTCONACTINFO));
         solapiUtils.userRemindTalk(remindTalkToUserDTO);
@@ -180,6 +178,20 @@ public class TalkSendServiceImpl implements TalkSendService {
         RemindTalkToManagerDTO remindTalkToManagerDTO = new RemindTalkToManagerDTO(answerMap,managerPhoneNumbers,managerAmount);
         solapiUtils.managerRemindTalk(remindTalkToManagerDTO);
 
+        //서비스 완료 폼 매니저에게 보내기
+        LocalDateTime localDateTime = LocalDateTime.parse(answerMap.get(QuestionIdentify.SERVICEDATE), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        localDateTime = localDateTime.plusHours(Long.valueOf(answerMap.get(QuestionIdentify.SERVICEDURATION))); //서비스 완료시간 구하기
+        localDateTime = localDateTime.minusMinutes(30); //30분 마이너스
+
+        String completeFormLink = "https://fe-damda.vercel.app/manager/completed"+reservationSubmitForm.getId().toString();
+
+        CompleteFormTalkToManagerDTO completeFormTalkToManagerDTO =CompleteFormTalkToManagerDTO
+                .builder()
+                .sendTime(localDateTime)
+                .link(completeFormLink)
+                .phoneNumber(managerPhoneNumbers)
+                .build();
+        solapiUtils.managerServiceCompleteFormSend(completeFormTalkToManagerDTO);
     }
 
 
