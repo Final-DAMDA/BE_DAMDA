@@ -3,16 +3,14 @@ package com.damda.back.service.Impl;
 import com.damda.back.data.common.ImageType;
 import com.damda.back.data.common.QuestionIdentify;
 import com.damda.back.data.common.ReservationStatus;
+import com.damda.back.data.request.ReviewManualRequestDTO;
 import com.damda.back.data.request.ReviewRequestDTO;
 import com.damda.back.data.request.ServiceCompleteRequestDTO;
 import com.damda.back.data.response.*;
 import com.damda.back.domain.*;
 import com.damda.back.exception.CommonException;
 import com.damda.back.exception.ErrorCode;
-import com.damda.back.repository.ImageRepository;
-import com.damda.back.repository.MatchRepository;
-import com.damda.back.repository.ReservationFormRepository;
-import com.damda.back.repository.ReviewRepository;
+import com.damda.back.repository.*;
 import com.damda.back.service.ReviewService;
 import com.damda.back.service.S3Service;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +34,7 @@ public class ReviewServiceImpl implements ReviewService {
 	private final ReservationFormRepository reservationFormRepository;
 	private final ReviewRepository reviewRepository;
 	private final MatchRepository matchRepository;
+	private final ReservationAnswerRepository reservationAnswerRepository;
 
 
 	/**
@@ -220,6 +219,7 @@ public class ReviewServiceImpl implements ReviewService {
 												.build();
 		return beforeAfterImageDTO;
 	}
+
 
 	/***
 	 * @apiNote : 유저 리뷰리스트 조회
@@ -409,6 +409,48 @@ public class ReviewServiceImpl implements ReviewService {
 			throw new CommonException(ErrorCode.ERROR_IMAGE_COMPLETE);
 		}
 
+	}
+
+	@Override
+	@Transactional(isolation = Isolation.REPEATABLE_READ)
+	public Long manualReviewUpload(ReviewManualRequestDTO dto) {
+		ReservationSubmitForm reservationSubmitForm = ReservationSubmitForm.builder()
+				.status(ReservationStatus.REVIEW_DATA)
+				.build();
+		reservationFormRepository.save(reservationSubmitForm);
+
+		ReservationAnswer name = ReservationAnswer.builder()
+				.answer(dto.getName())
+				.questionIdentify(QuestionIdentify.APPLICANTNAME)
+				.reservationSubmitForm(reservationSubmitForm)
+				.build();
+		reservationAnswerRepository.save(name);
+
+		ReservationAnswer address = ReservationAnswer.builder()
+				.answer(dto.getAddress())
+				.questionIdentify(QuestionIdentify.ADDRESS)
+				.reservationSubmitForm(reservationSubmitForm)
+				.build();
+		reservationAnswerRepository.save(address);
+
+		ReservationAnswer serviceDate = ReservationAnswer.builder()
+				.answer(dto.getServiceDate())
+				.questionIdentify(QuestionIdentify.SERVICEDATE)
+				.reservationSubmitForm(reservationSubmitForm)
+				.build();
+		reservationAnswerRepository.save(serviceDate);
+
+		Review review = Review.builder()
+				.status(true)
+				.best(false)
+				.content(dto.getContent())
+				.title(dto.getTitle())
+				.reservationSubmitForm(reservationSubmitForm)
+				.build();
+		reviewRepository.save(review);
+		saveImage(review,dto.getBefore(),ImageType.BEFORE);
+		saveImage(review,dto.getAfter(),ImageType.AFTER);
+		return review.getId();
 	}
 
 
