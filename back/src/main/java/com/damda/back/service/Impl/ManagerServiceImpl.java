@@ -5,6 +5,7 @@ import com.damda.back.data.request.ManagerRegionUpdateRequestDTO;
 import com.damda.back.data.request.ManagerUpdateRequestDTO;
 import com.damda.back.data.response.ManagerResponseDTO;
 import com.damda.back.domain.Member;
+import com.damda.back.domain.Question;
 import com.damda.back.domain.area.Area;
 import com.damda.back.domain.manager.ActivityDay;
 import com.damda.back.domain.manager.AreaManager;
@@ -78,7 +79,51 @@ public class ManagerServiceImpl implements ManagerService {
     public ManagerResponseDTO managerResponseDTO(Long managerId) {
 
         Manager manager = managerRepository.findById(managerId).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_MANAGER));
-        
+
+        // --> ActivityDay를 DTO에 담는 코드
+        List<Boolean> activityDayList = new ArrayList<>();
+
+        Optional<ActivityDay> optional = activityDayRepository.findById(manager.getActivityDay().getId());
+
+        if (optional.isPresent()) {
+            ActivityDay activityDay = optional.get();
+
+            activityDayList.add(activityDay.isOkMonday());
+            activityDayList.add(activityDay.isOkTuesday());
+            activityDayList.add(activityDay.isOkWednesday());
+            activityDayList.add(activityDay.isOkThursday());
+            activityDayList.add(activityDay.isOkFriday());
+            activityDayList.add(activityDay.isOkSaturday());
+            activityDayList.add(activityDay.isOkSunday());
+
+        } else {
+            throw new CommonException(ErrorCode.NOT_FOUND_ACTIVITYDAY);
+        }
+//        ActivityDay activityDay = manager.getActivityDay();  // 근데 이렇게 하면 안되나요?
+
+
+        // List<AreaManager> -> Map<String, List<String>> 으로 변환 
+        Map<String, List<String>> region = new HashMap<>();
+        Optional<List<AreaManager>> optionalAreaManager = Optional.ofNullable(areaManagerRepository.findAreaByManagerId(managerId));
+
+        if (optionalAreaManager.isPresent()) {
+            List<AreaManager> areaManagerList = optionalAreaManager.get();
+            List<String> districtSeoul = new ArrayList<>();
+            List<String> districtGyeonggi = new ArrayList<>();
+            for (AreaManager areaManager : areaManagerList) {
+                String city = areaManager.getAreaManagerKey().getArea().getCity();
+                if (city.equals("서울특별시")) {
+                    districtSeoul.add(areaManager.getAreaManagerKey().getArea().getDistrict());
+                } else {
+                    districtGyeonggi.add(areaManager.getAreaManagerKey().getArea().getDistrict());
+                }
+            }
+            region.put("서울특별시", districtSeoul);
+            region.put("경기도", districtGyeonggi);
+        } else {
+            throw new CommonException(ErrorCode.NOT_FOUND_AREA);
+        }
+
         ManagerResponseDTO dto = ManagerResponseDTO
                 .builder()
                 .id(manager.getId())
@@ -95,6 +140,9 @@ public class ManagerServiceImpl implements ManagerService {
                 .prevManagerStatus(String.valueOf(manager.getPrevManagerStatus()))
                 .currManagerStatus(String.valueOf(manager.getCurrManagerStatus()))
                 .build();
+
+        dto.setActivityDay(activityDayList);
+        dto.setRegion(region);
 
         return dto;
     }
@@ -123,6 +171,50 @@ public class ManagerServiceImpl implements ManagerService {
                     .prevManagerStatus(String.valueOf(manager.getPrevManagerStatus()))
                     .currManagerStatus(String.valueOf(manager.getCurrManagerStatus()))
                     .build();
+
+            List<Boolean> activityDayList = new ArrayList<>();
+
+            Optional<ActivityDay> optional = activityDayRepository.findById(manager.getActivityDay().getId());
+
+            if (optional.isPresent()) {
+                ActivityDay activityDay = optional.get();
+
+                activityDayList.add(activityDay.isOkMonday());
+                activityDayList.add(activityDay.isOkTuesday());
+                activityDayList.add(activityDay.isOkWednesday());
+                activityDayList.add(activityDay.isOkThursday());
+                activityDayList.add(activityDay.isOkFriday());
+                activityDayList.add(activityDay.isOkSaturday());
+                activityDayList.add(activityDay.isOkSunday());
+
+            } else {
+                throw new CommonException(ErrorCode.NOT_FOUND_ACTIVITYDAY);
+            }
+
+            Map<String, List<String>> region = new HashMap<>();
+            Optional<List<AreaManager>> optionalAreaManager = Optional.ofNullable(areaManagerRepository.findAreaByManagerId(manager.getId()));
+
+            if (optionalAreaManager.isPresent()) {
+                List<AreaManager> areaManagerList = optionalAreaManager.get();
+                List<String> districtSeoul = new ArrayList<>();
+                List<String> districtGyeonggi = new ArrayList<>();
+                for (AreaManager areaManager : areaManagerList) {
+                    String city = areaManager.getAreaManagerKey().getArea().getCity();
+                    if (city.equals("서울특별시")) {
+                        districtSeoul.add(areaManager.getAreaManagerKey().getArea().getDistrict());
+                    } else {
+                        districtGyeonggi.add(areaManager.getAreaManagerKey().getArea().getDistrict());
+                    }
+                }
+                region.put("서울특별시", districtSeoul);
+                region.put("경기도", districtGyeonggi);
+            } else {
+                throw new CommonException(ErrorCode.NOT_FOUND_AREA);
+            }
+
+
+            dto.setActivityDay(activityDayList);
+            dto.setRegion(region);
 
             managerResponseDTOList.add(dto);
 
@@ -162,29 +254,48 @@ public class ManagerServiceImpl implements ManagerService {
         List<String> gyeonggi = map.get("경기도");
 
         // 서울특별시일 경우
-        List<String> entitiesToRemove = areaDistricts.stream()  // DB에 원래 있었는데 없어진 것들 삭제해야함
+        List<String> entitiesToRemoveSeoul = areaDistricts.stream()  // DB에 원래 있었는데 없어진 것들 삭제해야함
                 .filter(entity -> !seoul.contains(entity))
                 .collect(Collectors.toList());
 
-        List<String> entitiesToInsert = seoul.stream()    // DB에 저장해야하는 값들 저장해야함
+        List<String> entitiesToInsertSeoul = seoul.stream()    // DB에 저장해야하는 값들 저장해야함
                 .filter(dtoString -> !areaDistricts.contains(dtoString))
                 .collect(Collectors.toList());
 
-        for (String str : entitiesToRemove) {
+        for (String str : entitiesToRemoveSeoul) {
             Area area = managerRepository.findByAreaManager(str);
             area.minusCount();
 
             // AreaManager를 조회해서 삭제하는 로직 +1
         }
 
-        for (String str2 : entitiesToInsert) {
+        for (String str2 : entitiesToInsertSeoul) {
             Area area = managerRepository.findByAreaManager(str2);
             area.plusCount();
             // AreaManager를 생성하는 로직 - 1
         }
 
         // 경기도일 경우
+        List<String> entitiesToRemoveGyeonggi = areaDistricts.stream()  // DB에 원래 있었는데 없어진 것들 삭제해야함
+                .filter(entity -> !gyeonggi.contains(entity))
+                .collect(Collectors.toList());
 
+        List<String> entitiesToInsertGyeonggi = gyeonggi.stream()    // DB에 저장해야하는 값들 저장해야함
+                .filter(dtoString -> !areaDistricts.contains(dtoString))
+                .collect(Collectors.toList());
+
+        for (String str : entitiesToRemoveGyeonggi) {
+            Area area = managerRepository.findByAreaManager(str);
+            area.minusCount();
+
+            // AreaManager를 조회해서 삭제하는 로직 +1
+        }
+
+        for (String str2 : entitiesToInsertGyeonggi) {
+            Area area = managerRepository.findByAreaManager(str2);
+            area.plusCount();
+            // AreaManager를 생성하는 로직 - 1
+        }
 
         return true;
     }
