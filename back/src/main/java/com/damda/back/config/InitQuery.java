@@ -8,6 +8,7 @@ import com.damda.back.domain.ReservationAnswer;
 import com.damda.back.domain.ReservationSubmitForm;
 import com.damda.back.domain.area.Area;
 import com.damda.back.domain.manager.AreaManager;
+import com.damda.back.domain.manager.CertificateStatusEnum;
 import com.damda.back.domain.manager.Manager;
 import com.damda.back.domain.manager.ManagerStatusEnum;
 import com.damda.back.repository.*;
@@ -54,22 +55,58 @@ public class InitQuery {
 
 		memberRepository.save(member2);
 
+		Member member3 = Member.builder()
+				.username("김재우")
+				.password("1234")
+				.role(MemberRole.USER)
+				.status(MemberStatus.ACTIVATION)
+				.profileImage("404.jpg")
+				.build();
+
+		memberRepository.save(member3);
+
+		Member member4 = Member.builder()
+				.username("고예림")
+				.password("1234")
+				.role(MemberRole.USER)
+				.status(MemberStatus.ACTIVATION)
+				.profileImage("404.jpg")
+				.build();
+
+		memberRepository.save(member4);
+
+		Member member5 = Member.builder()
+				.username("김형준")
+				.password("1234")
+				.role(MemberRole.USER)
+				.status(MemberStatus.ACTIVATION)
+				.profileImage("404.jpg")
+				.build();
+
+		memberRepository.save(member5);
+
 		Manager manager = managerRepository.save(Manager.builder()
-				.managerPhoneNumber("01040783843")
+				.phoneNumber("01040783843")
 				.managerName("김재우")
 				.currManagerStatus(ManagerStatusEnum.ACTIVE)
+				.certificateStatus(CertificateStatusEnum.ETC)
+				.member(member3)
 				.build());
 
 		Manager manager2 = managerRepository.save(Manager.builder()
-				.managerPhoneNumber("01039041094")
+				.phoneNumber("01039041094")
 				.managerName("고예림")
 				.currManagerStatus(ManagerStatusEnum.ACTIVE)
+				.certificateStatus(CertificateStatusEnum.ETC)
+				.member(member4)
 				.build());
 
 		Manager manager3 = managerRepository.save(Manager.builder()
-				.managerPhoneNumber("01082535890")
+				.phoneNumber("01082535890")
 				.managerName("김형준")
 				.currManagerStatus(ManagerStatusEnum.ACTIVE)
+				.certificateStatus(CertificateStatusEnum.ETC)
+				.member(member5)
 				.build());
 
 
@@ -95,9 +132,9 @@ public class InitQuery {
 		areaRepository.save(area2);
 		areaRepository.save(area);
 
-		AreaManager.AreaManagerKey key = new AreaManager.AreaManagerKey(area,manager);
+		AreaManager.AreaManagerKey key = new AreaManager.AreaManagerKey(area1,manager);
 		AreaManager.AreaManagerKey key2 = new AreaManager.AreaManagerKey(area1,manager2);
-		AreaManager.AreaManagerKey key3 = new AreaManager.AreaManagerKey(area2,manager3);
+		AreaManager.AreaManagerKey key3 = new AreaManager.AreaManagerKey(area1,manager3);
 
 
 		AreaManager areaManager = AreaManager.builder()
@@ -976,6 +1013,9 @@ public class InitQuery {
 		submitForm10.addAnswer(answer1911111111);
 		submitForm10.addAnswer(answer2011111111);
 		submitForm10.addAnswer(answer2111111111);
+
+
+
 
 	}
 
