@@ -28,7 +28,7 @@ public class Manager extends BaseEntity {
     private Member member;
     
     private String managerName;
-    private String managerPhoneNumber;
+    private String phoneNumber;
     private String address;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -60,7 +60,7 @@ public class Manager extends BaseEntity {
 
     public void updateManager(ManagerUpdateRequestDTO dto) {
         this.managerName = dto.getManagerName();
-        this.managerPhoneNumber = dto.getManagerPhoneNumber();
+        this.phoneNumber = dto.getManagerPhoneNumber();
 //        this.activityDay = dto.getActivityDay();
         this.certificateStatus = CertificateStatusEnum.valueOf(dto.getCertificateStatus());
         this.certificateStatusEtc = dto.getCertificateStatusEtc();

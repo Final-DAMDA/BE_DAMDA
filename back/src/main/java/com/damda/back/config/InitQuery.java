@@ -55,19 +55,19 @@ public class InitQuery {
             memberRepository.save(member2);
 
             Manager manager = managerRepository.save(Manager.builder()
-                    .managerPhoneNumber("01040783843")
+                    .phoneNumber("01040783843")
                     .managerName("김재우")
                     .currManagerStatus(ManagerStatusEnum.ACTIVE)
                     .build());
 
             Manager manager2 = managerRepository.save(Manager.builder()
-                    .managerPhoneNumber("01039041094")
+                    .phoneNumber("01039041094")
                     .managerName("고예림")
                     .currManagerStatus(ManagerStatusEnum.ACTIVE)
                     .build());
 
             Manager manager3 = managerRepository.save(Manager.builder()
-                    .managerPhoneNumber("01082535890")
+                    .phoneNumber("01082535890")
                     .managerName("김형준")
                     .currManagerStatus(ManagerStatusEnum.ACTIVE)
                     .build());

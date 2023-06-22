@@ -30,7 +30,7 @@ public class ManagerApplicationDTO {
     public Manager toManagerEntity(Member member) {
         return Manager.builder()
                 .managerName(managerName)
-                .managerPhoneNumber(managerPhoneNumber)
+                .phoneNumber(managerPhoneNumber)
                 .level(1)
                 .certificateStatusEtc(certificateStatusEtc)
                 .certificateStatus(CertificateStatusEnum.valueOf(certificateStatus))
