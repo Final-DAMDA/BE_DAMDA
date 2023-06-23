@@ -420,6 +420,11 @@ public class SubmitServiceImpl implements SubmitService {
 
                 member.changeCode(code);
                 talkSendService.sendCustomenrCompleted(phoneNumber,form.getId());
+
+                return;
+            }else {
+                log.info("결제완료 톡 발송");
+                talkSendService.sendCustomenrCompleted(phoneNumber,form.getId());
             }
         }
 
@@ -458,7 +463,7 @@ public class SubmitServiceImpl implements SubmitService {
                     String url = UriComponentsBuilder.fromUriString(CANCELURL).buildAndExpand(groupId).toUriString();
 
                     ResponseEntity<String> response = new RestTemplate().exchange(url, HttpMethod.DELETE, null, String.class);
-
+                    //TODO: 예외처리 잡아야함 HttpClientErrorException
                     if(response.getStatusCode().is2xxSuccessful()) throw new CommonException(ErrorCode.GROUPID_DELETE_FAIL);
                 });
 
