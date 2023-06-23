@@ -90,6 +90,7 @@ public class InitQuery {
 				.managerName("김재우")
 				.currManagerStatus(ManagerStatusEnum.ACTIVE)
 				.certificateStatus(CertificateStatusEnum.ETC)
+				.level(1)
 				.member(member3)
 				.build());
 
@@ -98,6 +99,7 @@ public class InitQuery {
 				.managerName("고예림")
 				.currManagerStatus(ManagerStatusEnum.ACTIVE)
 				.certificateStatus(CertificateStatusEnum.ETC)
+				.level(1)
 				.member(member4)
 				.build());
 
@@ -107,6 +109,7 @@ public class InitQuery {
 				.currManagerStatus(ManagerStatusEnum.ACTIVE)
 				.certificateStatus(CertificateStatusEnum.ETC)
 				.member(member5)
+				.level(1)
 				.build());
 
 

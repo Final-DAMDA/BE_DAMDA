@@ -190,7 +190,8 @@ public class TalkSendServiceImpl implements TalkSendService {
                 .max(Comparator.comparingInt(manager -> manager.getLevel()))
                 .map(Manager::getPhoneNumber);
 
-        String highestLevelManagerPhoneNumberString = highestLevelManagerPhoneNumber.orElseThrow(()->new CommonException(ErrorCode.ERROR_MATCH_COMPLETE));//TODO
+        String phoneNumber = highestLevelManagerPhoneNumber
+                .orElseThrow(()->new CommonException(ErrorCode.ERROR_MATCH_COMPLETE));//TODO
 
         LocalDateTime localDateTime = LocalDateTime.parse(answerMap.get(QuestionIdentify.SERVICEDATE), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
@@ -207,7 +208,7 @@ public class TalkSendServiceImpl implements TalkSendService {
                 .builder()
                 .sendTime(localDateTime)
                 .link(completeFormLink)
-                .phoneNumber(managerPhoneNumbers)
+                .phoneNumber(phoneNumber)
                 .build();
         String serviceCompleteGroupId = solapiUtils.managerServiceCompleteFormSend(completeFormTalkToManagerDTO);
 

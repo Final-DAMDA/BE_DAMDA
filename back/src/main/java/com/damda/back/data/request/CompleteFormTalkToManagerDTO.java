@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CompleteFormTalkToManagerDTO {
-	private List<String> phoneNumber;
+	private String phoneNumber;
 	private String link;
 	private LocalDateTime sendTime;
 }
