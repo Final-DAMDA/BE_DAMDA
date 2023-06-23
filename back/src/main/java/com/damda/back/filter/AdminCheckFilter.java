@@ -29,7 +29,8 @@ public class AdminCheckFilter extends OncePerRequestFilter {
             "/api/v1/auth/me",
             "/api/v1/user/review/list",
             "/api/v1/review/best",
-            "/api/v1/matching/accept"
+            "/api/v1/matching/accept",
+            "/api/v1/service/completed"
     ));
 
     @Override
