@@ -68,6 +68,7 @@ public class BackApplication {
 				.password(passwordEncoder.encode("1234"))
 				.phoneNumber("01039041094")
 				.status(MemberStatus.ACTIVATION)
+				.discountCode("ABC123")
 				.role(MemberRole.ADMIN)
 				.profileImage("404.jpg")
 				.build());
