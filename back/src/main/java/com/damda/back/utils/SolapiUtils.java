@@ -46,7 +46,7 @@ public class SolapiUtils {
     private String mainCh;
 
     @Value("${damda.domain}")
-    private String domain;
+    private String domain; //
 
     private final DefaultMessageService messageService;
 
@@ -78,7 +78,7 @@ public class SolapiUtils {
             variables.put("#{reservationEnter}", dto.getReservationEnter());
             variables.put("#{reservationNote}", dto.getReservationNote());
             variables.put("#{reservationRequest}", dto.getReservationRequest());
-            variables.put("#{domain}", domain + "?id=" + dto.getFormId());
+            variables.put("#{domain}", domain + "/manager/accept?id=" + dto.getFormId());
 
 
             kakaoOption.setVariables(variables);
@@ -236,7 +236,7 @@ public class SolapiUtils {
         kakaoOption.setPfId(mainCh);
         kakaoOption.setTemplateId("KA01TP2306100607150398Gs50ssTUnD");
 
-        String domainQuery = domain + "?id=" + formId;
+        String domainQuery = domain + "/completed-user?id=" + formId;
 
         HashMap<String, String> variables = new HashMap<>();
         variables.put("#{domain}", domainQuery);

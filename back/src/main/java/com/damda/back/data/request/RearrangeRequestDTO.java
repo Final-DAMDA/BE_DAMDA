@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class RearrangeRequestDTO {
 
     private Long questionNumber;
-    private Integer order;
+    private Integer questionOrder;
 
     private Integer page;
 

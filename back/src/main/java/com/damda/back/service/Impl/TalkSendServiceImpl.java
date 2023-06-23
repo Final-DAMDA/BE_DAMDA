@@ -87,15 +87,15 @@ public class TalkSendServiceImpl implements TalkSendService {
             phoneNumbers.add(manager.getPhoneNumber());
         }
 
-//        try{
-//       //     solapiUtils.reservationCompletedSendManager(phoneNumbers, resCompleteRequestDTO); //TODO 활성화필요
-//        }catch (NurigoEmptyResponseException e) {
-//            throw new RuntimeException(e);
-//        } catch (NurigoUnknownException e) {
-//            throw new RuntimeException(e);
-//        } catch (NurigoMessageNotReceivedException e) {
-//            throw new RuntimeException(e);
-//        }
+        try{
+            solapiUtils.reservationCompletedSendManager(phoneNumbers, resCompleteRequestDTO); //TODO 활성화필요
+        }catch (NurigoEmptyResponseException e) {
+            throw new RuntimeException(e);
+        } catch (NurigoUnknownException e) {
+            throw new RuntimeException(e);
+        } catch (NurigoMessageNotReceivedException e) {
+            throw new RuntimeException(e);
+        }
 
         //-- 고객에게 보내는 알림톡 - 서비스일시(reservationTime), 서비스장소(reserveAddress),
         // 매니저 인원(managerAmount), 예상 소요시간(requiredTime), 견적가(estimate)
@@ -107,6 +107,7 @@ public class TalkSendServiceImpl implements TalkSendService {
                 .requiredTime(answerMap.get(QuestionIdentify.SERVICEDURATION))
                 .estimate(totalPrice.toString())
                 .build();
+
         log.info("알림톡 발송");
         solapiUtils.reservationCompletedSendCustomer(dto,answerMap.get(QuestionIdentify.APPLICANTCONACTINFO));
 

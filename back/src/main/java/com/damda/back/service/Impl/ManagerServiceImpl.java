@@ -1,5 +1,6 @@
 package com.damda.back.service.Impl;
 
+import com.damda.back.data.common.RegionModify;
 import com.damda.back.data.request.ManagerApplicationDTO;
 import com.damda.back.data.request.ManagerRegionUpdateRequestDTO;
 import com.damda.back.data.request.ManagerUpdateRequestDTO;
@@ -298,6 +299,17 @@ public class ManagerServiceImpl implements ManagerService {
         }
 
         return true;
+    }
+
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public void activityRegioADD(Map<RegionModify,String> region){
+
+        if(region.containsKey(RegionModify.SEOUL)){
+
+        }else if(region.containsKey(RegionModify.GYEONGGI)){
+
+        }
     }
 
 }
