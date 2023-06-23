@@ -68,6 +68,7 @@ public class BackApplication {
 				.password(passwordEncoder.encode("1234"))
 				.phoneNumber("01039041094")
 				.status(MemberStatus.ACTIVATION)
+				.discountCode("ABC123")
 				.role(MemberRole.ADMIN)
 				.profileImage("404.jpg")
 				.build());
@@ -83,7 +84,7 @@ public class BackApplication {
 						.placeHolder("없음")
 						.questionIdentify(QuestionIdentify.TITLE)
 						.questionType(QuestionType.TITLE)
-						.required(true)
+						.required(false)
 						.status(QuestionStatus.ACTIVATION)
 						.questionTitle("담다컴퍼니 입니다.")
 						.build()

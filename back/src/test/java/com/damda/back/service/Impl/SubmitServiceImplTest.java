@@ -7,17 +7,21 @@ import com.damda.back.data.common.SubmitSlice;
 import com.damda.back.data.request.SubmitRequestDTO;
 import com.damda.back.data.response.FormResultDTO;
 import com.damda.back.data.response.Statistical;
-import com.damda.back.domain.Member;
-import com.damda.back.domain.ReservationSubmitForm;
+import com.damda.back.domain.*;
 import com.damda.back.domain.manager.Manager;
 import com.damda.back.repository.ManagerRepository;
+import com.damda.back.repository.MatchRepository;
 import com.damda.back.repository.MemberRepository;
 import com.damda.back.repository.ReservationFormRepository;
+import net.nurigo.sdk.message.exception.NurigoEmptyResponseException;
+import net.nurigo.sdk.message.exception.NurigoMessageNotReceivedException;
+import net.nurigo.sdk.message.exception.NurigoUnknownException;
 import org.assertj.core.api.Assert;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -27,6 +31,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -57,11 +62,17 @@ class SubmitServiceImplTest {
     @Mock
     TalkSendServiceImpl talkSendService;
 
+    @Mock
+    CodeServiceImpl codeService;
+
+    @Mock
+    MatchRepository matchRepository;
+
 
 
 
     @Test
-    @DisplayName("예약폼 리스트 테스트")
+    @DisplayName("Test Reserved Form List")
     void reservation_submit_form_list_test() {
         // given
         int page = 0;
@@ -111,13 +122,13 @@ class SubmitServiceImplTest {
     }
 
     @Test
-    @DisplayName("유저 제출 폼 저장하기")
+    @DisplayName("Saving a Member Submission Form")
     void user_submit_save() {
         // given
         Member member = Member.builder().username("김재우").build();
         Manager manager = Manager.builder()
                 .id(1L)
-                .name("김매니저")
+                .managerName("김매니저")
                 .build();
 
 
@@ -146,5 +157,59 @@ class SubmitServiceImplTest {
         // then
         Assertions.assertThat(formId).isNotNull();
         Assertions.assertThat(formId).isEqualTo(1L);
+    }
+
+
+    @Test
+    @DisplayName("Payment Completion Status Change Test")
+    void pay_completed_test() {
+        // given
+        List<ReservationAnswer> answers = new ArrayList<>();
+
+        Member member = Mockito.mock(Member.class);
+
+        ReservationSubmitForm form = Mockito.mock(ReservationSubmitForm.class);
+
+        Mockito.when(member.getPhoneNumber()).thenReturn("01012341234");
+        Mockito.when(form.getStatus()).thenReturn(ReservationStatus.SERVICE_COMPLETED);
+        Mockito.when(form.getReservationAnswerList()).thenReturn(answers);
+        Mockito.when(form.getMember()).thenReturn(member);
+        Mockito.when(form.getId()).thenReturn(1L);
+        // when
+        Mockito.when(repository.submitFormWithAnswer(Mockito.anyLong())).thenReturn(Optional.of(form));
+        Mockito.when(memberRepository.existCode(Mockito.anyString())).thenReturn(false);
+        Mockito.when(codeService.codePublish()).thenReturn("ABC123");
+
+        submitService.payMentCompleted(1L);
+
+        Mockito.verify(form, Mockito.times(1)).paymentCompleted();
+
+        Mockito.verify(memberRepository, Mockito.times(1)).existCode(Mockito.eq("ABC123"));
+        Mockito.verify(talkSendService, Mockito.times(1)).sendCustomenrCompleted("01012341234", 1L);
+
+    }
+
+    @Test
+    @DisplayName("Reservation Cancellation Test")
+    void res_cancellation_test() throws NurigoMessageNotReceivedException, NurigoEmptyResponseException, NurigoUnknownException {
+        // given
+
+        ReservationSubmitForm submitForm = Mockito.mock(ReservationSubmitForm.class);
+        List<Match> matches = Mockito.mock(List.class);
+        Optional<ReservationSubmitForm> mockOptional = Optional.of(Mockito.mock(ReservationSubmitForm.class));
+        // when
+        Mockito.when(submitForm.getReservationAnswerList()).thenReturn(new ArrayList<>());
+        Mockito.when(matchRepository.matches(any(Long.class))).thenReturn(matches);
+        Mockito.when(repository.submitFormWithAnswer(anyLong())).thenReturn(mockOptional);
+        Mockito.when(submitForm.getStatus()).thenReturn(ReservationStatus.MANAGER_MATCHING_COMPLETED);
+
+        submitService.cancellation(1L);
+
+        Mockito.verify(submitForm,Mockito.times(1)).cancellation();
+        Mockito.verify(talkSendService,Mockito.times(1)).sendCancellation(any(List.class),anyMap(),anyInt());
+
+
+
+        // then
     }
 }

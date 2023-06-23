@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,6 +52,19 @@ public class AdminController {
         response.setContentType("application/json");
         response.getWriter().println(new ObjectMapper().writeValueAsString(commonResponse));
     }
+    @GetMapping("/api/v1/admin/auth")
+    public ResponseEntity<CommonResponse<?>> authAdmin(){
+        CommonResponse<?> commonResponse = CommonResponse
+                .builder()
+                .codeEnum(CodeEnum.SUCCESS)
+                .data(true)
+                .build();
+
+        return ResponseEntity
+                .status(commonResponse.getStatus())
+                .body(commonResponse);
+    }
+
 
 
 

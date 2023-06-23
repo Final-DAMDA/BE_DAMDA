@@ -19,14 +19,18 @@ import java.util.Set;
 @Slf4j
 public class AdminCheckFilter extends OncePerRequestFilter {
 
+
     private static final Set<String> ALLOWED_PATHS = new HashSet<>(Arrays.asList(
             "/api/v1/member/code",
             "/api/v1/test/login",
             "/h2-console",
             "/api/v1/admin/login",
             "/api/v1/user/form/submit",
-            "/api/v1/auth/me"
-
+            "/api/v1/auth/me",
+            "/api/v1/user/review/list",
+            "/api/v1/review/best",
+            "/api/v1/matching/accept",
+            "/api/v1/service/completed"
     ));
 
     @Override
@@ -38,6 +42,7 @@ public class AdminCheckFilter extends OncePerRequestFilter {
             filterChain.doFilter(request,response);
             return;
         }
+
 
 
         log.info("ADMIN CHECKING");
