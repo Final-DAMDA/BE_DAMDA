@@ -72,8 +72,14 @@ public class QnAServiceImpl implements QnAService {
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void deleteQnA(Long qnaId) {
 
-        qnARepository.deleteById(qnaId);
+        Optional<QnA> optional = qnARepository.findById(qnaId);
 
+        if (optional.isPresent()) {
+            qnARepository.deleteById(qnaId);
+        } else {
+            throw new CommonException(ErrorCode.NOT_FOUND_QNA);
+        }
+        
     }
 
     @Override

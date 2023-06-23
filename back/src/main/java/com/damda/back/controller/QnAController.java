@@ -7,6 +7,8 @@ import com.damda.back.data.response.QnAResponseDTO;
 import com.damda.back.service.QnAService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +32,7 @@ public class QnAController {
         CommonResponse<?> commonResponse = CommonResponse
                 .builder()
                 .codeEnum(CodeEnum.SUCCESS)
-                .data("")
+                .data(true)
                 .build();
 
         return ResponseEntity
@@ -43,7 +45,10 @@ public class QnAController {
      * API: QnA List 가져오기
      */
     @GetMapping("/api/v1/member/qna")
-    public ResponseEntity<CommonResponse<?>> qnaResponseDTOList() {
+    public ResponseEntity<CommonResponse<?>> qnaResponseDTOList(@RequestParam(name = "page", defaultValue = "0") int page,
+                                                                @RequestParam(name = "size", defaultValue = "4") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
 
         List<QnAResponseDTO> qnaResponseDTOList = qnAService.qnaResponseDTOList();
 
@@ -90,7 +95,7 @@ public class QnAController {
         CommonResponse<?> commonResponse = CommonResponse
                 .builder()
                 .codeEnum(CodeEnum.SUCCESS)
-                .data("")
+                .data(true)
                 .build();
 
         return ResponseEntity
@@ -110,7 +115,7 @@ public class QnAController {
         CommonResponse<?> commonResponse = CommonResponse
                 .builder()
                 .codeEnum(CodeEnum.SUCCESS)
-                .data("")
+                .data(true)
                 .build();
 
         return ResponseEntity
