@@ -32,7 +32,7 @@ public class QnAController {
         CommonResponse<?> commonResponse = CommonResponse
                 .builder()
                 .codeEnum(CodeEnum.SUCCESS)
-                .data("")
+                .data(true)
                 .build();
 
         return ResponseEntity
