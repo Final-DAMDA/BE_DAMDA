@@ -40,6 +40,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -242,7 +243,7 @@ public class SubmitServiceImpl implements SubmitService {
                 matchService.matchingListUp(reservationSubmitForm,managerList);
 
 
-         //       talkSendService.sendReservationSubmitAfter(form.getId(),dto.getAddressFront(),form.getReservationAnswerList(),dto.getTotalPrice(),dto.getServicePerson(),managerList);
+                talkSendService.sendReservationSubmitAfter(form.getId(),dto.getAddressFront(),form.getReservationAnswerList(),dto.getTotalPrice(),dto.getServicePerson(),managerList);
 
 
                 return form.getId();
@@ -420,6 +421,11 @@ public class SubmitServiceImpl implements SubmitService {
 
                 member.changeCode(code);
                 talkSendService.sendCustomenrCompleted(phoneNumber,form.getId());
+
+                return;
+            }else {
+                log.info("결제완료 톡 발송");
+                talkSendService.sendCustomenrCompleted(phoneNumber,form.getId());
             }
         }
 
@@ -456,10 +462,11 @@ public class SubmitServiceImpl implements SubmitService {
 
                 groupIdCodePE.nullCheckList().forEach(groupId -> {
                     String url = UriComponentsBuilder.fromUriString(CANCELURL).buildAndExpand(groupId).toUriString();
-
-                    ResponseEntity<String> response = new RestTemplate().exchange(url, HttpMethod.DELETE, null, String.class);
-
-                    if(response.getStatusCode().is2xxSuccessful()) throw new CommonException(ErrorCode.GROUPID_DELETE_FAIL);
+                    try{
+                        ResponseEntity<String> response = new RestTemplate().exchange(url, HttpMethod.DELETE, null, String.class);
+                    }catch (HttpClientErrorException httpClientErrorException){
+                        throw new CommonException(ErrorCode.GROUPID_DELETE_FAIL);
+                    }
                 });
 
 

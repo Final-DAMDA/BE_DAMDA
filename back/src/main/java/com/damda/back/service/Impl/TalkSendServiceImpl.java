@@ -87,15 +87,15 @@ public class TalkSendServiceImpl implements TalkSendService {
             phoneNumbers.add(manager.getPhoneNumber());
         }
 
-//        try{
-//       //     solapiUtils.reservationCompletedSendManager(phoneNumbers, resCompleteRequestDTO); //TODO 활성화필요
-//        }catch (NurigoEmptyResponseException e) {
-//            throw new RuntimeException(e);
-//        } catch (NurigoUnknownException e) {
-//            throw new RuntimeException(e);
-//        } catch (NurigoMessageNotReceivedException e) {
-//            throw new RuntimeException(e);
-//        }
+        try{
+            solapiUtils.reservationCompletedSendManager(phoneNumbers, resCompleteRequestDTO); //TODO 활성화필요
+        }catch (NurigoEmptyResponseException e) {
+            throw new RuntimeException(e);
+        } catch (NurigoUnknownException e) {
+            throw new RuntimeException(e);
+        } catch (NurigoMessageNotReceivedException e) {
+            throw new RuntimeException(e);
+        }
 
         //-- 고객에게 보내는 알림톡 - 서비스일시(reservationTime), 서비스장소(reserveAddress),
         // 매니저 인원(managerAmount), 예상 소요시간(requiredTime), 견적가(estimate)
@@ -107,6 +107,7 @@ public class TalkSendServiceImpl implements TalkSendService {
                 .requiredTime(answerMap.get(QuestionIdentify.SERVICEDURATION))
                 .estimate(totalPrice.toString())
                 .build();
+
         log.info("알림톡 발송");
         solapiUtils.reservationCompletedSendCustomer(dto,answerMap.get(QuestionIdentify.APPLICANTCONACTINFO));
 
@@ -189,7 +190,8 @@ public class TalkSendServiceImpl implements TalkSendService {
                 .max(Comparator.comparingInt(manager -> manager.getLevel()))
                 .map(Manager::getPhoneNumber);
 
-        String highestLevelManagerPhoneNumberString = highestLevelManagerPhoneNumber.orElseThrow(()->new CommonException(ErrorCode.ERROR_MATCH_COMPLETE));//TODO
+        String phoneNumber = highestLevelManagerPhoneNumber
+                .orElseThrow(()->new CommonException(ErrorCode.ERROR_MATCH_COMPLETE));//TODO
 
         LocalDateTime localDateTime = LocalDateTime.parse(answerMap.get(QuestionIdentify.SERVICEDATE), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
@@ -200,13 +202,13 @@ public class TalkSendServiceImpl implements TalkSendService {
         localDateTime = localDateTime.plusHours(Long.valueOf(hour)); //서비스 완료시간 구하기
         localDateTime = localDateTime.minusMinutes(30); //30분 마이너스
 
-        String completeFormLink = "https://fe-damda.vercel.app/manager/completed"+reservationSubmitForm.getId().toString();
+        String completeFormLink = "https://fe-damda.vercel.app/manager/completed?id="+reservationSubmitForm.getId().toString();
 
         CompleteFormTalkToManagerDTO completeFormTalkToManagerDTO =CompleteFormTalkToManagerDTO
                 .builder()
                 .sendTime(localDateTime)
                 .link(completeFormLink)
-                .phoneNumber(managerPhoneNumbers)
+                .phoneNumber(phoneNumber)
                 .build();
         String serviceCompleteGroupId = solapiUtils.managerServiceCompleteFormSend(completeFormTalkToManagerDTO);
 
@@ -225,7 +227,22 @@ public class TalkSendServiceImpl implements TalkSendService {
 
     }
 
+    @Override
+    public void sendServiceCompletedUser(ReservationSubmitForm reservationSubmitForm) {
+        List<ReservationAnswer> answers = reservationSubmitForm.getReservationAnswerList();
+        Map<QuestionIdentify, String> answerMap
+                = answers.stream().collect
+                (Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
 
+        ServiceCompleteTalkUserDTO dto = ServiceCompleteTalkUserDTO.builder()
+                .managerAmount(reservationSubmitForm.getServicePerson().toString())
+                .reservationPrice(reservationSubmitForm.getTotalPrice().toString())
+                .reservationHour(answerMap.get(QuestionIdentify.SERVICEDURATION))
+                .phoneNumber(answerMap.get(QuestionIdentify.APPLICANTCONACTINFO))
+                .build();
+
+        solapiUtils.userServiceComplete(dto);
+    }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void sendCancellation(List<String> r,  Map<QuestionIdentify, String> answerMap,Integer servicePerson) throws NurigoMessageNotReceivedException, NurigoEmptyResponseException, NurigoUnknownException {
@@ -244,6 +261,5 @@ public class TalkSendServiceImpl implements TalkSendService {
         solapiUtils.cancellationSendManager(r,dto);
 
     }
-
 
 }

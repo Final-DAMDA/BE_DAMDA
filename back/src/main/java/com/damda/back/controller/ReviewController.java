@@ -21,7 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
-public class ReviewController {
+public class 	ReviewController {
 	private final ReviewService reviewService;
 	private final ReservationFormRepository reservationFormRepository;
 	private final AreaManagerRepository areaManagerRepository;

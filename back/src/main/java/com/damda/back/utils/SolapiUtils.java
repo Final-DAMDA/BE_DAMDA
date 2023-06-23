@@ -46,7 +46,7 @@ public class SolapiUtils {
     private String mainCh;
 
     @Value("${damda.domain}")
-    private String domain;
+    private String domain; //
 
     private final DefaultMessageService messageService;
 
@@ -78,7 +78,7 @@ public class SolapiUtils {
             variables.put("#{reservationEnter}", dto.getReservationEnter());
             variables.put("#{reservationNote}", dto.getReservationNote());
             variables.put("#{reservationRequest}", dto.getReservationRequest());
-            variables.put("#{domain}", domain + "?id=" + dto.getFormId());
+            variables.put("#{domain}", domain + "/manager/accept?id=" + dto.getFormId());
 
 
             kakaoOption.setVariables(variables);
@@ -236,7 +236,7 @@ public class SolapiUtils {
         kakaoOption.setPfId(mainCh);
         kakaoOption.setTemplateId("KA01TP2306100607150398Gs50ssTUnD");
 
-        String domainQuery = domain + "?id=" + formId;
+        String domainQuery = domain + "/completed-user?id=" + formId;
 
         HashMap<String, String> variables = new HashMap<>();
         variables.put("#{domain}", domainQuery);
@@ -490,27 +490,27 @@ public class SolapiUtils {
      * @apiNote : 매니저 서비스 완료 폼 알림톡 (비포/애프터)
      */
     public String managerServiceCompleteFormSend(CompleteFormTalkToManagerDTO dto) {
-        ArrayList<Message> messageList = new ArrayList<>();
 
-        dto.getPhoneNumber().forEach(phoneNumber -> {
-            KakaoOption kakaoOption = new KakaoOption();
-            kakaoOption.setPfId(OfPartner);
-            // 등록하신 카카오 알림톡 템플릿의 templateId를 입력해주세요.
-            kakaoOption.setTemplateId("KA01TP230607122818804PShXbWTb05K");
 
-            HashMap<String, String> variables = new HashMap<>();
-            variables.put("#{photoLink}", dto.getLink());
-            kakaoOption.setVariables(variables);
+        KakaoOption kakaoOption = new KakaoOption();
+        kakaoOption.setPfId(OfPartner);
+        // 등록하신 카카오 알림톡 템플릿의 templateId를 입력해주세요.
+        kakaoOption.setTemplateId("KA01TP230607122818804PShXbWTb05K");
 
-            Message message = new Message();
-            // 발신번호 및 수신번호는 반드시 01012345678 형태로 입력되어야 합니다.
+        HashMap<String, String> variables = new HashMap<>();
+        variables.put("#{photoLink}", dto.getLink());
+        kakaoOption.setVariables(variables);
 
-            message.setFrom("01099636287");
-            message.setTo(phoneNumber);
-            message.setKakaoOptions(kakaoOption);
+        Message message = new Message();
+        // 발신번호 및 수신번호는 반드시 01012345678 형태로 입력되어야 합니다.
 
-            messageList.add(message);
-        });
+        message.setFrom("01099636287");
+        message.setTo(dto.getPhoneNumber());
+        message.setKakaoOptions(kakaoOption);
+
+        //TODO: 시간만 따로 parse 해야함
+
+        kakaoOption.setVariables(variables);
 
         try {
             // Java LocalDateTime, Instant 기준, Kolintx의 datetime 내 Instant 타입을 넣어도 동작합니다!
@@ -518,9 +518,8 @@ public class SolapiUtils {
             ZoneOffset zoneOffset = ZoneId.systemDefault().getRules().getOffset(localDateTime);
             Instant instant = localDateTime.toInstant(zoneOffset);
 
-
             // send 메소드로 ArrayList<Message> 객체를 넣어도 동작합니다!
-            MultipleDetailMessageSentResponse response = this.messageService.send(messageList, instant);
+            MultipleDetailMessageSentResponse response = this.messageService.send(message, instant);
             return response.getGroupInfo().getGroupId();
         } catch (NurigoMessageNotReceivedException exception) {
             // 발송에 실패한 메시지 목록을 확인할 수 있습니다!
@@ -532,6 +531,31 @@ public class SolapiUtils {
             throw new CommonException(ErrorCode.ERROR_COMPLETE_TALK);
         }
 
+
+    }
+
+    public void userServiceComplete(ServiceCompleteTalkUserDTO dto) {
+        KakaoOption kakaoOption = new KakaoOption();
+
+        kakaoOption.setPfId(mainCh);
+        kakaoOption.setTemplateId("KA01TP230607123212782zKCpaL2Xx75");
+
+
+        HashMap<String, String> variables = new HashMap<>();
+        variables.put("#{mangerAmount}", dto.getManagerAmount().toString());
+        variables.put("#{reservationHour}", dto.getReservationHour());
+        variables.put("#{reservationPrice}", dto.getReservationPrice().toString());
+
+        kakaoOption.setVariables(variables);
+
+        Message message = new Message();
+        // 발신번호 및 수신번호는 반드시 01012345678 형태로 입력되어야 합니다.
+        message.setFrom("01099636287");
+        message.setTo(dto.getPhoneNumber());
+        message.setKakaoOptions(kakaoOption);
+
+        SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
+        System.out.println("User서비스 완료폼 전송-----"+response);
     }
 
 
