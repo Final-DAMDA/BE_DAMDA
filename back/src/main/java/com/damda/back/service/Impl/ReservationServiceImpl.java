@@ -190,7 +190,7 @@ public class ReservationServiceImpl implements ReservationService {
                 RearrangeRequestDTO reArrangeData = map.get(question.getQuestionNumber());
 
                 if(reArrangeData != null){
-                    question.changeOrder(reArrangeData.getOrder());
+                    question.changeOrder(reArrangeData.getQuestionOrder());
                     question.changePage(reArrangeData.getPage());
                 }
             }
