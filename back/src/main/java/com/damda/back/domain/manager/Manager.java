@@ -61,7 +61,6 @@ public class Manager extends BaseEntity {
     public void updateManager(ManagerUpdateRequestDTO dto) {
         this.managerName = dto.getManagerName();
         this.phoneNumber = dto.getManagerPhoneNumber();
-//        this.activityDay = dto.getActivityDay();
         this.certificateStatus = CertificateStatusEnum.valueOf(dto.getCertificateStatus());
         this.certificateStatusEtc = dto.getCertificateStatusEtc();
         this.level = dto.getLevel();
