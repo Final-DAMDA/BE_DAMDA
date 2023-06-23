@@ -186,7 +186,8 @@ public class MemberController {
 
         CommonResponse<?> commonResponse = CommonResponse
                 .builder()
-                .codeEnum(CodeEnum.SUCCESS) // TODO: 이거 해야함
+                .codeEnum(CodeEnum.SUCCESS)
+                .data(true)
                 .build();
 
         return ResponseEntity.ok(commonResponse);

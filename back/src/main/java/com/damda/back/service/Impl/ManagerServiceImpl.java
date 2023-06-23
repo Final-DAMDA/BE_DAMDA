@@ -303,13 +303,22 @@ public class ManagerServiceImpl implements ManagerService {
 
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public void activityRegioADD(Map<RegionModify,String> region){
+    public void activityRegioADD(Map<RegionModify,String> region,Long managerId){
 
-        if(region.containsKey(RegionModify.SEOUL)){
+         String area = region.get(RegionModify.SEOUL);
+         String regionData = !region.keySet().stream().findFirst().get().getValue().equals("서울특별시") ? "서울특별시" : "경기도";
 
-        }else if(region.containsKey(RegionModify.GYEONGGI)){
+         Area areaPE = areaRepository.searchArea(regionData, area).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_AREA));
+         Manager manager = managerRepository.findById(managerId).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_MANAGER));
 
-        }
+         AreaManager.AreaManagerKey areaManagerKey = new AreaManager.AreaManagerKey(areaPE,manager);
+
+         AreaManager areaManager = AreaManager.builder()
+                .areaManagerKey(areaManagerKey)
+                .build();
+
+        areaManagerRepository.save(areaManager);
+
     }
 
 }

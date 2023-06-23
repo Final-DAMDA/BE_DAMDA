@@ -7,10 +7,7 @@ import com.damda.back.domain.Member;
 import com.damda.back.domain.ReservationAnswer;
 import com.damda.back.domain.ReservationSubmitForm;
 import com.damda.back.domain.area.Area;
-import com.damda.back.domain.manager.AreaManager;
-import com.damda.back.domain.manager.CertificateStatusEnum;
-import com.damda.back.domain.manager.Manager;
-import com.damda.back.domain.manager.ManagerStatusEnum;
+import com.damda.back.domain.manager.*;
 import com.damda.back.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -90,6 +87,7 @@ public class InitQuery {
 				.managerName("김재우")
 				.currManagerStatus(ManagerStatusEnum.ACTIVE)
 				.certificateStatus(CertificateStatusEnum.ETC)
+				.activityDay(ActivityDay.builder().isOkMonday(true).build())
 				.level(1)
 				.member(member3)
 				.build());
@@ -100,6 +98,7 @@ public class InitQuery {
 				.currManagerStatus(ManagerStatusEnum.ACTIVE)
 				.certificateStatus(CertificateStatusEnum.ETC)
 				.level(1)
+				.activityDay(ActivityDay.builder().isOkMonday(true).build())
 				.member(member4)
 				.build());
 
@@ -109,6 +108,7 @@ public class InitQuery {
 				.currManagerStatus(ManagerStatusEnum.ACTIVE)
 				.certificateStatus(CertificateStatusEnum.ETC)
 				.member(member5)
+				.activityDay(ActivityDay.builder().isOkMonday(true).build())
 				.level(1)
 				.build());
 
