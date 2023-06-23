@@ -55,12 +55,11 @@ public enum ErrorCode {
     ERROR_REMIND_TALK_MANAGER(HttpStatus.INTERNAL_SERVER_ERROR,"매니저 리마인드 예약톡에 에러가 발생했습니다. "),
 
     NOT_FOUND_QNA(HttpStatus.BAD_REQUEST, "없는 QnA를 조회했습니다."),
-    STATUS_BAD_REQUEST(HttpStatus.BAD_REQUEST,"예약취소로 변경할 수 없는 상태값입니다." );
+    STATUS_BAD_REQUEST(HttpStatus.BAD_REQUEST,"예약취소로 변경할 수 없는 상태값입니다." ),
 
     NOT_FOUND_SERVICE_COMPLETE(HttpStatus.BAD_REQUEST, "없는 예약이거 서비스 완료 폼이 제출되지 않은 예약입니다. "),
     NOT_FOUND_IMAGE(HttpStatus.BAD_REQUEST, "해당아이디로 조회할 수 없는 이미지입니다.  "),
-    NOT_FOUND_REVIEW(HttpStatus.BAD_REQUEST, "해당아이디로 조회할 수 없는 리뷰입니다.  "),
-    NOT_FOUND_QNA(HttpStatus.BAD_REQUEST, "없는 QnA를 조회했습니다.");
+    NOT_FOUND_REVIEW(HttpStatus.BAD_REQUEST, "해당아이디로 조회할 수 없는 리뷰입니다.  ");
 
 
 
