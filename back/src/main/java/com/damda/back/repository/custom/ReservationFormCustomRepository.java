@@ -2,6 +2,7 @@ package com.damda.back.repository.custom;
 
 import com.damda.back.data.common.ReservationStatus;
 import com.damda.back.data.response.Statistical;
+import com.damda.back.domain.GroupIdCode;
 import com.damda.back.domain.Match;
 import com.damda.back.domain.Member;
 import com.damda.back.domain.ReservationSubmitForm;
@@ -38,5 +39,7 @@ public interface ReservationFormCustomRepository {
     public Optional<ReservationSubmitForm> submitFormWithMember(Long formId);
 
     public String reservationDiscountCode(Long formId);
+
+    public Optional<GroupIdCode> submitFormWithGroupId(Long id);
 
 }

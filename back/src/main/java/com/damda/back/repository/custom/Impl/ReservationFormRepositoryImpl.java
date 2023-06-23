@@ -276,4 +276,17 @@ public class ReservationFormRepositoryImpl implements ReservationFormCustomRepos
                 return memberPE.getDiscountCode();
         }
 
+
+        public Optional<GroupIdCode> submitFormWithGroupId(Long id){
+                QGroupIdCode groupIdCode = QGroupIdCode.groupIdCode;
+
+                GroupIdCode groupIdCodePE = queryFactory
+                        .selectDistinct(groupIdCode)
+                        .from(groupIdCode)
+                        .where(groupIdCode.submitForm.id.eq(id))
+                        .fetchOne();
+
+                if(groupIdCodePE != null) return Optional.of(groupIdCodePE);
+                else return Optional.empty();
+        }
 }
