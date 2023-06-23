@@ -6,10 +6,7 @@ import com.damda.back.data.common.ReservationStatus;
 import com.damda.back.data.request.MatchingFailToManagerDTO;
 import com.damda.back.data.request.MatchingSuccessToManagerDTO;
 import com.damda.back.data.request.MatchingSuccessToUserDTO;
-import com.damda.back.data.response.MatchingAcceptGetDTO;
-import com.damda.back.data.response.MatchingListDTO;
-import com.damda.back.data.response.ReservationListManagerIDDTO;
-import com.damda.back.data.response.ReviewListAdminDTO;
+import com.damda.back.data.response.*;
 import com.damda.back.domain.Match;
 import com.damda.back.domain.ReservationAnswer;
 import com.damda.back.domain.ReservationSubmitForm;
@@ -187,7 +184,7 @@ public class MatchServiceImpl implements MatchService {
 
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	@Override
-	public Page<ReservationListManagerIDDTO> reservationListManagerDTO(Long managerId, Pageable pageable) {
+	public PageReservationManagerIdDTO reservationListManagerDTO(Long managerId, Pageable pageable) {
 		Manager manager= managerRepository.findById(managerId).orElseThrow
 				(()-> new CommonException(ErrorCode.NOT_FOUND_MANAGER));
 
@@ -196,13 +193,18 @@ public class MatchServiceImpl implements MatchService {
 		List<ReservationListManagerIDDTO> dtos = new ArrayList<>();
 		for(ReservationSubmitForm form:reservationSubmitForms){
 			ReservationListManagerIDDTO dto = ReservationListManagerIDDTO.builder()
-					.reservationId(form.getId())
-					.serviceDate(form.getReservationDate())
+					.id(form.getId())
+					.createdAt(form.getReservationDate())
 					.build();
 			dtos.add(dto);
 		}
-		Page<ReservationListManagerIDDTO> resultPage = new PageImpl<>(dtos, pageable, reservationSubmitForms.getTotalElements());
-		return resultPage;
+		PageReservationManagerIdDTO pageReservationManagerIdDTO = PageReservationManagerIdDTO
+																	.builder().content(dtos)
+																	.first(reservationSubmitForms.isFirst())
+																	.last(reservationSubmitForms.isLast())
+																	.total(reservationSubmitForms.getTotalElements())
+																	.build();
+		return pageReservationManagerIdDTO;
 	}
 
 }

@@ -122,4 +122,18 @@ public class ReviewRepositoryImpl implements ReviewCustomRepository {
 		return Optional.ofNullable(review1);
 	}
 
+	@Override
+	public Optional<Review> serviceCompleteFindByReservation(Long reservationId) {
+		QReview qReview = QReview.review;
+		QImage qReviewImage = QImage.image;
+
+		Review review = queryFactory.selectDistinct(qReview)
+				.from(qReview)
+				.innerJoin(qReview.reviewImage, qReviewImage).fetchJoin()
+				.where(qReview.reservationSubmitForm.id.eq(reservationId))
+				.fetchOne();
+
+		return Optional.ofNullable(review);
+	}
+
 }
