@@ -182,8 +182,22 @@ public class TalkSendServiceImpl implements TalkSendService {
         String managerRemindGroupId = solapiUtils.managerRemindTalk(remindTalkToManagerDTO);
 
         //서비스 완료 폼 매니저에게 보내기
+
+        Optional<String> highestLevelManagerPhoneNumber = matches.stream()
+                .filter(Match::isMatching)
+                .map(Match::getManager)
+                .max(Comparator.comparingInt(manager -> manager.getLevel()))
+                .map(Manager::getPhoneNumber);
+
+        String highestLevelManagerPhoneNumberString = highestLevelManagerPhoneNumber.orElseThrow(()->new CommonException(ErrorCode.ERROR_MATCH_COMPLETE));//TODO
+
         LocalDateTime localDateTime = LocalDateTime.parse(answerMap.get(QuestionIdentify.SERVICEDATE), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        localDateTime = localDateTime.plusHours(Long.valueOf(answerMap.get(QuestionIdentify.SERVICEDURATION))); //서비스 완료시간 구하기
+
+        String serviceDuration = (String) answerMap.get(QuestionIdentify.SERVICEDURATION);
+        String[] parts = serviceDuration.split("시간");
+        String hour = parts[0]; // "3"을 얻습니다
+
+        localDateTime = localDateTime.plusHours(Long.valueOf(hour)); //서비스 완료시간 구하기
         localDateTime = localDateTime.minusMinutes(30); //30분 마이너스
 
         String completeFormLink = "https://fe-damda.vercel.app/manager/completed"+reservationSubmitForm.getId().toString();
