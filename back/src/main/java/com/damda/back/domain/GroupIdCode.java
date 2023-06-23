@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Builder
@@ -33,5 +35,12 @@ public class GroupIdCode {
 
         public void connectSubmitFor(ReservationSubmitForm submitForm){
                 this.submitForm = submitForm;
+        }
+
+        public List<String> nullCheckList(){
+                List<String> strList = List.of(this.memberGroupId,this.managerGroupId,this.beforeAfterGroupId)
+                        .stream().filter(s -> s != null).collect(Collectors.toList());
+
+                return strList;
         }
 }

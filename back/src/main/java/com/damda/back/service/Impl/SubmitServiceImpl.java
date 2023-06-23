@@ -26,8 +26,13 @@ import com.damda.back.service.SubmitService;
 import com.damda.back.service.TalkSendService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.nurigo.sdk.message.exception.NurigoEmptyResponseException;
+import net.nurigo.sdk.message.exception.NurigoMessageNotReceivedException;
+import net.nurigo.sdk.message.exception.NurigoUnknownException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -35,15 +40,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.annotation.PostConstruct;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -67,7 +72,11 @@ public class SubmitServiceImpl implements SubmitService {
 
         private final ArrayList<QuestionIdentify> identifies = new ArrayList<>();
 
+        private final Set<ReservationStatus> cancellationStatus = new HashSet<>();
+
         private final JdbcTemplate jdbcTemplate;
+
+        private final String CANCELURL = "https://api.solapi.com/messages/v4/groups/{groupId}/schedule";
 
 
 
@@ -81,9 +90,14 @@ public class SubmitServiceImpl implements SubmitService {
             identifies.add(QuestionIdentify.APPLICANTNAME); //신청인 이름/
             identifies.add(QuestionIdentify.APPLICANTCONACTINFO); //신청인 전화번호/
             identifies.add(QuestionIdentify.LEARNEDROUTE); // 알게된 경로
-            identifies.add(QuestionIdentify.RESERVATIONENTER); //들어가기 위해 필요한 자료=/
-            identifies.add(QuestionIdentify.RESERVATIONNOTE); // 알아야 할 사항=/
-            identifies.add(QuestionIdentify.RESERVATIONREQUEST); // 요청사항=/
+            identifies.add(QuestionIdentify.RESERVATIONENTER); //들어가기 위해 필요한 자료=/ -> 없다면 대체 문자열 보내줘야함 프론트에서
+            identifies.add(QuestionIdentify.RESERVATIONNOTE); // 알아야 할 사항=/ -> 없다면 대체 문자열 보내줘야함 프론트에서
+            identifies.add(QuestionIdentify.RESERVATIONREQUEST); // 요청사항=/ -> 없다면 대체 문자열 보내줘야함 프론트에서
+
+
+            cancellationStatus.add(ReservationStatus.MANAGER_MATCHING_COMPLETED);
+            cancellationStatus.add(ReservationStatus.WAITING_FOR_MANAGER_REQUEST);
+            cancellationStatus.add(ReservationStatus.WAITING_FOR_ACCEPT_MATCHING);
         }
 
 
@@ -178,10 +192,15 @@ public class SubmitServiceImpl implements SubmitService {
     @TimeChecking
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public Long jpaFormInsert(SubmitRequestDTO dto,Integer memberId){
-        boolean isValid = dto.getSubmit().stream()
+
+        Set<QuestionIdentify> submittedIdentifies = new HashSet<>();
+        boolean hasDuplicate = dto.getSubmit().stream()
                 .map(SubmitSlice::getQuestionIdentify)
-                .collect(Collectors.toSet())
-                .containsAll(identifies);
+                .anyMatch(q -> !submittedIdentifies.add(q));
+
+         boolean isValid = !hasDuplicate && submittedIdentifies.containsAll(identifies);
+
+
 
         if(isValid){
             List<ReservationAnswer> answers = new ArrayList<>();
@@ -215,11 +234,15 @@ public class SubmitServiceImpl implements SubmitService {
                 //TODO: 매칭로직 추가
 
 
-                    log.info("{} 지역 매니저들을 조회 시도",dto.getAddressFront());
-                    List<Manager> managerList = managerRepository.managerWithArea(dto.getAddressFront());
-                    log.info("해당 지역에 활동가능한 매니저 {}",managerList);
-                    matchService.matchingListUp(reservationSubmitForm,managerList);
-                //    talkSendService.sendReservationSubmitAfter(form.getId(),dto.getAddressFront(),form.getReservationAnswerList(),dto.getTotalPrice(),dto.getServicePerson());
+                log.info("{} 지역 매니저들을 조회 시도",dto.getAddressFront());
+                List<Manager> managerList = managerRepository.managerWithArea(dto.getAddressFront());
+
+                if(managerList.isEmpty()) throw new CommonException(ErrorCode.ACTIVITY_MANAGER_NOT_FOUND);
+                log.info("해당 지역에 활동가능한 매니저 {}",managerList);
+                matchService.matchingListUp(reservationSubmitForm,managerList);
+
+
+         //       talkSendService.sendReservationSubmitAfter(form.getId(),dto.getAddressFront(),form.getReservationAnswerList(),dto.getTotalPrice(),dto.getServicePerson(),managerList);
 
 
                 return form.getId();
@@ -292,6 +315,10 @@ public class SubmitServiceImpl implements SubmitService {
        }
 
 
+
+       /**
+        * @Deprecated 상태값 변경에 제한이 생겼기 때문에 해당 메소드는 사용안함
+        * */
        @Transactional(isolation = Isolation.REPEATABLE_READ)
        public void statusModify(FormStatusModifyRequestDTO dto){
            ReservationSubmitForm form = reservationFormRepository.submitFormWithAnswer(dto.getId()).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_RESERIVATION));
@@ -325,7 +352,7 @@ public class SubmitServiceImpl implements SubmitService {
            }else if(dto.getStatus().equals(ReservationStatus.SERVICE_COMPLETED)){ // 서비스완료시 입금 완료시로 변경해야함
 
                Member member = form.getMember();
-               DiscountCode discountCode = member.getDiscountCode();
+               String discountCode = member.getDiscountCode();
 
                if(discountCode == null){
                    String code = "";
@@ -337,14 +364,11 @@ public class SubmitServiceImpl implements SubmitService {
                    }
 
                    log.info("발급된 할인코드 {}",code);
-                   DiscountCode discountCodeNew = DiscountCode.builder()
-                           .code(code)
-                           .build();
 
-                   member.changeCode(discountCodeNew);
+                   member.changeCode(code);
                    form.changeStatus(dto.getStatus());
                }else{
-                   log.info("기존 코드 그대로 사용됨 {}",discountCode.getCode());
+                   log.info("기존 코드 그대로 사용됨 {}",member.getDiscountCode());
                }
      //          talkSendService.sendCustomenrCompleted(
     //                   answerMap.get(QuestionIdentify.APPLICANTCONACTINFO),form.getId());
@@ -381,7 +405,7 @@ public class SubmitServiceImpl implements SubmitService {
             String phoneNumber = member.getPhoneNumber() != null ? member.getPhoneNumber() : answerMap.get(QuestionIdentify.APPLICANTCONACTINFO);
 
             log.info("서비스 완료 알림톡을 보내는 번호 {}",phoneNumber);
-            DiscountCode discountCode = member.getDiscountCode();
+            String discountCode = member.getDiscountCode();
 
             if(discountCode == null) {
                 String code = "";
@@ -393,13 +417,9 @@ public class SubmitServiceImpl implements SubmitService {
                 }
 
                 log.info("발급된 할인코드 {}", code);
-                DiscountCode discountCodeNew = DiscountCode.builder()
-                        .code(code)
-                        .build();
 
-                member.changeCode(discountCodeNew);
-
-           //     talkSendService.sendCustomenrCompleted(phoneNumber,form.getId());
+                member.changeCode(code);
+                talkSendService.sendCustomenrCompleted(phoneNumber,form.getId());
             }
         }
 
@@ -411,6 +431,7 @@ public class SubmitServiceImpl implements SubmitService {
 
             //TODO: 상태값 체크 반드시 필요
             //if(!form.getStatus().equals(ReservationStatus.SERVICE_COMPLETED)) throw new CommonException(ErrorCode.STATUS_BAN_REQUEST);
+            if(!cancellationStatus.contains(form.getStatus())) throw new CommonException(ErrorCode.STATUS_BAD_REQUEST);
 
             Map<QuestionIdentify, String> answerMap
                     = answers.stream().collect(Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
@@ -424,18 +445,31 @@ public class SubmitServiceImpl implements SubmitService {
                     .map(Manager::getPhoneNumber).collect(Collectors.toList());
 
             log.info("요청 보낸 번호 {}",managers);
-/*            try {
+            try {
                 talkSendService.sendCancellation(managers, answerMap,form.getServicePerson());
+                Optional<GroupIdCode> groupIdCode = reservationFormRepository.submitFormWithGroupId(form.getId());
+
+                if(groupIdCode.isEmpty()) throw new CommonException(ErrorCode.GROUPID_NOT_FOUND);
+
+                GroupIdCode groupIdCodePE = groupIdCode.get();
+
+
+                groupIdCodePE.nullCheckList().forEach(groupId -> {
+                    String url = UriComponentsBuilder.fromUriString(CANCELURL).buildAndExpand(groupId).toUriString();
+
+                    ResponseEntity<String> response = new RestTemplate().exchange(url, HttpMethod.DELETE, null, String.class);
+
+                    if(response.getStatusCode().is2xxSuccessful()) throw new CommonException(ErrorCode.GROUPID_DELETE_FAIL);
+                });
+
+
             } catch (NurigoMessageNotReceivedException e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
+                throw new CommonException(ErrorCode.RESERVATION_CANCEL_EXCEPTION);
             } catch (NurigoEmptyResponseException e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
+                throw new CommonException(ErrorCode.RESERVATION_CANCEL_EXCEPTION);
             } catch (NurigoUnknownException e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            }*/
+                throw new CommonException(ErrorCode.RESERVATION_CANCEL_EXCEPTION);
+            }
 
 
         }

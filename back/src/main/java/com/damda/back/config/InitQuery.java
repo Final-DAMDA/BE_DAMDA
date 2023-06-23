@@ -8,6 +8,7 @@ import com.damda.back.domain.ReservationAnswer;
 import com.damda.back.domain.ReservationSubmitForm;
 import com.damda.back.domain.area.Area;
 import com.damda.back.domain.manager.AreaManager;
+import com.damda.back.domain.manager.CertificateStatusEnum;
 import com.damda.back.domain.manager.Manager;
 import com.damda.back.domain.manager.ManagerStatusEnum;
 import com.damda.back.repository.*;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @RequiredArgsConstructor
 public class InitQuery {
+
 
         private final ReservationFormRepository formRepository;
 
@@ -979,8 +981,417 @@ public class InitQuery {
 
 
 
+            ReservationSubmitForm submitForm11 = ReservationSubmitForm.builder()
+                    .servicePerson(2)
+                    .status(ReservationStatus.RESERVATION_CANCELLATION)
+                    .payMentStatus(PayMentStatus.NOT_PAID_FOR_ANYTHING)
+                    .totalPrice(40000)
+                    .reservationDate("2023-06-17 12:00:00")
+                    .deleted(false)
+                    .member(member)
+                    .build();
+
+            formRepository.save(submitForm11);
 
 
+
+            ReservationAnswer answer11111111111 = ReservationAnswer.builder()
+                    .answer("3인분")
+                    .questionIdentify(QuestionIdentify.AFEWSERVINGS)
+                    .build();
+            ReservationAnswer answer12111111111 = ReservationAnswer.builder()
+                    .answer("인스타그램")
+                    .questionIdentify(QuestionIdentify.LEARNEDROUTE)
+                    .build();
+            ReservationAnswer answer13111111111 = ReservationAnswer.builder()
+                    .answer("홍길동")
+                    .questionIdentify(QuestionIdentify.APPLICANTNAME)
+                    .build();
+
+            ReservationAnswer answer14111111111 = ReservationAnswer.builder()
+                    .answer("3시간")
+                    .questionIdentify(QuestionIdentify.SERVICEDURATION)
+                    .build();
+
+            ReservationAnswer answer15111111111 = ReservationAnswer.builder()
+                    .answer("서울특별시 서초대로 23-100 아파트 333호")
+                    .questionIdentify(QuestionIdentify.ADDRESS)
+                    .build();
+
+            ReservationAnswer answer16111111111 = ReservationAnswer.builder()
+                    .answer("01040783843")
+                    .questionIdentify(QuestionIdentify.APPLICANTCONACTINFO)
+                    .build();
+
+            ReservationAnswer answer17111111111 = ReservationAnswer.builder()
+                    .answer("2023-06-17 12:00:00")
+                    .questionIdentify(QuestionIdentify.SERVICEDATE)
+                    .build();
+
+
+            ReservationAnswer answer18111111111 = ReservationAnswer.builder()
+                    .answer("주차 가능합니다~!")
+                    .questionIdentify(QuestionIdentify.PARKINGAVAILABLE)
+                    .build();
+
+            ReservationAnswer answer19111111111 = ReservationAnswer.builder()
+                    .answer("공동현관 비밀번호는 404 입니다")
+                    .questionIdentify(QuestionIdentify.RESERVATIONENTER)
+                    .build();
+
+            ReservationAnswer answer20111111111 = ReservationAnswer.builder()
+                    .answer("고양이와 강아지가 있어요~!")
+                    .questionIdentify(QuestionIdentify.RESERVATIONNOTE)
+                    .build();
+
+            ReservationAnswer answer21111111111 = ReservationAnswer.builder()
+                    .answer("잘 부탁드립니다~!~!")
+                    .questionIdentify(QuestionIdentify.RESERVATIONREQUEST)
+                    .build();
+
+
+            submitForm11.addAnswer(answer11111111111);
+            submitForm11.addAnswer(answer12111111111);
+            submitForm11.addAnswer(answer13111111111);
+            submitForm11.addAnswer(answer14111111111);
+            submitForm11.addAnswer(answer15111111111);
+            submitForm11.addAnswer(answer16111111111);
+            submitForm11.addAnswer(answer17111111111);
+            submitForm11.addAnswer(answer18111111111);
+            submitForm11.addAnswer(answer19111111111);
+            submitForm11.addAnswer(answer20111111111);
+            submitForm11.addAnswer(answer21111111111);
+
+
+            ReservationSubmitForm submitForm12 = ReservationSubmitForm.builder()
+                    .servicePerson(2)
+                    .status(ReservationStatus.WAITING_FOR_MANAGER_REQUEST)
+                    .payMentStatus(PayMentStatus.NOT_PAID_FOR_ANYTHING)
+                    .totalPrice(40000)
+                    .reservationDate("2023-06-17 12:00:00")
+                    .deleted(false)
+                    .member(member)
+                    .build();
+
+            formRepository.save(submitForm12);
+
+
+
+            ReservationAnswer answer111111111111 = ReservationAnswer.builder()
+                    .answer("3인분")
+                    .questionIdentify(QuestionIdentify.AFEWSERVINGS)
+                    .build();
+            ReservationAnswer answer121111111111 = ReservationAnswer.builder()
+                    .answer("인스타그램")
+                    .questionIdentify(QuestionIdentify.LEARNEDROUTE)
+                    .build();
+            ReservationAnswer answer131111111111 = ReservationAnswer.builder()
+                    .answer("홍길동")
+                    .questionIdentify(QuestionIdentify.APPLICANTNAME)
+                    .build();
+
+            ReservationAnswer answer141111111111 = ReservationAnswer.builder()
+                    .answer("3시간")
+                    .questionIdentify(QuestionIdentify.SERVICEDURATION)
+                    .build();
+
+            ReservationAnswer answer151111111111 = ReservationAnswer.builder()
+                    .answer("서울특별시 서초대로 23-100 아파트 333호")
+                    .questionIdentify(QuestionIdentify.ADDRESS)
+                    .build();
+
+            ReservationAnswer answer161111111111 = ReservationAnswer.builder()
+                    .answer("01040783843")
+                    .questionIdentify(QuestionIdentify.APPLICANTCONACTINFO)
+                    .build();
+
+            ReservationAnswer answer171111111111 = ReservationAnswer.builder()
+                    .answer("2023-06-17 12:00:00")
+                    .questionIdentify(QuestionIdentify.SERVICEDATE)
+                    .build();
+
+
+            ReservationAnswer answer181111111111 = ReservationAnswer.builder()
+                    .answer("주차 가능합니다~!")
+                    .questionIdentify(QuestionIdentify.PARKINGAVAILABLE)
+                    .build();
+
+            ReservationAnswer answer191111111111 = ReservationAnswer.builder()
+                    .answer("공동현관 비밀번호는 404 입니다")
+                    .questionIdentify(QuestionIdentify.RESERVATIONENTER)
+                    .build();
+
+            ReservationAnswer answer201111111111 = ReservationAnswer.builder()
+                    .answer("고양이와 강아지가 있어요~!")
+                    .questionIdentify(QuestionIdentify.RESERVATIONNOTE)
+                    .build();
+
+            ReservationAnswer answer211111111111 = ReservationAnswer.builder()
+                    .answer("잘 부탁드립니다~!~!")
+                    .questionIdentify(QuestionIdentify.RESERVATIONREQUEST)
+                    .build();
+
+
+            submitForm12.addAnswer(answer111111111111);
+            submitForm12.addAnswer(answer121111111111);
+            submitForm12.addAnswer(answer131111111111);
+            submitForm12.addAnswer(answer141111111111);
+            submitForm12.addAnswer(answer151111111111);
+            submitForm12.addAnswer(answer161111111111);
+            submitForm12.addAnswer(answer171111111111);
+            submitForm12.addAnswer(answer181111111111);
+            submitForm12.addAnswer(answer191111111111);
+            submitForm12.addAnswer(answer201111111111);
+            submitForm12.addAnswer(answer211111111111);
+
+
+            ReservationSubmitForm submitForm13 = ReservationSubmitForm.builder()
+                    .servicePerson(2)
+                    .status(ReservationStatus.MANAGER_MATCHING_COMPLETED)
+                    .payMentStatus(PayMentStatus.NOT_PAID_FOR_ANYTHING)
+                    .totalPrice(40000)
+                    .reservationDate("2023-06-17 12:00:00")
+                    .deleted(false)
+                    .member(member)
+                    .build();
+
+            formRepository.save(submitForm13);
+
+
+
+            ReservationAnswer answer1111111111111 = ReservationAnswer.builder()
+                    .answer("3인분")
+                    .questionIdentify(QuestionIdentify.AFEWSERVINGS)
+                    .build();
+            ReservationAnswer answer1211111111111 = ReservationAnswer.builder()
+                    .answer("인스타그램")
+                    .questionIdentify(QuestionIdentify.LEARNEDROUTE)
+                    .build();
+            ReservationAnswer answer1311111111111 = ReservationAnswer.builder()
+                    .answer("홍길동")
+                    .questionIdentify(QuestionIdentify.APPLICANTNAME)
+                    .build();
+
+            ReservationAnswer answer1411111111111 = ReservationAnswer.builder()
+                    .answer("3시간")
+                    .questionIdentify(QuestionIdentify.SERVICEDURATION)
+                    .build();
+
+            ReservationAnswer answer1511111111111 = ReservationAnswer.builder()
+                    .answer("서울특별시 서초대로 23-100 아파트 333호")
+                    .questionIdentify(QuestionIdentify.ADDRESS)
+                    .build();
+
+            ReservationAnswer answer1611111111111 = ReservationAnswer.builder()
+                    .answer("01040783843")
+                    .questionIdentify(QuestionIdentify.APPLICANTCONACTINFO)
+                    .build();
+
+            ReservationAnswer answer1711111111111 = ReservationAnswer.builder()
+                    .answer("2023-06-17 12:00:00")
+                    .questionIdentify(QuestionIdentify.SERVICEDATE)
+                    .build();
+
+
+            ReservationAnswer answer1811111111111 = ReservationAnswer.builder()
+                    .answer("주차 가능합니다~!")
+                    .questionIdentify(QuestionIdentify.PARKINGAVAILABLE)
+                    .build();
+
+            ReservationAnswer answer1911111111111 = ReservationAnswer.builder()
+                    .answer("공동현관 비밀번호는 404 입니다")
+                    .questionIdentify(QuestionIdentify.RESERVATIONENTER)
+                    .build();
+
+            ReservationAnswer answer2011111111111 = ReservationAnswer.builder()
+                    .answer("고양이와 강아지가 있어요~!")
+                    .questionIdentify(QuestionIdentify.RESERVATIONNOTE)
+                    .build();
+
+            ReservationAnswer answer2111111111111 = ReservationAnswer.builder()
+                    .answer("잘 부탁드립니다~!~!")
+                    .questionIdentify(QuestionIdentify.RESERVATIONREQUEST)
+                    .build();
+
+
+            submitForm13.addAnswer(answer1111111111111);
+            submitForm13.addAnswer(answer1211111111111);
+            submitForm13.addAnswer(answer1311111111111);
+            submitForm13.addAnswer(answer1411111111111);
+            submitForm13.addAnswer(answer1511111111111);
+            submitForm13.addAnswer(answer1611111111111);
+            submitForm13.addAnswer(answer1711111111111);
+            submitForm13.addAnswer(answer1811111111111);
+            submitForm13.addAnswer(answer1911111111111);
+            submitForm13.addAnswer(answer2011111111111);
+            submitForm13.addAnswer(answer2111111111111);
+
+
+
+            ReservationSubmitForm submitForm14 = ReservationSubmitForm.builder()
+                    .servicePerson(2)
+                    .status(ReservationStatus.SERVICE_COMPLETED)
+                    .payMentStatus(PayMentStatus.NOT_PAID_FOR_ANYTHING)
+                    .totalPrice(40000)
+                    .reservationDate("2023-06-17 12:00:00")
+                    .deleted(false)
+                    .member(member)
+                    .build();
+
+            formRepository.save(submitForm14);
+
+
+
+            ReservationAnswer answer11111111111111 = ReservationAnswer.builder()
+                    .answer("3인분")
+                    .questionIdentify(QuestionIdentify.AFEWSERVINGS)
+                    .build();
+            ReservationAnswer answer12111111111111 = ReservationAnswer.builder()
+                    .answer("인스타그램")
+                    .questionIdentify(QuestionIdentify.LEARNEDROUTE)
+                    .build();
+            ReservationAnswer answer13111111111111 = ReservationAnswer.builder()
+                    .answer("홍길동")
+                    .questionIdentify(QuestionIdentify.APPLICANTNAME)
+                    .build();
+
+            ReservationAnswer answer14111111111111 = ReservationAnswer.builder()
+                    .answer("3시간")
+                    .questionIdentify(QuestionIdentify.SERVICEDURATION)
+                    .build();
+
+            ReservationAnswer answer15111111111111 = ReservationAnswer.builder()
+                    .answer("서울특별시 서초대로 23-100 아파트 333호")
+                    .questionIdentify(QuestionIdentify.ADDRESS)
+                    .build();
+
+            ReservationAnswer answer16111111111111 = ReservationAnswer.builder()
+                    .answer("01040783843")
+                    .questionIdentify(QuestionIdentify.APPLICANTCONACTINFO)
+                    .build();
+
+            ReservationAnswer answer17111111111111 = ReservationAnswer.builder()
+                    .answer("2023-06-17 12:00:00")
+                    .questionIdentify(QuestionIdentify.SERVICEDATE)
+                    .build();
+
+
+            ReservationAnswer answer18111111111111 = ReservationAnswer.builder()
+                    .answer("주차 가능합니다~!")
+                    .questionIdentify(QuestionIdentify.PARKINGAVAILABLE)
+                    .build();
+
+            ReservationAnswer answer19111111111111 = ReservationAnswer.builder()
+                    .answer("공동현관 비밀번호는 404 입니다")
+                    .questionIdentify(QuestionIdentify.RESERVATIONENTER)
+                    .build();
+
+            ReservationAnswer answer20111111111111 = ReservationAnswer.builder()
+                    .answer("고양이와 강아지가 있어요~!")
+                    .questionIdentify(QuestionIdentify.RESERVATIONNOTE)
+                    .build();
+
+            ReservationAnswer answer21111111111111 = ReservationAnswer.builder()
+                    .answer("잘 부탁드립니다~!~!")
+                    .questionIdentify(QuestionIdentify.RESERVATIONREQUEST)
+                    .build();
+
+
+            submitForm14.addAnswer(answer11111111111111);
+            submitForm14.addAnswer(answer12111111111111);
+            submitForm14.addAnswer(answer13111111111111);
+            submitForm14.addAnswer(answer14111111111111);
+            submitForm14.addAnswer(answer15111111111111);
+            submitForm14.addAnswer(answer16111111111111);
+            submitForm14.addAnswer(answer17111111111111);
+            submitForm14.addAnswer(answer18111111111111);
+            submitForm14.addAnswer(answer19111111111111);
+            submitForm14.addAnswer(answer20111111111111);
+            submitForm14.addAnswer(answer21111111111111);
+
+
+
+            ReservationSubmitForm submitForm15 = ReservationSubmitForm.builder()
+                    .servicePerson(2)
+                    .status(ReservationStatus.WAITING_FOR_ACCEPT_MATCHING)
+                    .payMentStatus(PayMentStatus.NOT_PAID_FOR_ANYTHING)
+                    .totalPrice(40000)
+                    .reservationDate("2023-06-17 12:00:00")
+                    .deleted(false)
+                    .member(member)
+                    .build();
+
+            formRepository.save(submitForm15);
+
+
+
+            ReservationAnswer answer111111111111111 = ReservationAnswer.builder()
+                    .answer("3인분")
+                    .questionIdentify(QuestionIdentify.AFEWSERVINGS)
+                    .build();
+            ReservationAnswer answer121111111111111 = ReservationAnswer.builder()
+                    .answer("인스타그램")
+                    .questionIdentify(QuestionIdentify.LEARNEDROUTE)
+                    .build();
+            ReservationAnswer answer131111111111111 = ReservationAnswer.builder()
+                    .answer("홍길동")
+                    .questionIdentify(QuestionIdentify.APPLICANTNAME)
+                    .build();
+
+            ReservationAnswer answer141111111111111 = ReservationAnswer.builder()
+                    .answer("3시간")
+                    .questionIdentify(QuestionIdentify.SERVICEDURATION)
+                    .build();
+
+            ReservationAnswer answer151111111111111 = ReservationAnswer.builder()
+                    .answer("서울특별시 서초대로 23-100 아파트 333호")
+                    .questionIdentify(QuestionIdentify.ADDRESS)
+                    .build();
+
+            ReservationAnswer answer161111111111111 = ReservationAnswer.builder()
+                    .answer("01040783843")
+                    .questionIdentify(QuestionIdentify.APPLICANTCONACTINFO)
+                    .build();
+
+            ReservationAnswer answer171111111111111 = ReservationAnswer.builder()
+                    .answer("2023-06-17 12:00:00")
+                    .questionIdentify(QuestionIdentify.SERVICEDATE)
+                    .build();
+
+
+            ReservationAnswer answer181111111111111 = ReservationAnswer.builder()
+                    .answer("주차 가능합니다~!")
+                    .questionIdentify(QuestionIdentify.PARKINGAVAILABLE)
+                    .build();
+
+            ReservationAnswer answer191111111111111 = ReservationAnswer.builder()
+                    .answer("공동현관 비밀번호는 404 입니다")
+                    .questionIdentify(QuestionIdentify.RESERVATIONENTER)
+                    .build();
+
+            ReservationAnswer answer201111111111111 = ReservationAnswer.builder()
+                    .answer("고양이와 강아지가 있어요~!")
+                    .questionIdentify(QuestionIdentify.RESERVATIONNOTE)
+                    .build();
+
+            ReservationAnswer answer211111111111111 = ReservationAnswer.builder()
+                    .answer("잘 부탁드립니다~!~!")
+                    .questionIdentify(QuestionIdentify.RESERVATIONREQUEST)
+                    .build();
+
+
+            submitForm15.addAnswer(answer111111111111111);
+            submitForm15.addAnswer(answer121111111111111);
+            submitForm15.addAnswer(answer131111111111111);
+            submitForm15.addAnswer(answer141111111111111);
+            submitForm15.addAnswer(answer151111111111111);
+            submitForm15.addAnswer(answer161111111111111);
+            submitForm15.addAnswer(answer171111111111111);
+            submitForm15.addAnswer(answer181111111111111);
+            submitForm15.addAnswer(answer191111111111111);
+            submitForm15.addAnswer(answer201111111111111);
+            submitForm15.addAnswer(answer211111111111111);
         }
 
 }
+

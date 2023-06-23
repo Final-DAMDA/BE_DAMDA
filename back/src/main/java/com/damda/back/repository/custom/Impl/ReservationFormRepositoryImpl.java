@@ -209,6 +209,21 @@ public class ReservationFormRepositoryImpl implements ReservationFormCustomRepos
                 return Optional.ofNullable(reservationSubmitForm);
         }
 
+        @Override
+        public Optional<ReservationSubmitForm> findByreservationId2(Long reservationId) {
+                QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
+                QReservationAnswer answer = QReservationAnswer.reservationAnswer;
+                QMatch match = QMatch.match;
+                ReservationSubmitForm reservationSubmitForm =
+                        queryFactory.selectDistinct(submitForm)
+                                .from(submitForm)
+                                .innerJoin(submitForm.matches,match).fetchJoin()
+                                .where(submitForm.id.eq(reservationId))
+                                .fetchOne();
+
+                return Optional.ofNullable(reservationSubmitForm);
+        }
+
 
         public Page<ReservationSubmitForm> submitFormDataList(Integer memberId,Pageable pageable){
                 QMember member = QMember.member;
@@ -246,4 +261,32 @@ public class ReservationFormRepositoryImpl implements ReservationFormCustomRepos
                else return Optional.empty();
         }
 
+        @Override
+        public String reservationDiscountCode(Long formId) {
+                QMember member = QMember.member;
+                QReservationSubmitForm submitForm = QReservationSubmitForm.reservationSubmitForm;
+
+                Member memberPE = queryFactory.select(member)
+                        .from(member)
+                        .innerJoin(member.reservationSubmitFormList,submitForm)
+                        .where(submitForm.id.eq(formId))
+                        .fetchOne();
+
+
+                return memberPE.getDiscountCode();
+        }
+
+
+        public Optional<GroupIdCode> submitFormWithGroupId(Long id){
+                QGroupIdCode groupIdCode = QGroupIdCode.groupIdCode;
+
+                GroupIdCode groupIdCodePE = queryFactory
+                        .selectDistinct(groupIdCode)
+                        .from(groupIdCode)
+                        .where(groupIdCode.submitForm.id.eq(id))
+                        .fetchOne();
+
+                if(groupIdCodePE != null) return Optional.of(groupIdCodePE);
+                else return Optional.empty();
+        }
 }

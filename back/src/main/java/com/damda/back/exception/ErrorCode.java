@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 @Getter
 public enum ErrorCode {
-
+    RESERVATION_CANCEL_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR,"예약취소 상태변경 중 에러발생"),
+    GROUPID_DELETE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR,"그룹아이디 삭제 실패"),
+    GROUPID_NOT_FOUND(HttpStatus.BAD_REQUEST,"그룹 아이디를 찾지 못함"),
     STATUS_BAN_REQUEST(HttpStatus.BAD_REQUEST, "현재 서비스 완료상태가 아닌데 결제완료처리를 시도함"),
     RESERVATION_FORM_MISSING_VALUE(HttpStatus.BAD_REQUEST, "제출된 데이터 중 누락된 데이터가 있습니다."),
     ADMIN_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 username에 대항 어드민을 찾지 못함"),

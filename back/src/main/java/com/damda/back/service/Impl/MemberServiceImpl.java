@@ -4,6 +4,7 @@ import com.amazonaws.services.ec2.model.Reservation;
 import com.damda.back.data.common.MemberRole;
 import com.damda.back.data.common.QuestionIdentify;
 import com.damda.back.data.common.ReservationStatus;
+import com.damda.back.data.request.MemoRequestDTO;
 import com.damda.back.data.response.*;
 import com.damda.back.domain.Member;
 import com.damda.back.domain.ReservationAnswer;
@@ -81,7 +82,7 @@ public class MemberServiceImpl implements MemberService {
                     .address(memberPE.getAddress())
                     .reservationStatus(status)
                     .createdAt(memberPE.getCreatedAt().toString())
-                    .code(memberPE.getDiscountCode() != null ? memberPE.getDiscountCode().getCode() : null)
+                    .code(memberPE.getDiscountCode() != null ? memberPE.getDiscountCode() : null)
                     .memo(memberPE.getMemo())
                     .build();
 
@@ -106,7 +107,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public PageReservationMemberDTO reservationMemberDTOS(Integer memberId,Integer page){
 
-        Page<ReservationSubmitForm> pageData = formRepository.submitFormDataList(memberId,PageRequest.of(page,10));
+        Page<ReservationSubmitForm> pageData = formRepository.submitFormDataList(memberId,PageRequest.of(page,5));
 
         List<ReservationSubmitForm> submitForms = pageData.getContent();
         List<ReservationMemberDTO> dtos = new ArrayList<>();
@@ -143,11 +144,11 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new CommonException(ErrorCode.RESERVATION_FORM_MISSING_VALUE));
 
         List<ReservationAnswer> answerList = submitForm.getReservationAnswerList();
-        Member member = submitForm.getMember();
         Map<QuestionIdentify,String> answerMap = answerList.stream()
                 .collect(Collectors
                         .toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
 
+        Member member = submitForm.getMember();
 
         MemberResFormDTO dto = MemberResFormDTO.builder()
                 .applicantName(answerMap.get(QuestionIdentify.APPLICANTNAME))
@@ -158,9 +159,9 @@ public class MemberServiceImpl implements MemberService {
                 .serviceDate(answerMap.get(QuestionIdentify.SERVICEDATE))
                 .parkingAvailable(answerMap.get(QuestionIdentify.PARKINGAVAILABLE))
                 .reservationNote(answerMap.get(QuestionIdentify.RESERVATIONNOTE))
-                .reservationRequest(answerMap.get(QuestionIdentify.RESERVATIONNOTE))
+                .reservationRequest(answerMap.get(QuestionIdentify.RESERVATIONREQUEST))
                 .reservationEnter(answerMap.get(QuestionIdentify.RESERVATIONENTER))
-                .discountCode(member.getDiscountCode() != null ? member.getDiscountCode().getCode() : "미발급")
+                .discountCode(member.getDiscountCode() != null ? member.getDiscountCode() : "미발급")
                 .learnedRoute(answerMap.get(QuestionIdentify.LEARNEDROUTE))
                 .build();
 
@@ -168,7 +169,18 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void memoModify(String memo) {
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public void memoModify(MemoRequestDTO memo) {
+        Member member = memberRepository.findById(memo.getMemberId()).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_MEMBER));
 
+        member.changeMemo(memo.getMemo());
+    }
+
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public String discountCode(Long formId){
+        String discountCode = formRepository.reservationDiscountCode(formId);
+
+        return discountCode != null ? discountCode : "발급실패";
     }
 }

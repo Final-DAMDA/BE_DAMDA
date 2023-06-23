@@ -2,6 +2,7 @@ package com.damda.back.repository.custom;
 
 import com.damda.back.data.common.ReservationStatus;
 import com.damda.back.data.response.Statistical;
+import com.damda.back.domain.GroupIdCode;
 import com.damda.back.domain.Match;
 import com.damda.back.domain.Member;
 import com.damda.back.domain.ReservationSubmitForm;
@@ -30,10 +31,15 @@ public interface ReservationFormCustomRepository {
     Page<ReservationSubmitForm> serviceCompleteList(Pageable pageable);
     Optional<ReservationSubmitForm> findByreservationId(Long reservationId);
 
+    Optional<ReservationSubmitForm> findByreservationId2(Long reservationId);
 
     public Optional<ReservationSubmitForm> submitFormWithAnswer(Long formId);
 
     public Page<ReservationSubmitForm> submitFormDataList(Integer memberId,Pageable pageable);
     public Optional<ReservationSubmitForm> submitFormWithMember(Long formId);
+
+    public String reservationDiscountCode(Long formId);
+
+    public Optional<GroupIdCode> submitFormWithGroupId(Long id);
 
 }
