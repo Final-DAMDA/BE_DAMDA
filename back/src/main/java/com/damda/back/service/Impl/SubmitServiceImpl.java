@@ -422,7 +422,6 @@ public class SubmitServiceImpl implements SubmitService {
                 member.changeCode(code);
                 talkSendService.sendCustomenrCompleted(phoneNumber,form.getId());
 
-                return;
             }else {
                 log.info("결제완료 톡 발송");
                 talkSendService.sendCustomenrCompleted(phoneNumber,form.getId());
@@ -459,15 +458,16 @@ public class SubmitServiceImpl implements SubmitService {
 
                 GroupIdCode groupIdCodePE = groupIdCode.get();
 
-
-                groupIdCodePE.nullCheckList().forEach(groupId -> {
+                for (String groupId : groupIdCodePE.nullCheckList()) {
                     String url = UriComponentsBuilder.fromUriString(CANCELURL).buildAndExpand(groupId).toUriString();
                     try{
                         ResponseEntity<String> response = new RestTemplate().exchange(url, HttpMethod.DELETE, null, String.class);
                     }catch (HttpClientErrorException httpClientErrorException){
-                        throw new CommonException(ErrorCode.GROUPID_DELETE_FAIL);
+                        log.info("예약취소 실패 {}",groupId);
+                        continue;
                     }
-                });
+                }
+
 
 
             } catch (NurigoMessageNotReceivedException e) {
