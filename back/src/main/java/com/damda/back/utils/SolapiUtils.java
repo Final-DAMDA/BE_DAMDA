@@ -534,6 +534,30 @@ public class SolapiUtils {
 
     }
 
+    public void userServiceComplete(ServiceCompleteTalkUserDTO dto) {
+        KakaoOption kakaoOption = new KakaoOption();
+
+        kakaoOption.setPfId(mainCh);
+        kakaoOption.setTemplateId("KA01TP230607123212782zKCpaL2Xx75");
+
+
+        HashMap<String, String> variables = new HashMap<>();
+        variables.put("#{mangerAmount}", dto.getManagerAmount().toString());
+        variables.put("#{reservationHour}", dto.getReservationHour());
+        variables.put("#{reservationPrice}", dto.getReservationPrice().toString());
+
+        kakaoOption.setVariables(variables);
+
+        Message message = new Message();
+        // 발신번호 및 수신번호는 반드시 01012345678 형태로 입력되어야 합니다.
+        message.setFrom("01099636287");
+        message.setTo(dto.getPhoneNumber());
+        message.setKakaoOptions(kakaoOption);
+
+        SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
+        System.out.println("User서비스 완료폼 전송-----"+response);
+    }
+
 
 
 }

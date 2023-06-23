@@ -23,7 +23,7 @@ public interface TalkSendService {
 
     void sendManagerMatchingSuccess(Long reservationId);
     void sendReservationCompleted(List<Match> matches, ReservationSubmitForm reservationSubmitForm);
-
+    void sendServiceCompletedUser(ReservationSubmitForm reservationSubmitForm);
 
     public void sendCancellation(List<String> r,  Map<QuestionIdentify, String> answerMap,Integer servicePerson) throws NurigoMessageNotReceivedException, NurigoEmptyResponseException, NurigoUnknownException;
 

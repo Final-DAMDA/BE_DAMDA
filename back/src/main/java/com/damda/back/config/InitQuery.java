@@ -201,7 +201,7 @@ public class InitQuery {
 				.build();
 
 		ReservationAnswer answer3 = ReservationAnswer.builder()
-				.answer("01040783843")
+				.answer("01039041094")
 				.questionIdentify(QuestionIdentify.APPLICANTCONACTINFO)
 				.build();
 

@@ -201,7 +201,7 @@ public class TalkSendServiceImpl implements TalkSendService {
         localDateTime = localDateTime.plusHours(Long.valueOf(hour)); //서비스 완료시간 구하기
         localDateTime = localDateTime.minusMinutes(30); //30분 마이너스
 
-        String completeFormLink = "https://fe-damda.vercel.app/manager/completed"+reservationSubmitForm.getId().toString();
+        String completeFormLink = "https://fe-damda.vercel.app/manager/completed?id="+reservationSubmitForm.getId().toString();
 
         CompleteFormTalkToManagerDTO completeFormTalkToManagerDTO =CompleteFormTalkToManagerDTO
                 .builder()
@@ -226,7 +226,22 @@ public class TalkSendServiceImpl implements TalkSendService {
 
     }
 
+    @Override
+    public void sendServiceCompletedUser(ReservationSubmitForm reservationSubmitForm) {
+        List<ReservationAnswer> answers = reservationSubmitForm.getReservationAnswerList();
+        Map<QuestionIdentify, String> answerMap
+                = answers.stream().collect
+                (Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
 
+        ServiceCompleteTalkUserDTO dto = ServiceCompleteTalkUserDTO.builder()
+                .managerAmount(reservationSubmitForm.getServicePerson().toString())
+                .reservationPrice(reservationSubmitForm.getTotalPrice().toString())
+                .reservationHour(answerMap.get(QuestionIdentify.SERVICEDURATION))
+                .phoneNumber(answerMap.get(QuestionIdentify.APPLICANTCONACTINFO))
+                .build();
+
+        solapiUtils.userServiceComplete(dto);
+    }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void sendCancellation(List<String> r,  Map<QuestionIdentify, String> answerMap,Integer servicePerson) throws NurigoMessageNotReceivedException, NurigoEmptyResponseException, NurigoUnknownException {
@@ -245,6 +260,5 @@ public class TalkSendServiceImpl implements TalkSendService {
         solapiUtils.cancellationSendManager(r,dto);
 
     }
-
 
 }
