@@ -13,6 +13,7 @@ import com.damda.back.exception.ErrorCode;
 import com.damda.back.repository.*;
 import com.damda.back.service.ReviewService;
 import com.damda.back.service.S3Service;
+import com.damda.back.service.TalkSendService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -35,6 +36,8 @@ public class ReviewServiceImpl implements ReviewService {
 	private final ReviewRepository reviewRepository;
 	private final MatchRepository matchRepository;
 	private final ReservationAnswerRepository reservationAnswerRepository;
+	private final TalkSendService talkSendService;
+
 
 
 	/**
@@ -43,7 +46,9 @@ public class ReviewServiceImpl implements ReviewService {
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	@Override
 	public boolean uploadServiceComplete(Long reservationId, ServiceCompleteRequestDTO serviceCompleteRequestDTO){
-		ReservationSubmitForm reservationSubmitForm = reservationFormRepository.findByreservationId(reservationId).orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_RESERIVATION));
+		ReservationSubmitForm reservationSubmitForm = reservationFormRepository.findByreservationId(reservationId)
+				.orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_RESERIVATION));
+
 		if(reviewRepository.existReservation(reservationId)){
 			throw new CommonException(ErrorCode.SUBMITTED_SERVICE_COMPLETE);
 		}
@@ -61,6 +66,8 @@ public class ReviewServiceImpl implements ReviewService {
 		saveImage(serviceComplete,serviceCompleteRequestDTO.getBefore(),ImageType.BEFORE);
 		saveImage(serviceComplete,serviceCompleteRequestDTO.getAfter(),ImageType.AFTER);
 
+		//TODO: 유저에게 서비스 완료 알림톡 보내기
+		talkSendService.sendServiceCompletedUser(reservationSubmitForm);
 		return true;
 	}
 

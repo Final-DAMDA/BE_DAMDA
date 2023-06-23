@@ -5,15 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 @Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CompleteFormTalkToManagerDTO {
+public class ServiceCompleteTalkUserDTO {
+	private String reservationPrice;
+	private String managerAmount;
+	private String reservationHour;
 	private String phoneNumber;
-	private String link;
-	private LocalDateTime sendTime;
+
+
 }
