@@ -9,6 +9,8 @@ import com.damda.back.domain.manager.ManagerStatusEnum;
 import com.damda.back.service.ManagerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,7 +46,11 @@ public class ManagerController {
      * API: 매니저 가져오기(상태별)
      */
     @GetMapping("/api/v1/admin/manager") // ../api/v1/admin/manager?status=ACTIVE
-    public ResponseEntity<CommonResponse<?>> activeManagerList(@RequestParam String status) {
+    public ResponseEntity<CommonResponse<?>> activeManagerList(@RequestParam String status,
+                                                               @RequestParam(name = "page", defaultValue = "0") int page,
+                                                               @RequestParam(name = "size", defaultValue = "7") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
 
         CommonResponse<Object> commonResponse = CommonResponse
                 .builder()

@@ -23,6 +23,7 @@ public enum ErrorCode {
     KAKAO_TOKEN_EXPIRE(HttpStatus.BAD_REQUEST, "카카오 토큰 만료됨"),
     DATE_FORMAT_EXCEPTION(HttpStatus.BAD_REQUEST, "날짜 포맷이 맞지 않습니다."),
     KAKAO_LOGIN_FALIE(HttpStatus.INTERNAL_SERVER_ERROR, "카카오 로그인중 에러 - 인가코드 또는 액세스 토큰이 잘못됨"),
+    NOT_FOUND_ACTIVITYDAY(HttpStatus.BAD_REQUEST, "조회하려는 매니저의 활동 요일 정보가 데이터 상에 존재하지 않습니다."),
     NOT_FOUND_MEMBER(HttpStatus.BAD_REQUEST, "조회하려는 유저가 데이터 상에 존재하지 않습니다."),
     NOT_FOUND_MANAGER(HttpStatus.BAD_REQUEST, "없는 매니저에 대한 수정을 요청하였습니다"),
     NOT_FOUND_LOGIN_MANAGER(HttpStatus.BAD_REQUEST, "로그인한 사용자가 활동중인 매니저가 아닙니다"),
@@ -55,13 +56,11 @@ public enum ErrorCode {
     ERROR_REMIND_TALK_MANAGER(HttpStatus.INTERNAL_SERVER_ERROR,"매니저 리마인드 예약톡에 에러가 발생했습니다. "),
 
     NOT_FOUND_QNA(HttpStatus.BAD_REQUEST, "없는 QnA를 조회했습니다."),
-    STATUS_BAD_REQUEST(HttpStatus.BAD_REQUEST,"예약취소로 변경할 수 없는 상태값입니다." );
+    STATUS_BAD_REQUEST(HttpStatus.BAD_REQUEST,"예약취소로 변경할 수 없는 상태값입니다." ),
 
     NOT_FOUND_SERVICE_COMPLETE(HttpStatus.BAD_REQUEST, "없는 예약이거 서비스 완료 폼이 제출되지 않은 예약입니다. "),
     NOT_FOUND_IMAGE(HttpStatus.BAD_REQUEST, "해당아이디로 조회할 수 없는 이미지입니다.  "),
-    NOT_FOUND_REVIEW(HttpStatus.BAD_REQUEST, "해당아이디로 조회할 수 없는 리뷰입니다.  "),
-    NOT_FOUND_QNA(HttpStatus.BAD_REQUEST, "없는 QnA를 조회했습니다.");
-
+    NOT_FOUND_REVIEW(HttpStatus.BAD_REQUEST, "해당아이디로 조회할 수 없는 리뷰입니다.  ");
 
 
 
