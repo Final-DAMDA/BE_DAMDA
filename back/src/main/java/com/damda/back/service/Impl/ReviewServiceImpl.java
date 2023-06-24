@@ -422,7 +422,7 @@ public class ReviewServiceImpl implements ReviewService {
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	public Long manualReviewUpload(ReviewManualRequestDTO dto) {
 		ReservationSubmitForm reservationSubmitForm = ReservationSubmitForm.builder()
-				.status(ReservationStatus.REVIEW_DATA)
+				.deleted(true)
 				.build();
 		reservationFormRepository.save(reservationSubmitForm);
 
