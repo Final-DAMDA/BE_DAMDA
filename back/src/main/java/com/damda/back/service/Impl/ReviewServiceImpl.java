@@ -369,10 +369,10 @@ public class ReviewServiceImpl implements ReviewService {
 		Review uploadReview = reviewRepository.findByReservationId(reservationId).orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_REVIEW));
 		uploadReview.reviewUpload(reviewRequestDTO);
 		System.out.println(reviewRequestDTO);
-		if(reviewRequestDTO.getBefore()!=null||!reviewRequestDTO.getBefore().isEmpty()){
+		if(reviewRequestDTO.getBefore()!=null){
 			saveImage(uploadReview,reviewRequestDTO.getBefore(),ImageType.BEFORE);
 		}
-		if(reviewRequestDTO.getAfter()!=null||!reviewRequestDTO.getAfter().isEmpty()){
+		if(reviewRequestDTO.getAfter()!=null){
 			saveImage(uploadReview,reviewRequestDTO.getAfter(),ImageType.AFTER);
 		}
 
@@ -422,7 +422,7 @@ public class ReviewServiceImpl implements ReviewService {
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	public Long manualReviewUpload(ReviewManualRequestDTO dto) {
 		ReservationSubmitForm reservationSubmitForm = ReservationSubmitForm.builder()
-				.status(ReservationStatus.REVIEW_DATA)
+				.deleted(true)
 				.build();
 		reservationFormRepository.save(reservationSubmitForm);
 
