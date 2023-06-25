@@ -136,8 +136,8 @@ public class InitQuery {
 		areaRepository.save(area);
 
 		AreaManager.AreaManagerKey key = new AreaManager.AreaManagerKey(area1,manager);
-		AreaManager.AreaManagerKey key2 = new AreaManager.AreaManagerKey(area1,manager2);
-		AreaManager.AreaManagerKey key3 = new AreaManager.AreaManagerKey(area1,manager3);
+		AreaManager.AreaManagerKey key2 = new AreaManager.AreaManagerKey(area,manager2);
+		AreaManager.AreaManagerKey key3 = new AreaManager.AreaManagerKey(area2,manager3);
 
 
 		AreaManager areaManager = AreaManager.builder()
@@ -153,6 +153,77 @@ public class InitQuery {
 		areaManagerRepository.save(areaManager);
 		areaManagerRepository.save(areaManager2);
 		areaManagerRepository.save(areaManager3);
+
+
+		Manager manager1 = managerRepository.save(Manager.builder()
+				.phoneNumber("01040783843")
+				.managerName("김재우")
+				.currManagerStatus(ManagerStatusEnum.ACTIVE)
+				.certificateStatus(CertificateStatusEnum.ETC)
+				.activityDay(ActivityDay.builder().isOkMonday(true).build())
+				.level(1)
+				.build());
+
+		Manager manager21 = managerRepository.save(Manager.builder()
+				.phoneNumber("01039041094")
+				.managerName("고예림")
+				.currManagerStatus(ManagerStatusEnum.ACTIVE)
+				.certificateStatus(CertificateStatusEnum.ETC)
+				.level(1)
+				.activityDay(ActivityDay.builder().isOkMonday(true).build())
+				.build());
+
+		Manager manager31 = managerRepository.save(Manager.builder()
+				.phoneNumber("01082535890")
+				.managerName("김형준")
+				.currManagerStatus(ManagerStatusEnum.ACTIVE)
+				.certificateStatus(CertificateStatusEnum.ETC)
+				.activityDay(ActivityDay.builder().isOkMonday(true).build())
+				.level(1)
+				.build());
+
+
+		Area area11 = Area.builder()
+				.city("서울특별시")
+				.district("강남구")
+				.managerCount(1)
+				.build();
+
+		Area area21 = Area.builder()
+				.city("서울특별시")
+				.district("강북구")
+				.managerCount(1)
+				.build();
+
+		Area area111 = Area.builder()
+				.city("경기도")
+				.district("하남시")
+				.managerCount(1)
+				.build();
+
+		areaRepository.save(area11);
+		areaRepository.save(area21);
+		areaRepository.save(area111);
+
+		AreaManager.AreaManagerKey key1 = new AreaManager.AreaManagerKey(area11,manager1);
+		AreaManager.AreaManagerKey key21 = new AreaManager.AreaManagerKey(area111,manager21);
+		AreaManager.AreaManagerKey key31 = new AreaManager.AreaManagerKey(area21,manager31);
+
+
+		AreaManager areaManager1 = AreaManager.builder()
+				.areaManagerKey(key1)
+				.build();
+		AreaManager areaManager21 = AreaManager.builder()
+				.areaManagerKey(key21)
+				.build();
+		AreaManager areaManager31 = AreaManager.builder()
+				.areaManagerKey(key31)
+				.build();
+
+		areaManagerRepository.save(areaManager1);
+		areaManagerRepository.save(areaManager21);
+		areaManagerRepository.save(areaManager31);
+
 
 
 		ReservationSubmitForm submitForm = ReservationSubmitForm.builder()

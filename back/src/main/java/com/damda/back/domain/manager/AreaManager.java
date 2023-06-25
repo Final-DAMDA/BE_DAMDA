@@ -19,7 +19,7 @@ public class AreaManager {
     private AreaManagerKey areaManagerKey;
     private boolean status;
 
-    @Data
+    @Getter
     @Embeddable
     @NoArgsConstructor
     @AllArgsConstructor
@@ -32,6 +32,8 @@ public class AreaManager {
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "manager_id")
         private Manager manager;
+
+
 
     }
     

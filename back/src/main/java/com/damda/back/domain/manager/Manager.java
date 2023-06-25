@@ -5,6 +5,7 @@ import com.damda.back.domain.BaseEntity;
 import com.damda.back.domain.Match;
 import com.damda.back.domain.Member;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -35,6 +36,8 @@ public class Manager extends BaseEntity {
     @JoinColumn(name = "activity_day_id")
     private ActivityDay activityDay;
 
+
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "areaManagerKey.manager", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AreaManager> areaManagers = new ArrayList<>();
 
