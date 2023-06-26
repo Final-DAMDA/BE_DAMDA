@@ -20,11 +20,14 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @RestController
 @RequiredArgsConstructor
@@ -78,13 +81,48 @@ public class FormController {
         workbook.close();
 
 
-        CommonResponse<?> commonResponse = CommonResponse
-                .builder()
-                .codeEnum(CodeEnum.SUCCESS)
-                .data(true)
-                .build();
 
     }
+
+
+    @GetMapping("/api/v2/excel/download")
+    public void downloadExcel2(
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate,
+            HttpServletResponse response) throws IOException {
+
+
+        Workbook workbook = excelService.createExcel(startDate, endDate);
+
+        // 압축 파일을 생성하기 위한 ByteArrayOutputStream
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream);
+
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        String formattedDate = currentDate.format(formatter);
+
+        String fileName = formattedDate+"-LIST";
+        String encodedFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8);
+
+        // 엑셀 파일을 압축하여 ZipEntry로 추가
+        ZipEntry zipEntry = new ZipEntry(encodedFileName+".xlsx");
+        zipOutputStream.putNextEntry(zipEntry);
+        workbook.write(zipOutputStream);
+
+        // 스트림과 Workbook을 닫고 압축 파일 반환
+        zipOutputStream.closeEntry();
+        zipOutputStream.close();
+        workbook.close();
+
+        // ByteArray를 Response에 쓰기
+        response.setContentType("application/zip");
+        response.setHeader("Content-Disposition", "attachment; filename=\""+encodedFileName+".zip\"");
+        response.getOutputStream().write(byteArrayOutputStream.toByteArray());
+        response.flushBuffer();
+    }
+
+
 
     @PostMapping("/api/v1/user/form/submit")
     public ResponseEntity<CommonResponse<?>> reservationFormSave(
