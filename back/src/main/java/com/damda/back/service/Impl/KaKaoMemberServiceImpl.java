@@ -11,6 +11,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 
@@ -23,6 +24,8 @@ public class KaKaoMemberServiceImpl implements KaKaoService {
     @Value("${kakao.redirect.uri}")
     private String redirectUri;
     private final JwtManager jwtManager;
+
+
 
 
 
@@ -70,16 +73,20 @@ public class KaKaoMemberServiceImpl implements KaKaoService {
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(parameters, headers);
 
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<AccessTokenResponse> responseEntity = restTemplate.exchange(
-                KAKAO_URL,
-                HttpMethod.POST,
-                requestEntity,
-                AccessTokenResponse.class
-        );
-        if (responseEntity.getStatusCode() == HttpStatus.OK) {
-            AccessTokenResponse responseBody = responseEntity.getBody();
-            return responseBody;
-        } else {
+        try{
+            ResponseEntity<AccessTokenResponse> responseEntity = restTemplate.exchange(
+                    KAKAO_URL,
+                    HttpMethod.POST,
+                    requestEntity,
+                    AccessTokenResponse.class
+            );
+            if (responseEntity.getStatusCode() == HttpStatus.OK) {
+                AccessTokenResponse responseBody = responseEntity.getBody();
+                return responseBody;
+            } else {
+                throw new CommonException(ErrorCode.KAKAO_TOKEN_EXPIRE);
+            }
+        }catch (HttpClientErrorException.Unauthorized e){
             throw new CommonException(ErrorCode.KAKAO_TOKEN_EXPIRE);
         }
     }

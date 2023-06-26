@@ -78,7 +78,7 @@ public class SolapiUtils {
             variables.put("#{reservationEnter}", dto.getReservationEnter());
             variables.put("#{reservationNote}", dto.getReservationNote());
             variables.put("#{reservationRequest}", dto.getReservationRequest());
-            variables.put("#{domain}", domain + "/manager/accept?id=" + dto.getFormId());
+            variables.put("#{domain}", domain + "/manager/accept/" + dto.getFormId());
 
 
             kakaoOption.setVariables(variables);

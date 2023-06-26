@@ -193,4 +193,20 @@ public class MemberController {
         return ResponseEntity.ok(commonResponse);
     }
 
+    @GetMapping("/api/v1/logout")
+    public ResponseEntity<CommonResponse> logout(HttpServletResponse response, @CookieValue(name = "access_token", required = false) Cookie cookie) {
+        if (cookie != null) {
+            cookie.setMaxAge(0);
+            cookie.setPath("/");
+            response.addCookie(cookie);
+        }
+        CommonResponse<?> commonResponse = CommonResponse
+                .builder()
+                .codeEnum(CodeEnum.SUCCESS)
+                .data(true)
+                .build();
+
+        return ResponseEntity.ok(commonResponse);
+    }
+
 }

@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class InitQuery {
 
+
 	private final ReservationFormRepository formRepository;
 
 	private final ManagerRepository managerRepository;
@@ -228,7 +229,7 @@ public class InitQuery {
 
 		ReservationSubmitForm submitForm = ReservationSubmitForm.builder()
 				.servicePerson(2)
-				.status(ReservationStatus.WAITING_FOR_MANAGER_REQUEST)
+				.status(ReservationStatus.RESERVATION_CANCELLATION)
 				.payMentStatus(PayMentStatus.NOT_PAID_FOR_ANYTHING)
 				.totalPrice(40000)
 				.reservationDate("2023-06-17 12:00:00")
@@ -324,7 +325,7 @@ public class InitQuery {
 
 		ReservationSubmitForm submitForm2 = ReservationSubmitForm.builder()
 				.servicePerson(2)
-				.status(ReservationStatus.WAITING_FOR_MANAGER_REQUEST)
+				.status(ReservationStatus.WAITING_FOR_ACCEPT_MATCHING)
 				.payMentStatus(PayMentStatus.NOT_PAID_FOR_ANYTHING)
 				.totalPrice(40000)
 				.reservationDate("2023-06-17 12:00:00")
@@ -419,7 +420,7 @@ public class InitQuery {
 
 		ReservationSubmitForm submitForm3 = ReservationSubmitForm.builder()
 				.servicePerson(2)
-				.status(ReservationStatus.WAITING_FOR_MANAGER_REQUEST)
+				.status(ReservationStatus.MANAGER_MATCHING_COMPLETED)
 				.payMentStatus(PayMentStatus.NOT_PAID_FOR_ANYTHING)
 				.totalPrice(40000)
 				.reservationDate("2023-06-17 12:00:00")
@@ -511,7 +512,7 @@ public class InitQuery {
 
 		ReservationSubmitForm submitForm4 = ReservationSubmitForm.builder()
 				.servicePerson(2)
-				.status(ReservationStatus.WAITING_FOR_MANAGER_REQUEST)
+				.status(ReservationStatus.RESERVATION_CANCELLATION)
 				.payMentStatus(PayMentStatus.NOT_PAID_FOR_ANYTHING)
 				.totalPrice(40000)
 				.reservationDate("2023-06-17 12:00:00")
@@ -594,7 +595,7 @@ public class InitQuery {
 
 		ReservationSubmitForm submitForm5 = ReservationSubmitForm.builder()
 				.servicePerson(2)
-				.status(ReservationStatus.WAITING_FOR_MANAGER_REQUEST)
+				.status(ReservationStatus.MANAGER_MATCHING_COMPLETED)
 				.payMentStatus(PayMentStatus.NOT_PAID_FOR_ANYTHING)
 				.totalPrice(40000)
 				.reservationDate("2023-06-17 12:00:00")
@@ -759,7 +760,7 @@ public class InitQuery {
 
 		ReservationSubmitForm submitForm7 = ReservationSubmitForm.builder()
 				.servicePerson(2)
-				.status(ReservationStatus.WAITING_FOR_MANAGER_REQUEST)
+				.status(ReservationStatus.WAITING_FOR_ACCEPT_MATCHING)
 				.payMentStatus(PayMentStatus.NOT_PAID_FOR_ANYTHING)
 				.totalPrice(40000)
 				.reservationDate("2023-06-17 12:00:00")
@@ -842,7 +843,7 @@ public class InitQuery {
 
 		ReservationSubmitForm submitForm8 = ReservationSubmitForm.builder()
 				.servicePerson(2)
-				.status(ReservationStatus.WAITING_FOR_MANAGER_REQUEST)
+				.status(ReservationStatus.SERVICE_COMPLETED)
 				.payMentStatus(PayMentStatus.NOT_PAID_FOR_ANYTHING)
 				.totalPrice(40000)
 				.reservationDate("2023-06-17 12:00:00")
@@ -1009,7 +1010,7 @@ public class InitQuery {
 
 		ReservationSubmitForm submitForm10 = ReservationSubmitForm.builder()
 				.servicePerson(2)
-				.status(ReservationStatus.WAITING_FOR_MANAGER_REQUEST)
+				.status(ReservationStatus.RESERVATION_CANCELLATION)
 				.payMentStatus(PayMentStatus.NOT_PAID_FOR_ANYTHING)
 				.totalPrice(40000)
 				.reservationDate("2023-06-17 12:00:00")

@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -67,5 +68,20 @@ public class AreaManagerRepositoryImpl implements AreaManagerCustomRepository {
 		List<AreaManager> list=query.fetch();
 		return list;
 	}
-	
+
+	@Override
+	public Optional<AreaManager> findAreaByManagerId(Long managerId, String city, String district) {
+		QAreaManager qAreaManager = QAreaManager.areaManager;
+		QManager qManager = QManager.manager;
+		QArea qArea = QArea.area;
+
+		AreaManager areaManager  = queryFactory.selectDistinct(qAreaManager)
+				.from(qAreaManager)
+				.innerJoin(qAreaManager.areaManagerKey.area, qArea).fetchJoin()
+				.where(qAreaManager.areaManagerKey.manager.id.eq(managerId)
+						.and(qAreaManager.areaManagerKey.area.district.eq(district))).fetchOne();
+
+		return Optional.ofNullable(areaManager);
+	}
+
 }
