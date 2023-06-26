@@ -15,6 +15,9 @@ import net.nurigo.sdk.message.exception.NurigoUnknownException;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.SortDefault;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -86,11 +89,10 @@ public class FormController {
 
 
     @GetMapping("/api/v1/zip/excel/download")
-    public void downloadExcel2(
+    public ResponseEntity<byte[]> downloadExcel2(
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate,
             HttpServletResponse response) throws IOException {
-
 
         Workbook workbook = excelService.createExcel(startDate, endDate);
 
@@ -102,11 +104,11 @@ public class FormController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         String formattedDate = currentDate.format(formatter);
 
-        String fileName = formattedDate+"-LIST";
+        String fileName = formattedDate + "-LIST";
         String encodedFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8);
 
         // 엑셀 파일을 압축하여 ZipEntry로 추가
-        ZipEntry zipEntry = new ZipEntry(encodedFileName+".xlsx");
+        ZipEntry zipEntry = new ZipEntry(encodedFileName + ".xlsx");
         zipOutputStream.putNextEntry(zipEntry);
         workbook.write(zipOutputStream);
 
@@ -116,10 +118,14 @@ public class FormController {
         workbook.close();
 
         // ByteArray를 Response에 쓰기
-        response.setContentType("application/zip");
-        response.setHeader("Content-Disposition", "attachment; filename=\""+encodedFileName+".zip\"");
-        response.getOutputStream().write(byteArrayOutputStream.toByteArray());
-        response.flushBuffer();
+        byte[] zipBytes = byteArrayOutputStream.toByteArray();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.set("Content-Disposition", "attachment; filename=\"" + "test" + ".zip\"");
+        headers.setContentLength(zipBytes.length);
+
+        return new ResponseEntity<>(zipBytes, headers, HttpStatus.OK);
     }
 
 

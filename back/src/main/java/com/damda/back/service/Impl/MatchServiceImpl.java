@@ -81,15 +81,27 @@ public class MatchServiceImpl implements MatchService {
 		List<ReservationAnswer> answers =  reservation.getReservationAnswerList();
 		Map<QuestionIdentify, String> answerMap
 				= answers.stream().collect(Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
+		String date = answerMap.get(QuestionIdentify.SERVICEDATE);
+		String dateString = date.substring(0, 10); // yyyy-mm-dd 추출
+		String timeString = date.substring(11,16); // hh:mm 추출
 
+		ServiceInfo serviceInfo = ServiceInfo.builder()
+				.serviceDate(dateString)
+				.serviceDuration(timeString)
+				.servicePerPerson(reservation.getServicePerson().toString()+"인")
+				.location(answerMap.get(QuestionIdentify.ADDRESS))
+				.build();
+		ReservationInfo reservationInfo = ReservationInfo.builder().parkAvailable(answerMap.get(QuestionIdentify.PARKINGAVAILABLE))
+				.reservationEnter(answerMap.get(QuestionIdentify.RESERVATIONENTER))
+				.reservationNote(answerMap.get(QuestionIdentify.RESERVATIONNOTE))
+				.reservationRequest(answerMap.get(QuestionIdentify.RESERVATIONREQUEST))
+				.build();
 		MatchingAcceptGetDTO matchingAcceptGetDTO =
 				MatchingAcceptGetDTO.builder()
-				.serviceAddress(answerMap.get(QuestionIdentify.ADDRESS))
-				.servings(answerMap.get(QuestionIdentify.AFEWSERVINGS))
-				.serviceHours(answerMap.get(QuestionIdentify.SERVICEDURATION))
-				.serviceDate(answerMap.get(QuestionIdentify.SERVICEDATE))
-				.managerName(managerName)
-				.reservationId(reservation.getId())
+				.manager(managerName)
+				.id(reservation.getId())
+				.serviceInfo(serviceInfo)
+				.reservationInfo(reservationInfo)
 				.build();
 		return matchingAcceptGetDTO;
 	}

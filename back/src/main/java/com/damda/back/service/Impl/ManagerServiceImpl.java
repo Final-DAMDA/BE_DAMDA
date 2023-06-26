@@ -177,9 +177,9 @@ public class ManagerServiceImpl implements ManagerService {
                     .level(manager.getLevel())
                     .certificateStatus(String.valueOf(manager.getCertificateStatus()))
                     .certificateStatusEtc(manager.getCertificateStatusEtc())
-                    .vehicle(manager.getVehicle())
+                    .vehicle(manager.getVehicle())  //boolean
                     .fieldExperience(manager.getFieldExperience())
-                    .mainJobStatus(manager.getMainJobStatus())
+                    .mainJobStatus(manager.getMainJobStatus())  //boolean
                     .mainJobStatusEtc(manager.getMainJobStatusEtc())
                     .memo(manager.getMemo())
                     .prevManagerStatus(String.valueOf(manager.getPrevManagerStatus()))
