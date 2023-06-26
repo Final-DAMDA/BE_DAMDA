@@ -429,7 +429,7 @@ public class SubmitServiceImpl implements SubmitService {
         }
 
         @Transactional(isolation = Isolation.REPEATABLE_READ)
-        public void cancellation(Long id){
+        public void cancellation(Long id) {
             ReservationSubmitForm form = reservationFormRepository.submitFormWithAnswer(id)
                     .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_RESERIVATION));
             List<ReservationAnswer> answers = form.getReservationAnswerList();
@@ -466,7 +466,7 @@ public class SubmitServiceImpl implements SubmitService {
                     }
                 }
 
-                talkSendService.sendCancellation(managers, answerMap,form.getServicePerson());
+                if(!managers.isEmpty()) talkSendService.sendCancellation(managers, answerMap,form.getServicePerson());
             } catch (NurigoMessageNotReceivedException e) {
                 throw new CommonException(ErrorCode.RESERVATION_CANCEL_EXCEPTION);
             } catch (NurigoEmptyResponseException e) {
