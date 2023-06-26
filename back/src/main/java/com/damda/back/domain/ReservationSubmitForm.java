@@ -81,6 +81,12 @@ public class ReservationSubmitForm extends BaseEntity{
 
         this.status = ReservationStatus.SERVICE_COMPLETED;
     }
+    public void setMatchingWaiting(){
+        if(this.status!=ReservationStatus.WAITING_FOR_ACCEPT_MATCHING &&
+                this.status!=ReservationStatus.MANAGER_MATCHING_COMPLETED){
+            this.status=ReservationStatus.WAITING_FOR_ACCEPT_MATCHING;
+        }
+    }
 
 
     public void changeStatus(ReservationStatus status){
