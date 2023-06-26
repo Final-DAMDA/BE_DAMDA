@@ -172,6 +172,7 @@ public class InitQuery {
 				.matching(true)
 				.reservationForm(submitForm)
 				.managerId(manager.getId())
+				.matchStatus(MatchResponseStatus.WAITING)
 				.managerName("김재우")
 				.build();
 
@@ -268,6 +269,7 @@ public class InitQuery {
 				.matching(true)
 				.reservationForm(submitForm)
 				.managerId(manager.getId())
+				.matchStatus(MatchResponseStatus.WAITING)
 				.managerName("김재우")
 				.build();
 
@@ -363,6 +365,7 @@ public class InitQuery {
 				.matching(true)
 				.reservationForm(submitForm)
 				.managerId(manager.getId())
+				.matchStatus(MatchResponseStatus.WAITING)
 				.managerName("김재우")
 				.build();
 
