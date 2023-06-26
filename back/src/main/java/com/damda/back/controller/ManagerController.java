@@ -50,13 +50,13 @@ public class ManagerController {
      * API: 매니저 가져오기(상태별)
      */
     @GetMapping("/api/v1/admin/manager") // ../api/v1/admin/manager?status=ACTIVE
-    public ResponseEntity<CommonResponse<?>> activeManagerList(@RequestParam String status,
+    public ResponseEntity<CommonResponse<?>> activeManagerList(@RequestParam(required = false) ManagerStatusEnum status,
                                                                @RequestParam(name = "page", defaultValue = "0") int page,
                                                                @RequestParam(name = "size", defaultValue = "7") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
 
-        PageManagerResponseDTO pageManagerResponseDTO = managerService.managerResponseDTOList(ManagerStatusEnum.valueOf(status), pageable);
+        PageManagerResponseDTO pageManagerResponseDTO = managerService.managerResponseDTOList(status, pageable);
         CommonResponse<Object> commonResponse = CommonResponse
                 .builder()
                 .codeEnum(CodeEnum.SUCCESS)

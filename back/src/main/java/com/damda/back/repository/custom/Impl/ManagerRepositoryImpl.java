@@ -7,6 +7,7 @@ import com.damda.back.domain.area.QArea;
 import com.damda.back.domain.manager.*;
 import com.damda.back.repository.ManagerRepository;
 import com.damda.back.repository.custom.ManagerCustomRepository;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -30,9 +31,12 @@ public class ManagerRepositoryImpl implements ManagerCustomRepository {
 
         QManager manager = QManager.manager;
 
+        BooleanExpression expression = managerStatusEnum != null ? manager.currManagerStatus.eq(managerStatusEnum) : null;
+
+
         List<Manager> list = queryFactory.selectDistinct(manager)
                 .from(manager)
-                .where(manager.currManagerStatus.eq(managerStatusEnum))
+                .where(expression)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(manager.updatedAt.asc())
