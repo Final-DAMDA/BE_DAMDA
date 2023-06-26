@@ -129,10 +129,13 @@ public class MatchServiceImpl implements MatchService {
 	public List<MatchingListDTO> matchingList(Long reservationId) {
 		List<Match> matchList = matchRepository.matchList(reservationId);
 		List<MatchingListDTO> matchingListDTOS = new ArrayList<>();
+		List<Manager> collect = matchList.stream().map((match -> match.getManager())).collect(Collectors.toList());
+		List<AreaManager> areaManagerList = collect.stream().flatMap(manager -> manager.getAreaManagers().stream()).collect(Collectors.toList());
+		managerRepository.areaList2(areaManagerList);
 
 		for(Match m: matchList){
 			MatchingListDTO dto = new MatchingListDTO(m);
-			List<AreaManager> aa= areaManagerRepository.findAreaByManagerId(m.getManagerId());
+			List<AreaManager> aa= m.getManager().getAreaManagers();
 			List<String> managerActivity = new ArrayList<>();
 			for(AreaManager a: aa){
 				managerActivity.add(a.getAreaManagerKey().getArea().getDistrict());

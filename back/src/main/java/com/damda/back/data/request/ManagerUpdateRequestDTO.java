@@ -21,6 +21,5 @@ public class ManagerUpdateRequestDTO {
     private Boolean mainJobStatus;
     private String mainJobStatusEtc;
     private String memo;
-    private String currManagerStatus;
 
 }
