@@ -16,8 +16,10 @@ import com.damda.back.repository.ReservationFormRepository;
 import net.nurigo.sdk.message.exception.NurigoEmptyResponseException;
 import net.nurigo.sdk.message.exception.NurigoMessageNotReceivedException;
 import net.nurigo.sdk.message.exception.NurigoUnknownException;
+import org.aspectj.lang.annotation.Before;
 import org.assertj.core.api.Assert;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,14 +33,12 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -68,6 +68,15 @@ class SubmitServiceImplTest {
     @Mock
     MatchRepository matchRepository;
 
+    private Set<ReservationStatus> cancellationStatus;
+
+    @BeforeEach
+    public void setUp() {
+        cancellationStatus = new HashSet<>();
+        cancellationStatus.add(ReservationStatus.MANAGER_MATCHING_COMPLETED);
+        cancellationStatus.add(ReservationStatus.WAITING_FOR_MANAGER_REQUEST);
+        cancellationStatus.add(ReservationStatus.WAITING_FOR_ACCEPT_MATCHING);
+    }
 
 
 
@@ -194,21 +203,23 @@ class SubmitServiceImplTest {
     void res_cancellation_test() throws NurigoMessageNotReceivedException, NurigoEmptyResponseException, NurigoUnknownException {
         // given
 
-        ReservationSubmitForm submitForm = Mockito.mock(ReservationSubmitForm.class);
         List<Match> matches = Mockito.mock(List.class);
         Optional<ReservationSubmitForm> mockOptional = Optional.of(Mockito.mock(ReservationSubmitForm.class));
+        Optional<GroupIdCode> groupIdCodeOptional = Optional.of(Mockito.mock(GroupIdCode.class));
+
+        Set<ReservationStatus> cancellationStatus = mock(Set.class);
+        cancellationStatus.add(ReservationStatus.MANAGER_MATCHING_COMPLETED);
+
         // when
-        Mockito.when(submitForm.getReservationAnswerList()).thenReturn(new ArrayList<>());
-        Mockito.when(matchRepository.matches(any(Long.class))).thenReturn(matches);
         Mockito.when(repository.submitFormWithAnswer(anyLong())).thenReturn(mockOptional);
-        Mockito.when(submitForm.getStatus()).thenReturn(ReservationStatus.MANAGER_MATCHING_COMPLETED);
+        Mockito.when(mockOptional.get().getStatus()).thenReturn(ReservationStatus.MANAGER_MATCHING_COMPLETED);
+        Mockito.when(repository.submitFormWithGroupId(any(Long.class))).thenReturn(groupIdCodeOptional);
+        Mockito.when(matchRepository.matches(any(Long.class))).thenReturn(matches);
 
         submitService.cancellation(1L);
 
-        Mockito.verify(submitForm,Mockito.times(1)).cancellation();
+        Mockito.verify(mockOptional.get()).cancellation();
         Mockito.verify(talkSendService,Mockito.times(1)).sendCancellation(any(List.class),anyMap(),anyInt());
-
-
 
         // then
     }
