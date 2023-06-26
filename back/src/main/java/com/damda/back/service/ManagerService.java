@@ -3,6 +3,7 @@ package com.damda.back.service;
 import com.damda.back.data.common.RegionModify;
 import com.damda.back.data.request.ManagerApplicationDTO;
 import com.damda.back.data.request.ManagerRegionUpdateRequestDTO;
+import com.damda.back.data.request.ManagerStatusUpdateRequestDTO;
 import com.damda.back.data.request.ManagerUpdateRequestDTO;
 import com.damda.back.data.response.ManagerResponseDTO;
 import com.damda.back.data.response.PageManagerResponseDTO;
@@ -33,4 +34,7 @@ public interface ManagerService {
 
     void activityRegionADD(Long managerId, Map<RegionModify, String> region);
     void activityRegionDelete(Long managerId, Map<RegionModify, String> region);
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    boolean managerStatusUpdate(ManagerStatusUpdateRequestDTO dto, Long managerId);
 }
