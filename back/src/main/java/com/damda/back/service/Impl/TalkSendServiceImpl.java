@@ -72,7 +72,7 @@ public class TalkSendServiceImpl implements TalkSendService {
 
         ResCompleteRequestDTO resCompleteRequestDTO = ResCompleteRequestDTO.builder()
                 .reservationDate(answerMap.get(QuestionIdentify.SERVICEDATE))
-                .reservationHour(answerMap.get(QuestionIdentify.SERVICEDATE).substring(11))
+                .reservationHour(answerMap.get(QuestionIdentify.SERVICEDURATION))
                 .managerAmount(servicePerson.toString())
                 .userAddressCity(answerMap.get(QuestionIdentify.ADDRESS))
                 .reservationParking(answerMap.get(QuestionIdentify.PARKINGAVAILABLE))

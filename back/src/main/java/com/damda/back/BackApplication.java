@@ -203,7 +203,7 @@ public class BackApplication {
 						.questionType(QuestionType.STRING)
 						.status(QuestionStatus.ACTIVATION)
 						.required(true)
-						.questionTitle("신청인의 연락처를 알려주세요")
+						.questionTitle("신청인의 이름 알려주세요")
 						.build()
 		);
 		questionRepository.save(
