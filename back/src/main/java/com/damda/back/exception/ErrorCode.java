@@ -23,6 +23,7 @@ public enum ErrorCode {
     KAKAO_TOKEN_EXPIRE(HttpStatus.BAD_REQUEST, "카카오 토큰 만료됨"),
     DATE_FORMAT_EXCEPTION(HttpStatus.BAD_REQUEST, "날짜 포맷이 맞지 않습니다."),
     KAKAO_LOGIN_FALIE(HttpStatus.INTERNAL_SERVER_ERROR, "카카오 로그인중 에러 - 인가코드 또는 액세스 토큰이 잘못됨"),
+    MANAGER_STATUS_BAD_REQUEST(HttpStatus.BAD_REQUEST, "같은 매니저 상태값으로 변경을 요청하였습니다."),
     NOT_FOUND_ACTIVITYDAY(HttpStatus.BAD_REQUEST, "조회하려는 매니저의 활동 요일 정보가 데이터 상에 존재하지 않습니다."),
     NOT_FOUND_MEMBER(HttpStatus.BAD_REQUEST, "조회하려는 유저가 데이터 상에 존재하지 않습니다."),
     NOT_FOUND_MANAGER(HttpStatus.BAD_REQUEST, "없는 매니저에 대한 수정을 요청하였습니다"),
