@@ -759,7 +759,7 @@ public class InitQuery {
 
 		ReservationSubmitForm submitForm7 = ReservationSubmitForm.builder()
 				.servicePerson(2)
-				.status(ReservationStatus.WAITING_FOR_MANAGER_REQUEST)
+				.status(ReservationStatus.WAITING_FOR_ACCEPT_MATCHING)
 				.payMentStatus(PayMentStatus.NOT_PAID_FOR_ANYTHING)
 				.totalPrice(40000)
 				.reservationDate("2023-06-17 12:00:00")
@@ -842,7 +842,7 @@ public class InitQuery {
 
 		ReservationSubmitForm submitForm8 = ReservationSubmitForm.builder()
 				.servicePerson(2)
-				.status(ReservationStatus.WAITING_FOR_MANAGER_REQUEST)
+				.status(ReservationStatus.WAITING_FOR_ACCEPT_MATCHING)
 				.payMentStatus(PayMentStatus.NOT_PAID_FOR_ANYTHING)
 				.totalPrice(40000)
 				.reservationDate("2023-06-17 12:00:00")

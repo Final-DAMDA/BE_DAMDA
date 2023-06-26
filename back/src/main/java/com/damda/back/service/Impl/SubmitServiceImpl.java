@@ -452,22 +452,21 @@ public class SubmitServiceImpl implements SubmitService {
 
                 Optional<GroupIdCode> groupIdCode = reservationFormRepository.submitFormWithGroupId(form.getId());
 
-                if(groupIdCode.isEmpty()) throw new CommonException(ErrorCode.GROUPID_NOT_FOUND);
+                if(groupIdCode.isPresent()) {
+                    GroupIdCode groupIdCodePE = groupIdCode.get();
 
-                GroupIdCode groupIdCodePE = groupIdCode.get();
-
-                for (String groupId : groupIdCodePE.nullCheckList()) {
-                    String url = UriComponentsBuilder.fromUriString(CANCELURL).buildAndExpand(groupId).toUriString();
-                    try{
-                        ResponseEntity<String> response = new RestTemplate().exchange(url, HttpMethod.DELETE, null, String.class);
-                    }catch (HttpClientErrorException httpClientErrorException){
-                        log.info("예약취소 실패 {}",groupId);
-                        continue;
+                    for (String groupId : groupIdCodePE.nullCheckList()) {
+                        String url = UriComponentsBuilder.fromUriString(CANCELURL).buildAndExpand(groupId).toUriString();
+                        try{
+                            ResponseEntity<String> response = new RestTemplate().exchange(url, HttpMethod.DELETE, null, String.class);
+                        }catch (HttpClientErrorException httpClientErrorException){
+                            log.info("예약취소 실패 {}",groupId);
+                            continue;
+                        }
                     }
                 }
 
                 talkSendService.sendCancellation(managers, answerMap,form.getServicePerson());
-
             } catch (NurigoMessageNotReceivedException e) {
                 throw new CommonException(ErrorCode.RESERVATION_CANCEL_EXCEPTION);
             } catch (NurigoEmptyResponseException e) {
