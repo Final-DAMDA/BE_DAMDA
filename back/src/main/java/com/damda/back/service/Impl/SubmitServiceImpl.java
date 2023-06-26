@@ -73,7 +73,8 @@ public class SubmitServiceImpl implements SubmitService {
 
         private final ArrayList<QuestionIdentify> identifies = new ArrayList<>();
 
-        private final Set<ReservationStatus> cancellationStatus = new HashSet<>();
+
+
 
         private final JdbcTemplate jdbcTemplate;
 
@@ -96,9 +97,8 @@ public class SubmitServiceImpl implements SubmitService {
             identifies.add(QuestionIdentify.RESERVATIONREQUEST); // 요청사항=/ -> 없다면 대체 문자열 보내줘야함 프론트에서
 
 
-            cancellationStatus.add(ReservationStatus.MANAGER_MATCHING_COMPLETED);
-            cancellationStatus.add(ReservationStatus.WAITING_FOR_MANAGER_REQUEST);
-            cancellationStatus.add(ReservationStatus.WAITING_FOR_ACCEPT_MATCHING);
+
+
         }
 
 
@@ -434,9 +434,7 @@ public class SubmitServiceImpl implements SubmitService {
                     .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_RESERIVATION));
             List<ReservationAnswer> answers = form.getReservationAnswerList();
 
-            //TODO: 상태값 체크 반드시 필요
-            //if(!form.getStatus().equals(ReservationStatus.SERVICE_COMPLETED)) throw new CommonException(ErrorCode.STATUS_BAN_REQUEST);
-            if(!cancellationStatus.contains(form.getStatus())) throw new CommonException(ErrorCode.STATUS_BAD_REQUEST);
+            cancellationValid(form.getStatus());
 
             Map<QuestionIdentify, String> answerMap
                     = answers.stream().collect(Collectors.toMap(ReservationAnswer::getQuestionIdentify, ReservationAnswer::getAnswer));
@@ -518,6 +516,16 @@ public class SubmitServiceImpl implements SubmitService {
         }
 
 
+    public void cancellationValid(ReservationStatus status) {
+        List<ReservationStatus> cancellationStatus = List.of(
+                ReservationStatus.MANAGER_MATCHING_COMPLETED,
+                ReservationStatus.WAITING_FOR_MANAGER_REQUEST,
+                ReservationStatus.WAITING_FOR_ACCEPT_MATCHING
+        );
 
+        if (!cancellationStatus.contains(status)) {
+            throw new CommonException(ErrorCode.STATUS_BAD_REQUEST);
+        }
+    }
 
 }

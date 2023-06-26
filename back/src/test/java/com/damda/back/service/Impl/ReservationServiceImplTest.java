@@ -114,12 +114,12 @@ class ReservationServiceImplTest{
 
         RearrangeRequestDTO dto = RearrangeRequestDTO.builder()
                 .questionNumber(1L)
-                .order(1)
+                .questionOrder(1)
                 .build();
 
         RearrangeRequestDTO dto2 = RearrangeRequestDTO.builder()
                 .questionNumber(2L)
-                .order(2)
+                .questionOrder(2)
                 .build();
     }
 
@@ -136,12 +136,12 @@ class ReservationServiceImplTest{
     List reArrangeData(){
         return List.of(RearrangeRequestDTO.builder()
                         .questionNumber(2L)
-                        .order(1)
+                        .questionOrder(1)
                         .page(2)
                 .build(),
                 RearrangeRequestDTO.builder()
                         .questionNumber(1L)
-                        .order(2)
+                        .questionOrder(2)
                         .page(1)
                         .build());
     }
