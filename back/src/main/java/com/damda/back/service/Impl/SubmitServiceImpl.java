@@ -243,7 +243,7 @@ public class SubmitServiceImpl implements SubmitService {
                 matchService.matchingListUp(reservationSubmitForm,managerList);
 
 
-                talkSendService.sendReservationSubmitAfter(form.getId(),dto.getAddressFront(),form.getReservationAnswerList(),dto.getTotalPrice(),dto.getServicePerson(),managerList);
+                //talkSendService.sendReservationSubmitAfter(form.getId(),dto.getAddressFront(),form.getReservationAnswerList(),dto.getTotalPrice(),dto.getServicePerson(),managerList);
 
 
                 return form.getId();
