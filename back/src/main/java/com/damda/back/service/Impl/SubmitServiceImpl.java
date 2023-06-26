@@ -449,7 +449,7 @@ public class SubmitServiceImpl implements SubmitService {
 
             log.info("요청 보낸 번호 {}",managers);
             try {
-                talkSendService.sendCancellation(managers, answerMap,form.getServicePerson());
+
                 Optional<GroupIdCode> groupIdCode = reservationFormRepository.submitFormWithGroupId(form.getId());
 
                 if(groupIdCode.isEmpty()) throw new CommonException(ErrorCode.GROUPID_NOT_FOUND);
@@ -466,7 +466,7 @@ public class SubmitServiceImpl implements SubmitService {
                     }
                 }
 
-
+                talkSendService.sendCancellation(managers, answerMap,form.getServicePerson());
 
             } catch (NurigoMessageNotReceivedException e) {
                 throw new CommonException(ErrorCode.RESERVATION_CANCEL_EXCEPTION);
