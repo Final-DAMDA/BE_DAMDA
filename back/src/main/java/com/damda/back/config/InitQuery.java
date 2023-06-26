@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class InitQuery {
 
 
+
 	private final ReservationFormRepository formRepository;
 
 	private final ManagerRepository managerRepository;
@@ -1103,5 +1104,6 @@ public class InitQuery {
 		formRepository.save(submitForm11);
 
 	}
+
 
 }
