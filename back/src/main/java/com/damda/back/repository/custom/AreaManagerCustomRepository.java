@@ -13,4 +13,5 @@ public interface AreaManagerCustomRepository {
 	List<AreaManager> findAreaManagerListByManagerId(Long managerId);
 	List<AreaManager> findAreaByManagerId(Long managerId);
 	Optional<AreaManager> findAreaByManagerId(Long managerId, String city, String district);
+	List<AreaManager> findAreaByManagerId2(Long managerId);
 }

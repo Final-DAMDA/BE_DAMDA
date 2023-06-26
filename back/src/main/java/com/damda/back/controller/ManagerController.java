@@ -5,6 +5,7 @@ import com.damda.back.data.common.CommonResponse;
 import com.damda.back.data.common.RegionModify;
 import com.damda.back.data.request.ManagerApplicationDTO;
 import com.damda.back.data.request.ManagerRegionUpdateRequestDTO;
+import com.damda.back.data.request.ManagerStatusUpdateRequestDTO;
 import com.damda.back.data.request.ManagerUpdateRequestDTO;
 import com.damda.back.data.response.PageManagerResponseDTO;
 import com.damda.back.domain.manager.ManagerStatusEnum;
@@ -55,7 +56,7 @@ public class ManagerController {
 
         Pageable pageable = PageRequest.of(page, size);
 
-        PageManagerResponseDTO pageManagerResponseDTO = managerService.managerResponseDTOList(ManagerStatusEnum.valueOf(status),pageable);
+        PageManagerResponseDTO pageManagerResponseDTO = managerService.managerResponseDTOList(ManagerStatusEnum.valueOf(status), pageable);
         CommonResponse<Object> commonResponse = CommonResponse
                 .builder()
                 .codeEnum(CodeEnum.SUCCESS)
@@ -107,8 +108,8 @@ public class ManagerController {
      * API: 매니저 활동지역 추가
      */
     @PutMapping("/api/v1/admin/region/add/{id}")
-    public ResponseEntity<CommonResponse<?>> managerRegionAdd(@PathVariable("id") Long managerId, @RequestBody Map<RegionModify,String> region) {
-        managerService.activityRegionADD(managerId,region);
+    public ResponseEntity<CommonResponse<?>> managerRegionAdd(@PathVariable("id") Long managerId, @RequestBody Map<RegionModify, String> region) {
+        managerService.activityRegionADD(managerId, region);
         CommonResponse<?> commonResponse = CommonResponse
                 .builder()
                 .codeEnum(CodeEnum.SUCCESS)
@@ -119,16 +120,34 @@ public class ManagerController {
                 .status(commonResponse.getStatus())
                 .body(commonResponse);
     }
+
     /**
      * API: 매니저 활동지역 삭제
      */
     @PutMapping("/api/v1/admin/region/delete/{id}")
-    public ResponseEntity<CommonResponse<?>> managerRegionDelete(@PathVariable("id") Long managerId, @RequestBody Map<RegionModify,String> region) {
-        managerService.activityRegionDelete(managerId,region);
+    public ResponseEntity<CommonResponse<?>> managerRegionDelete(@PathVariable("id") Long managerId, @RequestBody Map<RegionModify, String> region) {
+        managerService.activityRegionDelete(managerId, region);
         CommonResponse<?> commonResponse = CommonResponse
                 .builder()
                 .codeEnum(CodeEnum.SUCCESS)
                 .data(true)
+                .build();
+
+        return ResponseEntity
+                .status(commonResponse.getStatus())
+                .body(commonResponse);
+    }
+
+    /**
+     * API: 매니저 상태 변경
+     */
+    @PutMapping("/api/v1/admin/manager/{id}/status")
+    public ResponseEntity<CommonResponse<?>> managerStatusUpdate(@PathVariable("id") Long managerId, @RequestBody ManagerStatusUpdateRequestDTO dto) {
+
+        CommonResponse<?> commonResponse = CommonResponse
+                .builder()
+                .codeEnum(CodeEnum.SUCCESS)
+                .data(managerService.managerStatusUpdate(dto, managerId))
                 .build();
 
         return ResponseEntity

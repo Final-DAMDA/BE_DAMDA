@@ -84,4 +84,18 @@ public class AreaManagerRepositoryImpl implements AreaManagerCustomRepository {
 		return Optional.ofNullable(areaManager);
 	}
 
+	@Override
+	public List<AreaManager> findAreaByManagerId2(Long managerId) {
+		QAreaManager qAreaManager = QAreaManager.areaManager;
+		QArea qArea = QArea.area;
+
+		JPAQuery<AreaManager> query = queryFactory.selectDistinct(qAreaManager)
+				.from(qAreaManager)
+				.innerJoin(qAreaManager.areaManagerKey.area, qArea).fetchJoin()
+				.where(qAreaManager.areaManagerKey.manager.id.eq(managerId));
+
+		List<AreaManager> list=query.fetch();
+		return list;
+	}
+
 }
