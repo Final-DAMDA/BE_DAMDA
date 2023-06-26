@@ -1090,7 +1090,17 @@ public class InitQuery {
 		submitForm10.addAnswer(answer2111111111);
 
 
+		ReservationSubmitForm submitForm11 = ReservationSubmitForm.builder()
+				.servicePerson(2)
+				.status(ReservationStatus.RESERVATION_CANCELLATION)
+				.payMentStatus(PayMentStatus.NOT_PAID_FOR_ANYTHING)
+				.totalPrice(40000)
+				.reservationDate("2023-06-17 12:00:00")
+				.deleted(false)
+				.member(member2)
+				.build();
 
+		formRepository.save(submitForm11);
 
 	}
 
