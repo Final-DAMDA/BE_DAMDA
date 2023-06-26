@@ -116,19 +116,19 @@ public class InitQuery {
         Area area1 = Area.builder()
                 .city("서울특별시")
                 .district("강남구")
-                .managerCount(1)
+                .managerCount(3)
                 .build();
 
         Area area2 = Area.builder()
                 .city("서울특별시")
                 .district("강북구")
-                .managerCount(1)
+                .managerCount(0)
                 .build();
 
         Area area = Area.builder()
                 .city("경기도")
                 .district("하남시")
-                .managerCount(1)
+                .managerCount(0)
                 .build();
 
         areaRepository.save(area1);

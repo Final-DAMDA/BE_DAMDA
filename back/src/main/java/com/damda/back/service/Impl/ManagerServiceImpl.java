@@ -368,17 +368,22 @@ public class ManagerServiceImpl implements ManagerService {
     public boolean managerStatusUpdate(ManagerStatusUpdateRequestDTO dto, Long managerId) {
 
         Manager manager = managerRepository.findById(managerId).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_MANAGER));
-                
-        if (dto.getCurrManagerStatus() == ManagerStatusEnum.ACTIVE) {
-            // area테이블에서 
-//            area.plusCount();
-        } else {
-            // managerCount - 1
-        }
-
-
         manager.updateManagerStatus(dto);
 
+        List<AreaManager>areaManagerList = areaManagerRepository.findAreaByManagerId2(managerId);
+        if(areaManagerList.isEmpty()){
+            throw new CommonException(ErrorCode.NOT_FOUND_AREA_MANAGER); //TODO
+        }
+
+        for(AreaManager a:areaManagerList){
+            if (dto.getCurrManagerStatus() == ManagerStatusEnum.ACTIVE) {
+                Area area = a.getAreaManagerKey().getArea();
+                area.plusCount();
+            } else if(manager.getPrevManagerStatus()== ManagerStatusEnum.ACTIVE){
+                Area area = a.getAreaManagerKey().getArea();
+                area.minusCount();
+            }
+        }
         return true;
     }
 
