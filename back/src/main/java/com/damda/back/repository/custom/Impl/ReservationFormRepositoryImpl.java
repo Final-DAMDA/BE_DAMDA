@@ -238,7 +238,8 @@ public class ReservationFormRepositoryImpl implements ReservationFormCustomRepos
                         .fetch();
 
                 JPAQuery<Long> count = queryFactory.select(submitForm.count())
-                        .from(submitForm);
+                        .from(submitForm)
+                        .where(submitForm.member.id.eq(memberId));
 
                 return PageableExecutionUtils.getPage(submitForms,pageable,count::fetchOne);
 
