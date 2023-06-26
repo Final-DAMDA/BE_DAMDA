@@ -3,18 +3,17 @@ package com.damda.back.service.Impl;
 import com.damda.back.data.common.RegionModify;
 import com.damda.back.data.request.ManagerApplicationDTO;
 import com.damda.back.data.request.ManagerRegionUpdateRequestDTO;
+import com.damda.back.data.request.ManagerStatusUpdateRequestDTO;
 import com.damda.back.data.request.ManagerUpdateRequestDTO;
 import com.damda.back.data.response.ManagerResponseDTO;
 import com.damda.back.data.response.PageManagerResponseDTO;
 import com.damda.back.domain.Member;
 import com.damda.back.domain.area.Area;
-import com.damda.back.domain.area.QArea;
 import com.damda.back.domain.manager.*;
 import com.damda.back.exception.CommonException;
 import com.damda.back.exception.ErrorCode;
 import com.damda.back.repository.*;
 import com.damda.back.service.ManagerService;
-import com.querydsl.core.QueryFactory;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -160,7 +159,7 @@ public class ManagerServiceImpl implements ManagerService {
     public PageManagerResponseDTO managerResponseDTOList(ManagerStatusEnum managerStatusEnum, Pageable pageable) {
 
         List<ManagerResponseDTO> managerResponseDTOList = new ArrayList<>();
-        Page<Manager> managerPage = managerRepository.managerList(managerStatusEnum,pageable);
+        Page<Manager> managerPage = managerRepository.managerList(managerStatusEnum, pageable);
 
         List<Manager> list = managerPage.getContent();
         List<AreaManager> areaManagerList = list.stream()
@@ -309,35 +308,35 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     @Transactional(isolation = Isolation.REPEATABLE_READ)
 
-    public void activityRegionADD(Long managerId, Map<RegionModify, String> region){
-        if(region.containsKey(RegionModify.SEOUL)){
+    public void activityRegionADD(Long managerId, Map<RegionModify, String> region) {
+        if (region.containsKey(RegionModify.SEOUL)) {
 
             String district = region.get(RegionModify.SEOUL);
             Manager manager = managerRepository.findById(managerId)
-                    .orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_MANAGER));
-            Area area = areaRepository.searchArea("서울특별시",district)
-                    .orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_AREA));
+                    .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_MANAGER));
+            Area area = areaRepository.searchArea("서울특별시", district)
+                    .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_AREA));
 
-            AreaManager.AreaManagerKey key = new AreaManager.AreaManagerKey(area,manager);
+            AreaManager.AreaManagerKey key = new AreaManager.AreaManagerKey(area, manager);
             AreaManager areaManager = AreaManager.builder().areaManagerKey(key).build();
-            Optional findAM=areaManagerRepository.findById(key);
-            if(findAM.isPresent()){
+            Optional findAM = areaManagerRepository.findById(key);
+            if (findAM.isPresent()) {
                 throw new CommonException(ErrorCode.EXIST_AREA_MANAGER);
             }
             areaManagerRepository.save(areaManager);
             area.plusCount();
 
-        }else if(region.containsKey(RegionModify.GYEONGGI)){
+        } else if (region.containsKey(RegionModify.GYEONGGI)) {
             String district = region.get(RegionModify.GYEONGGI);
             Manager manager = managerRepository.findById(managerId)
-                    .orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_MANAGER));
-            Area area = areaRepository.searchArea("경기도",district)
-                    .orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_AREA));
+                    .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_MANAGER));
+            Area area = areaRepository.searchArea("경기도", district)
+                    .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_AREA));
 
-            AreaManager.AreaManagerKey key = new AreaManager.AreaManagerKey(area,manager);
+            AreaManager.AreaManagerKey key = new AreaManager.AreaManagerKey(area, manager);
             AreaManager areaManager = AreaManager.builder().areaManagerKey(key).build();
-            Optional findAM=areaManagerRepository.findById(key);
-            if(findAM.isPresent()){
+            Optional findAM = areaManagerRepository.findById(key);
+            if (findAM.isPresent()) {
                 throw new CommonException(ErrorCode.EXIST_AREA_MANAGER);
             }
             areaManagerRepository.save(areaManager);
@@ -348,20 +347,44 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void activityRegionDelete(Long managerId, Map<RegionModify, String> region) {
-        if(region.containsKey(RegionModify.SEOUL)){
+        if (region.containsKey(RegionModify.SEOUL)) {
             String district = region.get(RegionModify.SEOUL);
-            AreaManager areaManager = areaManagerRepository.findAreaByManagerId(managerId,"서울특별시",district)
-                    .orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_AREA_MANAGER));
+            AreaManager areaManager = areaManagerRepository.findAreaByManagerId(managerId, "서울특별시", district)
+                    .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_AREA_MANAGER));
             areaManager.getAreaManagerKey().getArea().minusCount();
             areaManagerRepository.delete(areaManager);
-        }else {
+        } else {
             String district = region.get(RegionModify.GYEONGGI);
-            AreaManager areaManager = areaManagerRepository.findAreaByManagerId(managerId,"경기도",district)
-                    .orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_AREA_MANAGER));
+            AreaManager areaManager = areaManagerRepository.findAreaByManagerId(managerId, "경기도", district)
+                    .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_AREA_MANAGER));
             areaManager.getAreaManagerKey().getArea().minusCount();
             areaManagerRepository.delete(areaManager);
         }
 
+    }
+
+    @Override
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public boolean managerStatusUpdate(ManagerStatusUpdateRequestDTO dto, Long managerId) {
+
+        Manager manager = managerRepository.findById(managerId).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_MANAGER));
+        manager.updateManagerStatus(dto);
+
+        List<AreaManager>areaManagerList = areaManagerRepository.findAreaByManagerId2(managerId);
+        if(areaManagerList.isEmpty()){
+            throw new CommonException(ErrorCode.NOT_FOUND_AREA_MANAGER); //TODO
+        }
+
+        for(AreaManager a:areaManagerList){
+            if (dto.getCurrManagerStatus() == ManagerStatusEnum.ACTIVE) {
+                Area area = a.getAreaManagerKey().getArea();
+                area.plusCount();
+            } else if(manager.getPrevManagerStatus()== ManagerStatusEnum.ACTIVE){
+                Area area = a.getAreaManagerKey().getArea();
+                area.minusCount();
+            }
+        }
+        return true;
     }
 
 

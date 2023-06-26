@@ -1,9 +1,12 @@
 package com.damda.back.domain.manager;
 
+import com.damda.back.data.request.ManagerStatusUpdateRequestDTO;
 import com.damda.back.data.request.ManagerUpdateRequestDTO;
 import com.damda.back.domain.BaseEntity;
 import com.damda.back.domain.Match;
 import com.damda.back.domain.Member;
+import com.damda.back.exception.CommonException;
+import com.damda.back.exception.ErrorCode;
 import lombok.*;
 import org.hibernate.annotations.BatchSize;
 
@@ -27,7 +30,7 @@ public class Manager extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
-    
+
     private String managerName;
     private String phoneNumber;
     private String address;
@@ -70,14 +73,22 @@ public class Manager extends BaseEntity {
         this.vehicle = dto.getVehicle();
         this.fieldExperience = dto.getFieldExperience();
         this.memo = dto.getMemo();
-        this.prevManagerStatus = this.currManagerStatus;
-        this.currManagerStatus = ManagerStatusEnum.valueOf(dto.getCurrManagerStatus());
 
     }
 
 
     public void removeAll() {
         this.areaManagers.clear();
+    }
+
+    public void updateManagerStatus(ManagerStatusUpdateRequestDTO dto) {
+        
+        if (this.currManagerStatus == dto.getCurrManagerStatus()) {
+            throw new CommonException(ErrorCode.MANAGER_STATUS_BAD_REQUEST);
+        }
+
+        this.prevManagerStatus = this.currManagerStatus;
+        this.currManagerStatus = dto.getCurrManagerStatus();
     }
 
 }
