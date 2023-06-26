@@ -9,11 +9,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MatchingAcceptGetDTO {
-	private Long id;
-	private String manager;
-
-	private ServiceInfo serviceInfo;
-	private ReservationInfo reservationInfo;
-
+public class ServiceInfo {
+	private String serviceDate;
+	private String serviceDuration;
+	private String servicePerPerson;
+	private String location;
 }
