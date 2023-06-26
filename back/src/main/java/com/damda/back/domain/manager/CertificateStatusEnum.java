@@ -1,9 +1,12 @@
 package com.damda.back.domain.manager;
 
+import lombok.Getter;
+
 /**
  * 자격증 여부
  * (Certificate status)
  */
+@Getter
 public enum CertificateStatusEnum {
     FIRST_RATE_OFF("1급(오프라인)"),
     SECOND_RATE_OFF("2급(오프라인)"),
