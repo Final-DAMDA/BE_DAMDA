@@ -85,7 +85,7 @@ public class FormController {
     }
 
 
-    @GetMapping("/api/v2/excel/download")
+    @GetMapping("/api/v1/zip/excel/download")
     public void downloadExcel2(
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate,
