@@ -6,6 +6,7 @@ import com.damda.back.data.common.RegionModify;
 import com.damda.back.data.request.ManagerApplicationDTO;
 import com.damda.back.data.request.ManagerRegionUpdateRequestDTO;
 import com.damda.back.data.request.ManagerUpdateRequestDTO;
+import com.damda.back.data.response.PageManagerResponseDTO;
 import com.damda.back.domain.manager.ManagerStatusEnum;
 import com.damda.back.service.ManagerService;
 import lombok.RequiredArgsConstructor;
@@ -54,10 +55,11 @@ public class ManagerController {
 
         Pageable pageable = PageRequest.of(page, size);
 
+        PageManagerResponseDTO pageManagerResponseDTO = managerService.managerResponseDTOList(ManagerStatusEnum.valueOf(status),pageable);
         CommonResponse<Object> commonResponse = CommonResponse
                 .builder()
                 .codeEnum(CodeEnum.SUCCESS)
-                .data(managerService.managerResponseDTOList(ManagerStatusEnum.valueOf(status)))
+                .data(pageManagerResponseDTO)
                 .build();
 
         return ResponseEntity

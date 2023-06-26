@@ -5,22 +5,26 @@ import com.damda.back.data.request.ManagerApplicationDTO;
 import com.damda.back.data.request.ManagerRegionUpdateRequestDTO;
 import com.damda.back.data.request.ManagerUpdateRequestDTO;
 import com.damda.back.data.response.ManagerResponseDTO;
+import com.damda.back.data.response.PageManagerResponseDTO;
 import com.damda.back.domain.Member;
 import com.damda.back.domain.area.Area;
-import com.damda.back.domain.manager.ActivityDay;
-import com.damda.back.domain.manager.AreaManager;
-import com.damda.back.domain.manager.Manager;
-import com.damda.back.domain.manager.ManagerStatusEnum;
+import com.damda.back.domain.area.QArea;
+import com.damda.back.domain.manager.*;
 import com.damda.back.exception.CommonException;
 import com.damda.back.exception.ErrorCode;
 import com.damda.back.repository.*;
 import com.damda.back.service.ManagerService;
+import com.querydsl.core.QueryFactory;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,6 +38,10 @@ public class ManagerServiceImpl implements ManagerService {
     private final MemberRepository memberRepository;
     private final ManagerRepository managerRepository;
     private final AreaRepository areaRepository;
+
+    private final EntityManager entityManager;
+
+    private final JPAQueryFactory queryFactory;
 
 
     @Override
@@ -149,12 +157,19 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ManagerResponseDTO> managerResponseDTOList(ManagerStatusEnum managerStatusEnum) {
+    public PageManagerResponseDTO managerResponseDTOList(ManagerStatusEnum managerStatusEnum, Pageable pageable) {
 
         List<ManagerResponseDTO> managerResponseDTOList = new ArrayList<>();
+        Page<Manager> managerPage = managerRepository.managerList(managerStatusEnum,pageable);
 
-        managerRepository.managerList(managerStatusEnum).forEach(manager -> {
+        List<Manager> list = managerPage.getContent();
+        List<AreaManager> areaManagerList = list.stream()
+                .flatMap(manager -> manager.getAreaManagers().stream())
+                .collect(Collectors.toList());
 
+        managerRepository.areaList2(areaManagerList);
+
+        list.forEach(manager -> {
             ManagerResponseDTO dto = ManagerResponseDTO
                     .builder()
                     .id(manager.getId())
@@ -174,32 +189,18 @@ public class ManagerServiceImpl implements ManagerService {
 
             List<Boolean> activityDayList = new ArrayList<>();
 
-            Optional<ActivityDay> optional = activityDayRepository.findById(manager.getActivityDay().getId());
-
-            if (optional.isPresent()) {
-                ActivityDay activityDay = optional.get();
-
-                activityDayList.add(activityDay.isOkMonday());
-                activityDayList.add(activityDay.isOkTuesday());
-                activityDayList.add(activityDay.isOkWednesday());
-                activityDayList.add(activityDay.isOkThursday());
-                activityDayList.add(activityDay.isOkFriday());
-                activityDayList.add(activityDay.isOkSaturday());
-                activityDayList.add(activityDay.isOkSunday());
-
-            } else {
-                throw new CommonException(ErrorCode.NOT_FOUND_ACTIVITYDAY);
-            }
-
             Map<String, List<String>> region = new HashMap<>();
-            Optional<List<AreaManager>> optionalAreaManager = Optional.ofNullable(areaManagerRepository.findAreaByManagerId(manager.getId()));
+            List<AreaManager> areaManagerListPE = manager.getAreaManagers();
 
-            if (optionalAreaManager.isPresent()) {
-                List<AreaManager> areaManagerList = optionalAreaManager.get();
+
+            if (!areaManagerListPE.isEmpty()) {
+
                 List<String> districtSeoul = new ArrayList<>();
                 List<String> districtGyeonggi = new ArrayList<>();
-                for (AreaManager areaManager : areaManagerList) {
+
+                for (AreaManager areaManager : areaManagerListPE) {
                     String city = areaManager.getAreaManagerKey().getArea().getCity();
+
                     if (city.equals("서울특별시")) {
                         districtSeoul.add(areaManager.getAreaManagerKey().getArea().getDistrict());
                     } else {
@@ -212,15 +213,19 @@ public class ManagerServiceImpl implements ManagerService {
                 throw new CommonException(ErrorCode.NOT_FOUND_AREA);
             }
 
-
-            dto.setActivityDay(activityDayList);
             dto.setRegion(region);
 
             managerResponseDTOList.add(dto);
 
         });
 
-        return managerResponseDTOList;
+        PageManagerResponseDTO pageManagerResponseDTO = PageManagerResponseDTO.builder()
+                .content(managerResponseDTOList)
+                .first(managerPage.isFirst())
+                .last(managerPage.isLast())
+                .total(managerPage.getTotalElements())
+                .build();
+        return pageManagerResponseDTO;
 
     }
 
@@ -303,6 +308,7 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     @Transactional(isolation = Isolation.REPEATABLE_READ)
+
     public void activityRegionADD(Long managerId, Map<RegionModify, String> region){
         if(region.containsKey(RegionModify.SEOUL)){
 

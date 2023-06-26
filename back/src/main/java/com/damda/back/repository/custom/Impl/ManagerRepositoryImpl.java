@@ -7,8 +7,12 @@ import com.damda.back.domain.area.QArea;
 import com.damda.back.domain.manager.*;
 import com.damda.back.repository.ManagerRepository;
 import com.damda.back.repository.custom.ManagerCustomRepository;
+import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import javax.swing.text.html.Option;
@@ -22,17 +26,24 @@ public class ManagerRepositoryImpl implements ManagerCustomRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Manager> managerList(ManagerStatusEnum managerStatusEnum) {
+    public Page<Manager> managerList(ManagerStatusEnum managerStatusEnum, Pageable pageable) {
 
         QManager manager = QManager.manager;
 
         List<Manager> list = queryFactory.selectDistinct(manager)
                 .from(manager)
                 .where(manager.currManagerStatus.eq(managerStatusEnum))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .orderBy(manager.updatedAt.asc())
                 .fetch();
 
-        return list;
+        return PageableExecutionUtils.getPage(list,pageable,() ->
+            queryFactory.select(Wildcard.count)
+                    .from(manager)
+                    .fetch()
+                    .get(0)
+        );
 
     }
 
@@ -83,6 +94,31 @@ public class ManagerRepositoryImpl implements ManagerCustomRepository {
                 .from(area)
                 .where(area.district.eq(dist)).fetchOne();
 
+    }
+
+    @Override
+    public List<AreaManager> areaList(List<AreaManager.AreaManagerKey> areaManagers) {
+        QManager manager = QManager.manager;
+        QAreaManager areaManager = QAreaManager.areaManager;
+        QArea area = QArea.area;
+
+        List<AreaManager> areaManagerList = queryFactory.selectDistinct(areaManager)
+                .from(areaManager)
+                .innerJoin(areaManager.areaManagerKey.area,area).fetchJoin()
+                .where(areaManager.areaManagerKey.in(areaManagers)).fetch();
+        return areaManagerList;
+    }
+
+    public List<AreaManager> areaList2(List<AreaManager> areaManagers) {
+        QManager manager = QManager.manager;
+        QAreaManager areaManager = QAreaManager.areaManager;
+        QArea area = QArea.area;
+
+        List<AreaManager> areaManagerList = queryFactory.selectDistinct(areaManager)
+                .from(areaManager)
+                .innerJoin(areaManager.areaManagerKey.area,area).fetchJoin()
+                .where(areaManager.in(areaManagers)).fetch();
+        return areaManagerList;
     }
 
     // public List<DistrictEnum> districtEnumList(){
