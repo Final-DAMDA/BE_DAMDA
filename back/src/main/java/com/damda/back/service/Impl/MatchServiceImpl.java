@@ -122,8 +122,13 @@ public class MatchServiceImpl implements MatchService {
 		Match match = matchRepository.matchFindByReservationAndMember(reservation.getId(),manager.getId())
 				.orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_MATCH));
 
-		if(matchResponseStatus==MatchResponseStatus.YES){ match.matchStatusYes(); }
-		else if(matchResponseStatus==MatchResponseStatus.NO){ match.matchStatusNO(); }
+		if(matchResponseStatus==MatchResponseStatus.YES){
+			match.matchStatusYes();
+			reservation.setMatchingWaiting();
+		}
+		else if(matchResponseStatus==MatchResponseStatus.NO){
+			match.matchStatusNO();
+		}
 
 		try{
 			matchRepository.save(match);

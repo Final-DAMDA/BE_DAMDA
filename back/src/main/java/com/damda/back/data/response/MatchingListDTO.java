@@ -24,6 +24,7 @@ public class MatchingListDTO {
 	private String certificate;
 	private Boolean driving;
 	private boolean matching;
+	private Integer level;
 
 	public MatchingListDTO(Match match){
 		this.matchId = match.getId();
@@ -36,5 +37,6 @@ public class MatchingListDTO {
 		this.driving = match.getManager().getVehicle();
 		this.certificate = match.getManager().getCertificateStatus().name();
 		this.matching = match.isMatching();
+		this.level = match.getManager().getLevel();
 	}
 }
