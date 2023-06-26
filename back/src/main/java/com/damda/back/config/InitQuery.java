@@ -116,7 +116,7 @@ public class InitQuery {
 		Area area1 = Area.builder()
 				.city("서울특별시")
 				.district("강남구")
-				.managerCount(1)
+				.managerCount(3)
 				.build();
 
 		Area area2 = Area.builder()
@@ -128,7 +128,7 @@ public class InitQuery {
 		Area area = Area.builder()
 				.city("경기도")
 				.district("하남시")
-				.managerCount(1)
+				.managerCount(0)
 				.build();
 
 		areaRepository.save(area1);
@@ -138,6 +138,7 @@ public class InitQuery {
 		AreaManager.AreaManagerKey key = new AreaManager.AreaManagerKey(area1,manager);
 		AreaManager.AreaManagerKey key2 = new AreaManager.AreaManagerKey(area1,manager2);
 		AreaManager.AreaManagerKey key3 = new AreaManager.AreaManagerKey(area1,manager3);
+		AreaManager.AreaManagerKey key4 = new AreaManager.AreaManagerKey(area2,manager2);
 
 
 		AreaManager areaManager = AreaManager.builder()
@@ -149,11 +150,13 @@ public class InitQuery {
 		AreaManager areaManager3 = AreaManager.builder()
 				.areaManagerKey(key3)
 				.build();
-
+		AreaManager areaManager4 = AreaManager.builder()
+				.areaManagerKey(key4)
+				.build();
 		areaManagerRepository.save(areaManager);
 		areaManagerRepository.save(areaManager2);
 		areaManagerRepository.save(areaManager3);
-
+		areaManagerRepository.save(areaManager4);
 
 		ReservationSubmitForm submitForm = ReservationSubmitForm.builder()
 				.servicePerson(2)

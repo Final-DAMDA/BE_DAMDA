@@ -6,7 +6,6 @@ import com.damda.back.data.request.ManagerRegionUpdateRequestDTO;
 import com.damda.back.data.request.ManagerUpdateRequestDTO;
 import com.damda.back.data.response.ManagerResponseDTO;
 import com.damda.back.domain.Member;
-import com.damda.back.domain.Question;
 import com.damda.back.domain.area.Area;
 import com.damda.back.domain.manager.ActivityDay;
 import com.damda.back.domain.manager.AreaManager;
@@ -302,15 +301,61 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
 
+    @Override
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public void activityRegioADD(Map<RegionModify,String> region){
-
+    public void activityRegionADD(Long managerId, Map<RegionModify, String> region){
         if(region.containsKey(RegionModify.SEOUL)){
 
-        }else if(region.containsKey(RegionModify.GYEONGGI)){
+            String district = region.get(RegionModify.SEOUL);
+            Manager manager = managerRepository.findById(managerId)
+                    .orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_MANAGER));
+            Area area = areaRepository.searchArea("서울특별시",district)
+                    .orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_AREA));
 
+            AreaManager.AreaManagerKey key = new AreaManager.AreaManagerKey(area,manager);
+            AreaManager areaManager = AreaManager.builder().areaManagerKey(key).build();
+            Optional findAM=areaManagerRepository.findById(key);
+            if(findAM.isPresent()){
+                throw new CommonException(ErrorCode.EXIST_AREA_MANAGER);
+            }
+            areaManagerRepository.save(areaManager);
+            area.plusCount();
+
+        }else if(region.containsKey(RegionModify.GYEONGGI)){
+            String district = region.get(RegionModify.GYEONGGI);
+            Manager manager = managerRepository.findById(managerId)
+                    .orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_MANAGER));
+            Area area = areaRepository.searchArea("경기도",district)
+                    .orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_AREA));
+
+            AreaManager.AreaManagerKey key = new AreaManager.AreaManagerKey(area,manager);
+            AreaManager areaManager = AreaManager.builder().areaManagerKey(key).build();
+            Optional findAM=areaManagerRepository.findById(key);
+            if(findAM.isPresent()){
+                throw new CommonException(ErrorCode.EXIST_AREA_MANAGER);
+            }
+            areaManagerRepository.save(areaManager);
+            area.plusCount();
         }
     }
+
+    @Override
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public void activityRegionDelete(Long managerId, Map<RegionModify, String> region) {
+        if(region.containsKey(RegionModify.SEOUL)){
+            String district = region.get(RegionModify.SEOUL);
+            AreaManager areaManager = areaManagerRepository.findAreaByManagerId(managerId,"서울특별시",district).orElseThrow();
+            areaManager.getAreaManagerKey().getArea().minusCount();
+            areaManagerRepository.delete(areaManager);
+        }else {
+            String district = region.get(RegionModify.GYEONGGI);
+            AreaManager areaManager = areaManagerRepository.findAreaByManagerId(managerId,"경기도",district).orElseThrow();
+            areaManager.getAreaManagerKey().getArea().minusCount();
+            areaManagerRepository.delete(areaManager);
+        }
+
+    }
+
 
 }
 

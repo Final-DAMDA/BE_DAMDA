@@ -2,6 +2,7 @@ package com.damda.back.controller;
 
 import com.damda.back.data.common.CodeEnum;
 import com.damda.back.data.common.CommonResponse;
+import com.damda.back.data.common.RegionModify;
 import com.damda.back.data.request.ManagerApplicationDTO;
 import com.damda.back.data.request.ManagerRegionUpdateRequestDTO;
 import com.damda.back.data.request.ManagerUpdateRequestDTO;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -100,15 +102,31 @@ public class ManagerController {
     }
 
     /**
-     * API: 매니저 활동지역 변경
+     * API: 매니저 활동지역 추가
      */
-    @PutMapping("/api/v1/admin/manager/{id}/region")
-    public ResponseEntity<CommonResponse<?>> managerRegionUpdate(@PathVariable("id") Long managerId, @RequestBody ManagerRegionUpdateRequestDTO managerRegionUpdateRequestDTO) {
-
+    @PutMapping("/api/v1/admin/region/add/{id}")
+    public ResponseEntity<CommonResponse<?>> managerRegionAdd(@PathVariable("id") Long managerId, @RequestBody Map<RegionModify,String> region) {
+        managerService.activityRegionADD(managerId,region);
         CommonResponse<?> commonResponse = CommonResponse
                 .builder()
                 .codeEnum(CodeEnum.SUCCESS)
-                .data(managerService.managerRegionUpdate(managerRegionUpdateRequestDTO, managerId))
+                .data(true)
+                .build();
+
+        return ResponseEntity
+                .status(commonResponse.getStatus())
+                .body(commonResponse);
+    }
+    /**
+     * API: 매니저 활동지역 삭제
+     */
+    @PutMapping("/api/v1/admin/region/delete/{id}")
+    public ResponseEntity<CommonResponse<?>> managerRegionDelete(@PathVariable("id") Long managerId, @RequestBody Map<RegionModify,String> region) {
+        managerService.activityRegionDelete(managerId,region);
+        CommonResponse<?> commonResponse = CommonResponse
+                .builder()
+                .codeEnum(CodeEnum.SUCCESS)
+                .data(true)
                 .build();
 
         return ResponseEntity
