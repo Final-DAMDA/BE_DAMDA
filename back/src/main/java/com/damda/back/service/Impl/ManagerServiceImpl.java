@@ -344,12 +344,14 @@ public class ManagerServiceImpl implements ManagerService {
     public void activityRegionDelete(Long managerId, Map<RegionModify, String> region) {
         if(region.containsKey(RegionModify.SEOUL)){
             String district = region.get(RegionModify.SEOUL);
-            AreaManager areaManager = areaManagerRepository.findAreaByManagerId(managerId,"서울특별시",district).orElseThrow();
+            AreaManager areaManager = areaManagerRepository.findAreaByManagerId(managerId,"서울특별시",district)
+                    .orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_AREA_MANAGER));
             areaManager.getAreaManagerKey().getArea().minusCount();
             areaManagerRepository.delete(areaManager);
         }else {
             String district = region.get(RegionModify.GYEONGGI);
-            AreaManager areaManager = areaManagerRepository.findAreaByManagerId(managerId,"경기도",district).orElseThrow();
+            AreaManager areaManager = areaManagerRepository.findAreaByManagerId(managerId,"경기도",district)
+                    .orElseThrow(()->new CommonException(ErrorCode.NOT_FOUND_AREA_MANAGER));
             areaManager.getAreaManagerKey().getArea().minusCount();
             areaManagerRepository.delete(areaManager);
         }

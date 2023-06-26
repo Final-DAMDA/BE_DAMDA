@@ -61,6 +61,7 @@ public enum ErrorCode {
     NOT_FOUND_SERVICE_COMPLETE(HttpStatus.BAD_REQUEST, "없는 예약이거 서비스 완료 폼이 제출되지 않은 예약입니다. "),
     NOT_FOUND_IMAGE(HttpStatus.BAD_REQUEST, "해당아이디로 조회할 수 없는 이미지입니다.  "),
     EXIST_AREA_MANAGER(HttpStatus.BAD_REQUEST,"이미 해당매니저의 활동지역입니다."),
+    NOT_FOUND_AREA_MANAGER(HttpStatus.BAD_REQUEST,"삭제하려는 활동지역이 등록되지 않았습니다."),
     NOT_FOUND_REVIEW(HttpStatus.BAD_REQUEST, "해당아이디로 조회할 수 없는 리뷰입니다.  ");
 
 
