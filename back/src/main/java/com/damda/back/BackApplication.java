@@ -19,12 +19,13 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.List;
 
 @SpringBootApplication
 public class BackApplication {
 
-	@Profile("dev")
+	@Profile("prod")
 	@Bean
 	CommandLineRunner initData(
 			QuestionRepository questionRepository,
@@ -33,18 +34,24 @@ public class BackApplication {
 			ManagerRepository managerRepository,
 			EntityManager entityManager,
 			AreaRepository areaRepository,
-			AreaManagerRepository areaManagerRepository,
-			InitQuery initQuery
+			AreaManagerRepository areaManagerRepository
 	) {
-		return args -> {insertQuery(questionRepository,
-				memberRepository,
-				passwordEncoder,
-				managerRepository,
-				entityManager,
-				areaRepository,
-				areaManagerRepository);
+		return args -> {
 
-			initQuery.initData();
+			String jpql = "SELECT COUNT(q) >= 5 FROM Question q";
+			Query query = entityManager.createQuery(jpql);
+
+			boolean result = (boolean) query.getSingleResult();
+
+			if(!result){
+				insertQuery(questionRepository,
+						memberRepository,
+						passwordEncoder,
+						managerRepository,
+						entityManager,
+						areaRepository,
+						areaManagerRepository);
+			}
 		};
 	}
 
@@ -134,29 +141,6 @@ public class BackApplication {
 		categories.forEach(question2::addCategory);
 
 		questionRepository.save(question2);
-
-
-//
-//		Question question3 = questionRepository.save(
-//				Question.builder()
-//						.page(1)
-//						.order(3)
-//						.placeHolder("없음")
-//						.questionIdentify(QuestionIdentify.SALEAGENT)
-//						.questionType(QuestionType.SELECT)
-//						.status(QuestionStatus.ACTIVATION)
-//						.required(true)
-//						.questionTitle("판매 대행 옵션을 선택해주세요.")
-//						.build()
-//		);
-//
-//		List<Category> categories1 = List.of(
-//				Category.builder().questionCategory("O").build(),
-//				Category.builder().questionCategory("X").build()
-//		);
-//
-//		categories1.forEach(question3::addCategory);
-
 
 		questionRepository.save(
 				Question.builder()
