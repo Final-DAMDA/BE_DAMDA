@@ -168,5 +168,15 @@ public class ManagerRepositoryImpl implements ManagerCustomRepository {
                 .where(manager.id.in(ids)).fetch();
 
     }
+    
+    public Manager findManagerByMemberId(Integer memberId) {
+        QManager manager = QManager.manager;
+        
+        return queryFactory
+                .select(manager)
+                .from(manager)
+                .where(manager.member.id.eq(memberId))
+                .fetchOne();
+    }
 
 }

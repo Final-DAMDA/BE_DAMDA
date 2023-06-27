@@ -30,6 +30,8 @@ public interface ManagerCustomRepository {
     public List<AreaManager> areaList(List<AreaManager.AreaManagerKey> areaManagers);
 
     public List<AreaManager> areaList2(List<AreaManager> areaManagers);
+    
+    public Manager findManagerByMemberId(Integer memberId);
 
 
 }

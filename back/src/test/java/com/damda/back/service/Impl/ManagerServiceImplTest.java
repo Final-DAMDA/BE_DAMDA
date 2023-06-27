@@ -6,13 +6,13 @@ import com.damda.back.domain.manager.AreaManager;
 import com.damda.back.domain.manager.CertificateStatusEnum;
 import com.damda.back.domain.manager.Manager;
 import com.damda.back.domain.manager.ManagerStatusEnum;
-import com.damda.back.repository.AreaManagerRepository;
-import com.damda.back.repository.AreaRepository;
-import com.damda.back.repository.ManagerRepository;
+import com.damda.back.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +28,10 @@ class ManagerServiceImplTest {
 	private AreaRepository areaRepository;
 	@Autowired
 	private ManagerServiceImpl managerService;
+	@Autowired
+	private MemberRepository memberRepository;
+	@Autowired
+	private ActivityDayRepository activityDayRepository;
 	@BeforeEach
 	void init(){
 		Manager manager = managerRepository.save(Manager.builder()
@@ -105,4 +109,23 @@ class ManagerServiceImplTest {
 		managerService.activityRegionADD(2L,region);
 
 	}
+
+//	@Test
+//	public void testManagerCreate() {
+//		// given
+//		ManagerApplicationDTO dto = new ManagerApplicationDTO();
+//		Integer memberId = 1;
+//		Member member = new Member();
+//
+//		memberRepository.save(member);
+//
+//		// when
+//		boolean result = managerService.managerCreate(dto, memberId);
+//
+//		// then
+//		assertThat(result).isTrue();
+//		assertThat(managerRepository.count()).isEqualTo(1);
+//		assertThat(activityDayRepository.count()).isEqualTo(1);
+//		assertThat(areaManagerRepository.count()).isEqualTo(dto.getRegion().get("서울특별시").size() + dto.getRegion().get("경기도").size());
+//	}
 }

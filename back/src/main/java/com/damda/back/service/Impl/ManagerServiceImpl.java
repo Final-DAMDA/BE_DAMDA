@@ -48,6 +48,13 @@ public class ManagerServiceImpl implements ManagerService {
     public boolean managerCreate(ManagerApplicationDTO dto, Integer memberId) {
 
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_MEMBER));
+
+        Optional<Manager> optional = Optional.ofNullable(managerRepository.findManagerByMemberId(memberId));
+        
+        if (optional.isPresent()) {
+            throw new CommonException(ErrorCode.EXIST_MANAGER);
+        }
+
         Manager manager = dto.toManagerEntity(member);
         ActivityDay activityDay = dto.toDayEntity();
         manager.addActivityDay(activityDay);
