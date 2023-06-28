@@ -34,7 +34,8 @@ public class AdminCheckFilter extends OncePerRequestFilter {
             "/api/v1/form/list",
             "/api/v1/activity/locations",
             "/api/v1/logout",
-            "/api/v1/zip/excel/download"
+            "/api/v1/zip/excel/download",
+            "/favicon.ico"
     ));
 
     @Override
@@ -46,6 +47,7 @@ public class AdminCheckFilter extends OncePerRequestFilter {
             filterChain.doFilter(request,response);
             return;
         }
+        log.info("요청들어온 주소 {}",path);
 
 
 
