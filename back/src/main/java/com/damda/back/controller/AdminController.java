@@ -1,6 +1,7 @@
 package com.damda.back.controller;
 
 
+import com.damda.back.config.annotation.UserBlocking;
 import com.damda.back.data.common.CodeEnum;
 import com.damda.back.data.common.CommonResponse;
 import com.damda.back.data.request.AdminLoginRequestDTO;
@@ -34,10 +35,9 @@ public class AdminController {
         ResponseCookie cookie = ResponseCookie.from("access_token", token)
                 .maxAge(24 * 60 * 60)
                 .path("/")
-                .secure(true)// https 환경에서만 쿠키가 발동합니다.
-                .sameSite("None")// 동일 사이트과 크로스 사이트에 모두 쿠키 전송이 가능합니다 Strict
-                //HTTPS 환경에서 None으로 변경예정
-               // .httpOnly(true)// 브라우저에서 쿠키에 접근할 수 없도록 제한
+                .secure(true)
+                .sameSite("None")
+                .httpOnly(true)
                 .build();
 
 
@@ -52,6 +52,9 @@ public class AdminController {
         response.setContentType("application/json");
         response.getWriter().println(new ObjectMapper().writeValueAsString(commonResponse));
     }
+
+
+    @UserBlocking
     @GetMapping("/api/v1/admin/auth")
     public ResponseEntity<CommonResponse<?>> authAdmin(){
         CommonResponse<?> commonResponse = CommonResponse

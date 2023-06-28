@@ -87,7 +87,7 @@ public class MatchServiceImpl implements MatchService {
 
 		ServiceInfo serviceInfo = ServiceInfo.builder()
 				.serviceDate(dateString)
-				.serviceDuration(timeString)
+				.serviceDuration(answerMap.get(QuestionIdentify.SERVICEDURATION))
 				.servicePerPerson(reservation.getServicePerson().toString()+"인")
 				.location(answerMap.get(QuestionIdentify.ADDRESS))
 				.build();

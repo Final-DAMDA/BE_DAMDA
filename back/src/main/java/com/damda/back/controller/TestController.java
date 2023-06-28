@@ -3,7 +3,6 @@ package com.damda.back.controller;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.damda.back.config.annotation.Permission;
 import com.damda.back.data.common.CodeEnum;
 import com.damda.back.data.common.CommonResponse;
 import com.damda.back.utils.JwtManager;

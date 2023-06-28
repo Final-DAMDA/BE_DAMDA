@@ -255,7 +255,7 @@ public class ReviewServiceImpl implements ReviewService {
 					builder()
 					.name(answerMap.get(QuestionIdentify.APPLICANTNAME))
 					.address(answerMap.get(QuestionIdentify.ADDRESS))
-					.date(answerMap.get(QuestionIdentify.SERVICEDATE))
+					.date(review.getUpdatedAt().toString())
 					.title(review.getTitle())
 					.content(review.getContent())
 					.before(before)

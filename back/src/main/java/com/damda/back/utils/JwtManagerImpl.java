@@ -25,6 +25,9 @@ import java.util.Optional;
 public class JwtManagerImpl implements JwtManager{
     @Value("${token.secret.key}")
     private String KEY;
+
+//    @Value("${token.admin.secret.key}")
+//    private String ADMIN;
     private final MemberRepository memberRepository;
 
     private final PasswordEncoder passwordEncoder;
@@ -110,4 +113,15 @@ public class JwtManagerImpl implements JwtManager{
 
         return decodedJWT;
     }
+
+//    public DecodedJWT verifyAdmin(String jwt) throws SignatureVerificationException, TokenExpiredException {
+//
+//        DecodedJWT decodedJWT = JWT
+//                .require(Algorithm.HMAC512(ADMIN))
+//                .build()
+//                .verify(jwt);
+//
+//        return decodedJWT;
+//    }
+//}
 }
