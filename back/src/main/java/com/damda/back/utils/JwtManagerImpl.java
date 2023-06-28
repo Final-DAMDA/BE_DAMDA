@@ -42,7 +42,7 @@ public class JwtManagerImpl implements JwtManager{
 
     }
     public String jwtToken(String name,String gender,String phoneNumber,String profileImage){
-        if(phoneNumber.equals(UNKNOWN) || name.equals(UNKNOWN)) throw new CommonException(ErrorCode.KAKAO_REQUIRED_VALUES_IS_EMPTY);
+      //  if(phoneNumber.equals(UNKNOWN) || name.equals(UNKNOWN)) throw new CommonException(ErrorCode.KAKAO_REQUIRED_VALUES_IS_EMPTY);
 
         phoneNumber = "0"+phoneNumber.substring(4);
 
