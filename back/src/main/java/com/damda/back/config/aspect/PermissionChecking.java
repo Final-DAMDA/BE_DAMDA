@@ -26,7 +26,7 @@ public class PermissionChecking {
     @Pointcut("@annotation(com.damda.back.config.annotation.AdminBlocking)")
     private void adminBlocking() {}
 
-    @Pointcut("@annotation(com.damda.back.config.annotation.AdminBlocking)")
+    @Pointcut("@annotation(com.damda.back.config.annotation.UserBlocking)")
     private void userBlocking() {}
 
 
@@ -43,8 +43,8 @@ public class PermissionChecking {
         String role = null;
         if(temp != null) role = temp.toString();
 
-        log.info(" 해당 사용자 권한 ===> {}",role);
-        if(role != null && (!role.equals("ADMIN"))){
+        log.info(" 해당 사용자 권한 AOP ===> {}",role);
+        if(role != null && role.equals("USER")){
             return proceedingJoinPoint.proceed();
         }else {
             HttpServletResponse response =
