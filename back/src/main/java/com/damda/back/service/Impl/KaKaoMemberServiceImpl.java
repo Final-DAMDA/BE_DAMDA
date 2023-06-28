@@ -40,10 +40,11 @@ public class KaKaoMemberServiceImpl implements KaKaoService {
             KaKaoAccessDTO kaKaoAccessDTO = infoResponse(accessTokenResponse.getAccessToken());
             KakaoAccountDTO accountDTO = kaKaoAccessDTO.getKakaoAccount();
 
+            log.info("일단 로그인 성공 {}",accountDTO);
             accountDTO.nullCheck();
-
+            log.info("null 처리 성공 {}",accountDTO);
             String profileImage = kaKaoAccessDTO.getProperties().getThumbnailImage() != null ? kaKaoAccessDTO.getProperties().getThumbnailImage() : "404.jpg" ;
-
+            log.info("눌 처리한 프로필 {}",profileImage);
             String token = jwtManager.jwtToken(accountDTO.getName(),accountDTO.getGender(),accountDTO.getPhoneNumber(),profileImage);
 
             log.info("발행된 토큰 {}" ,token);
