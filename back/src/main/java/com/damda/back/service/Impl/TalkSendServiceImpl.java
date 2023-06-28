@@ -202,7 +202,7 @@ public class TalkSendServiceImpl implements TalkSendService {
         localDateTime = localDateTime.plusHours(Long.valueOf(hour)); //서비스 완료시간 구하기
         localDateTime = localDateTime.minusMinutes(30); //30분 마이너스
 
-        String completeFormLink = "https://fe-damda.vercel.app/manager/completed?id="+reservationSubmitForm.getId().toString();
+        String completeFormLink = "/manager/completed/"+reservationSubmitForm.getId().toString();
 
         CompleteFormTalkToManagerDTO completeFormTalkToManagerDTO =CompleteFormTalkToManagerDTO
                 .builder()
