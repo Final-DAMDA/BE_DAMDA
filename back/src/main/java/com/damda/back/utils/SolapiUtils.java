@@ -498,7 +498,7 @@ public class SolapiUtils {
         kakaoOption.setTemplateId("KA01TP230607122818804PShXbWTb05K");
 
         HashMap<String, String> variables = new HashMap<>();
-        variables.put("#{photoLink}", dto.getLink());
+        variables.put("#{photoLink}", domain+dto.getLink());
         kakaoOption.setVariables(variables);
 
         Message message = new Message();
