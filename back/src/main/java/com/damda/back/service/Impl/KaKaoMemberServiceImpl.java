@@ -35,7 +35,7 @@ public class KaKaoMemberServiceImpl implements KaKaoService {
 
     @Override
     public TokenWithImageDTO loginProcessing(String code){
-       // try{
+        try{
             AccessTokenResponse accessTokenResponse =  tokenResponse(code);
             KaKaoAccessDTO kaKaoAccessDTO = infoResponse(accessTokenResponse.getAccessToken());
             KakaoAccountDTO accountDTO = kaKaoAccessDTO.getKakaoAccount();
@@ -43,17 +43,22 @@ public class KaKaoMemberServiceImpl implements KaKaoService {
             accountDTO.nullCheck();
 
             String profileImage = kaKaoAccessDTO.getProperties().getThumbnailImage() != null ? kaKaoAccessDTO.getProperties().getThumbnailImage() : "404.jpg" ;
+
             String token = jwtManager.jwtToken(accountDTO.getName(),accountDTO.getGender(),accountDTO.getPhoneNumber(),profileImage);
+
+            log.info("발행된 토큰 {}" ,token);
 
             TokenWithImageDTO dto = TokenWithImageDTO.builder()
                     .token(token)
                     .profileImage(profileImage)
                     .build();
 
+            log.info("최종 토큰 {}",dto);
+
             return dto;
-//        }catch (Exception e){
-//            throw new CommonException(ErrorCode.KAKAO_LOGIN_FALIE);
-//        }
+        }catch (Exception e){
+            throw new CommonException(ErrorCode.KAKAO_LOGIN_FALIE);
+        }
     }
 
 
