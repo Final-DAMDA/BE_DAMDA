@@ -252,7 +252,7 @@ public class ReviewServiceImpl implements ReviewService {
 				}
 			}
 			String str = answerMap.get(QuestionIdentify.ADDRESS);
-			String[] list = str.split("\s");
+			String[] list = str.split("\\s");
 			str= list[0]+list[1];
 
 			System.out.println(Arrays.toString(list));
