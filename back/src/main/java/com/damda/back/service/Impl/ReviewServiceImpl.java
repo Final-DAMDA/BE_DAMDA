@@ -253,7 +253,7 @@ public class ReviewServiceImpl implements ReviewService {
 			}
 			String str = answerMap.get(QuestionIdentify.ADDRESS);
 			String[] list = str.split("\\s");
-			str= list[0]+list[1];
+			str= list[0]+" "+list[1];
 
 			System.out.println(Arrays.toString(list));
 			ReviewListUserDTO reviewListUserDTO = ReviewListUserDTO.
@@ -293,10 +293,13 @@ public class ReviewServiceImpl implements ReviewService {
 				after.add(image.getImgUrl());
 			}
 		}
+		String str = answerMap.get(QuestionIdentify.ADDRESS);
+		String[] list = str.split("\\s");
+		str= list[0]+" "+list[1];
 		ReviewListUserDTO bestReviewDTO = ReviewListUserDTO.
 				builder()
 				.name(answerMap.get(QuestionIdentify.APPLICANTNAME))
-				.address(answerMap.get(QuestionIdentify.ADDRESS))
+				.address(str)
 				.date(answerMap.get(QuestionIdentify.SERVICEDATE))
 				.title(bestReview.get().getTitle())
 				.content(bestReview.get().getContent())
