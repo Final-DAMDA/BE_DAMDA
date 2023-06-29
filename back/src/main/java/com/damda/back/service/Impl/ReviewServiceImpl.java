@@ -251,10 +251,15 @@ public class ReviewServiceImpl implements ReviewService {
 					after.add(image.getImgUrl());
 				}
 			}
+			String str = answerMap.get(QuestionIdentify.ADDRESS);
+			String[] list = str.split("\s");
+			str= list[0]+list[1];
+
+			System.out.println(Arrays.toString(list));
 			ReviewListUserDTO reviewListUserDTO = ReviewListUserDTO.
 					builder()
 					.name(answerMap.get(QuestionIdentify.APPLICANTNAME))
-					.address(answerMap.get(QuestionIdentify.ADDRESS))
+					.address(str)
 					.date(review.getUpdatedAt().toString())
 					.title(review.getTitle())
 					.content(review.getContent())
