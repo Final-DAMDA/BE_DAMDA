@@ -39,7 +39,8 @@ public class AccessCheckFilter extends OncePerRequestFilter {
             "/api/v1/user/review/list",
             "/api/v1/review/best",
             "/api/v1/logout",
-            "/api/v1/zip/excel/download"
+            "/api/v1/zip/excel/download",
+            "/api/v1/manager/completed"
     ));
 
     @Override

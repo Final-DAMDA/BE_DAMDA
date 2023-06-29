@@ -36,6 +36,7 @@ public class AdminCheckFilter extends OncePerRequestFilter {
             "/api/v1/logout",
             "/api/v1/zip/excel/download",
             "/api/v1/manager/form/submit",
+            "/api/v1/manager/completed",
             "/favicon.ico"
     ));
 
