@@ -78,6 +78,7 @@ public class ReservationFormRepositoryImpl implements ReservationFormCustomRepos
                         .from(submitForm)
                         .innerJoin(submitForm.member, member).fetchJoin()
                         .where(createdAtBetween(startDate,endDate,submitForm))
+                        .where(submitForm.deleted.eq(false))
                         .orderBy(orderSpecifier)
                         .offset(pageable.getOffset())
                         .limit(pageable.getPageSize());
@@ -88,6 +89,7 @@ public class ReservationFormRepositoryImpl implements ReservationFormCustomRepos
                         queryFactory
                                 .selectDistinct(Wildcard.count)
                                 .from(submitForm)
+                                .where(submitForm.deleted.eq(false))
                                 .fetch()
                                 .get(0)
                 );
@@ -273,8 +275,9 @@ public class ReservationFormRepositoryImpl implements ReservationFormCustomRepos
                         .where(submitForm.id.eq(formId))
                         .fetchOne();
 
+                if(memberPE == null) return "발급되지않음";
 
-                return memberPE.getDiscountCode();
+                return memberPE.getDiscountCode() != null ? memberPE.getDiscountCode() : "발급되지않음";
         }
 
 

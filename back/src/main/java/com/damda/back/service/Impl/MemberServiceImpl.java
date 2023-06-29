@@ -181,6 +181,6 @@ public class MemberServiceImpl implements MemberService {
     public String discountCode(Long formId){
         String discountCode = formRepository.reservationDiscountCode(formId);
 
-        return discountCode != null ? discountCode : "발급실패";
+        return discountCode;
     }
 }
