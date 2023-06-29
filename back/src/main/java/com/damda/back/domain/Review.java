@@ -17,6 +17,10 @@ public class Review extends BaseEntity{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String title;
+
+
+
+	@Column(columnDefinition = "TEXT")
 	private String content;
 	private Boolean best;
 	private boolean status;
