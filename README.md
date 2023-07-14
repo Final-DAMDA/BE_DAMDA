@@ -1,5 +1,3 @@
-# BE_DAMDA
-![](https://velog.velcdn.com/images/yeeeerim_/post/3a6d51e8-0f36-429f-8666-2c3a7f1b3179/image.gif)
 ## 📢 프로젝트 소개
 ### 개발내용
 > 옷장정리 서비스 기업인 열다컴퍼니의 유저단 서비스 플로우 자동화 및 어드민단 개발
@@ -20,11 +18,11 @@ FE(4명), BE(3명)
 
 ### 🙋🏻‍♀️ 카카오 로그인
 ![](https://velog.velcdn.com/images/yeeeerim_/post/2ac64dc4-0bd1-44a1-8adc-b1eacc21efce/image.gif)
-유저 로그인은 카카오 로그인만 지원한다. 
+- 유저 로그인은 카카오 로그인만 지원한다. 
 ### 🙋🏻‍♀️ 예약 접수
 ![](https://velog.velcdn.com/images/yeeeerim_/post/22ba63ac-8ffa-417c-9a8e-4d864ae832ba/image.gif)
 ![](https://velog.velcdn.com/images/yeeeerim_/post/94e44ce1-8229-4a0e-9f69-111fd1a23d90/image.gif)
- 유저들은 유저페이지에서 예약접수를 할 수 있고, 서비스를 예약지역은 실제 활동 매니저가 있는 지역들만 노출된다. 
+- 유저들은 유저페이지에서 예약접수를 할 수 있고, 서비스를 예약지역은 실제 활동 매니저가 있는 지역들만 노출된다. 
 ![](https://velog.velcdn.com/images/yeeeerim_/post/9571125f-ed20-40d6-a307-105205c0e262/image.png)
 
  - 예약이 접수되면 매칭중(해당 지역의 매니저가 응답을 하기 전)이라는 상태로 등록되며 유저에게는 예약접수 알림톡이, 해당 지역의 매니저들에게는 서비스 접수 알림톡을 보낸다. 
@@ -32,8 +30,8 @@ FE(4명), BE(3명)
 
 ### 🧑🏻‍💼 매니저 매칭수락
 ![](https://velog.velcdn.com/images/yeeeerim_/post/58c35b80-81e1-4262-81a8-aaebbdbbc322/image.gif)
-매니저는 알림톡의 링크에 접속해 해당 예약을수락/거절을 할 수 있다. 
-이때 매니저는 로그인 상태여야 한다. 
+- 매니저는 알림톡의 링크에 접속해 해당 예약을수락/거절을 할 수 있다. 
+- 이때 매니저는 로그인 상태여야 한다. 
 ### 🧑🏻‍💻 어드민 매칭승인
 ![](https://velog.velcdn.com/images/yeeeerim_/post/cb5ada6f-baf4-4ba2-a088-40544fad737c/image.gif)
 - 매칭 매니저들 중 한 명이상 대답하면 예약상태는 매칭대기중으로 변경된다. 이때 어드민은 매칭리스트를 확인할 수 있으며 매니저의 정보를 보고 예약의 매니저들을 골라 매칭승인을 할 수 있다. 이때 해당 예약에 매칭되어야 하는 매니저들보다 많이 선택한다면 오류가 나며, 적게 매칭된다면 상태는 변경되지 않는다. 
@@ -90,4 +88,5 @@ FE(4명), BE(3명)
 
 ### Q&A
 ![](https://velog.velcdn.com/images/yeeeerim_/post/4a9662ca-1e89-4112-b56e-c6fd134fb640/image.gif)
+
 ![](https://velog.velcdn.com/images/yeeeerim_/post/0dd0a1e0-9a35-44b8-b68a-4f0409d2e687/image.gif)
